@@ -1,0 +1,111 @@
+INSTALL spatial;
+LOAD spatial; -- noqa
+
+---
+
+COPY (
+    SELECT
+        subtype,
+        class,
+        names.primary AS name,
+        geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2025-06-25.0/theme=base/type=land/*')
+    WHERE
+        bbox.xmin > $extent_xmin AND bbox.xmax < $extent_xmax
+        AND bbox.ymin > $extent_ymin AND bbox.ymax < $extent_ymax
+    )
+    TO '/Users/matthewheaton/GitHub/basemap/overture/data/land.geojsonseq'
+WITH (FORMAT GDAL, DRIVER 'GeoJSONSeq', SRS 'EPSG:4326');
+
+-- breakpoint
+
+-- COPY (
+--     SELECT
+--         subtype,
+--         class,
+--         names.primary AS name,
+--         surface,
+--         geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+--     FROM read_parquet('s3://overturemaps-us-west-2/release/2025-06-25.0/theme=base/type=land_use/*')
+--     WHERE
+--         bbox.xmin > $extent_xmin AND bbox.xmax < $extent_xmax
+--         AND bbox.ymin > $extent_ymin AND bbox.ymax < $extent_ymax
+--     )
+-- TO '/Users/matthewheaton/GitHub/basemap/overture/data/land_use.geojsonseq' WITH (FORMAT GDAL, DRIVER 'GeoJSONSeq', SRS 'EPSG:4326');
+
+-- -- breakpoint
+
+COPY (
+    SELECT
+        subtype,
+        class,
+        names.primary AS name,
+        geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2025-06-25.0/theme=base/type=water/*')
+    WHERE
+        subtype in ('ocean', 'lake', 'pond', 'reservoir', 'river', 'stream', 'water', 'canal')
+        AND bbox.xmin > $extent_xmin AND bbox.xmax < $extent_xmax
+        AND bbox.ymin > $extent_ymin AND bbox.ymax < $extent_ymax
+) TO '/Users/matthewheaton/GitHub/basemap/overture/data/water.geojsonseq' WITH (FORMAT GDAL, DRIVER 'GeoJSONSeq', SRS 'EPSG:4326');
+
+-- breakpoint
+
+COPY (
+    SELECT
+        id,
+        names.primary AS name,
+        subtype,
+        class,
+        subclass,
+        geometry  -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+    FROM read_parquet('s3://overturemaps-us-west-2/release/2025-06-25.0/theme=transportation/type=segment/*')
+    WHERE
+        subtype = 'road'
+        AND bbox.xmin > $extent_xmin AND bbox.xmax < $extent_xmax
+        AND bbox.ymin > $extent_ymin AND bbox.ymax < $extent_ymax
+) TO '/Users/matthewheaton/GitHub/basemap/overture/data/roads.geojsonseq'
+WITH (FORMAT GDAL, DRIVER 'GeoJSONSeq', SRS 'EPSG:4326');
+
+-- breakpoint
+
+COPY (
+    SELECT
+        names.primary as name,
+        height,
+        level,
+        geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+    FROM read_parquet('az://overturemapswestus2.blob.core.windows.net/release/2025-06-25.0/theme=buildings/type=building/*', filename=true, hive_partitioning=1)
+    WHERE
+        bbox.xmin > $extent_xmin AND bbox.xmax < $extent_xmax
+        AND bbox.ymin > $extent_ymin AND bbox.ymax < $extent_ymax
+) TO '/Users/matthewheaton/GitHub/basemap/overture/data/buildings.geojsonseq' WITH (FORMAT GDAL, DRIVER 'GeoJSONSeq', SRS 'EPSG:4326');
+
+-- -- breakpoint
+
+-- COPY (
+--     SELECT
+--         subtype,
+--         locality_type,
+--         names.primary as name,
+--         geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+--     FROM read_parquet('az://overturemapswestus2.blob.core.windows.net/release/2024-04-16-beta.0/theme=admins/type=locality/*', hive_partitioning=1)
+--     WHERE
+--         bbox.xmin > $extent_xmin AND bbox.xmax < $extent_xmax
+--         AND bbox.ymin > $extent_ymin AND bbox.ymax < $extent_ymax
+-- ) TO '/Users/matthewheaton/GitHub/basemap/overture/data/placenames.geojson'
+-- WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');
+
+-- -- breakpoint
+
+-- COPY (
+--     SELECT
+--         names.primary AS name,
+--         categories.primary as category,
+--         ROUND(confidence,2) as confidence,
+--         geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
+-- FROM read_parquet('s3://overturemaps-us-west-2/release/2025-06-25.0/theme=places/*/*')
+-- WHERE
+--     -- Point geometry doesn't require looking at both min and max:
+--     bbox.xmin BETWEEN $extent_xmin AND $extent_xmax AND
+--     bbox.ymin BETWEEN $extent_ymin AND $extent_ymax
+-- ) TO '/Users/matthewheaton/GitHub/basemap/overture/data/places.geojson' WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');

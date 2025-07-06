@@ -1,0 +1,29 @@
+{
+  "name": "overture-basemap",
+  "version": "1.0.0",
+  "description": "Overture Maps basemap with topographic contours",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gh-pages": "^6.3.0",
+    "maplibre-contour": "^0.1.0",
+    "maplibre-gl": "^4.0.0",
+    "pmtiles": "^3.0.6"
+  },
+  "devDependencies": {
+    "vite": "^5.0.0"
+  },
+  "keywords": [
+    "maps",
+    "overture",
+    "pmtiles",
+    "topographic",
+    "contours"
+  ],
+  "author": "",
+  "license": "MIT"
+}
