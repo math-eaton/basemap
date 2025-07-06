@@ -24,7 +24,8 @@ pnpm-debug.log*
 .idea/
 
 # mjh
-*.pmtiles
 *.pmtiles-journal
 *.geojson*
+# ignore markdown files except readme
 *.md
+!README.md

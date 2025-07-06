@@ -107,7 +107,7 @@ class OvertureMap {
      */
     async loadStyle() {
         try {
-            const response = await fetch('/cartography.json');
+            const response = await fetch('./cartography.json');
             if (!response.ok) {
                 throw new Error(`Failed to load style: ${response.statusText}`);
             }
