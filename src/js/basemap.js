@@ -113,6 +113,9 @@ class OvertureMap {
             }
             const style = await response.json();
             
+            // Update PMTiles URLs to be absolute for production
+            this.updatePMTilesUrls(style);
+            
             // Add contour sources and layers to the style
             await this.addContourToStyle(style);
             
@@ -124,6 +127,20 @@ class OvertureMap {
             console.error('Error loading style:', error);
             // Fallback to a basic style if loading fails
             return this.getBasicStyle();
+        }
+    }
+
+    /**
+     * Update PMTiles URLs to be absolute paths for production deployment
+     */
+    updatePMTilesUrls(style) {
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+        
+        for (const [sourceId, source] of Object.entries(style.sources)) {
+            if (source.type === 'vector' && source.url && source.url.startsWith('pmtiles://tiles/')) {
+                const tilePath = source.url.replace('pmtiles://tiles/', '');
+                source.url = `pmtiles://${baseUrl}/tiles/${tilePath}`;
+            }
         }
     }
     
