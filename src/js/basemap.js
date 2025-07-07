@@ -30,15 +30,16 @@ class OvertureMap {
         this.containerId = containerId;
         this.options = {
             // Default bounds for St. Lawrence County
-            // bounds: [
-            //     [-75.5, 44.0], // Southwest coordinates [lng, lat]
-            //     [-74.5, 45.0]  // Northeast coordinates [lng, lat]
-            // ],
+            bounds: [
+                [-75.5, 44.0], // Southwest coordinates [lng, lat]
+                [-74.5, 45.0]  // Northeast coordinates [lng, lat]
+            ],
             center: [-74.986763650502, 44.66997929549087],
             zoom: 13,
             minZoom: 11,
             maxZoom: 16,
             showTileBoundaries: false,
+            clampToBounds: true, // limit view to bounds
             ...options
         };
         
@@ -184,6 +185,11 @@ class OvertureMap {
             zoom: this.options.zoom,
             minZoom: this.options.minZoom,
             maxZoom: this.options.maxZoom,
+            
+            // Clamp camera to bounds if enabled
+            ...(this.options.clampToBounds ? {
+                maxBounds: this.options.bounds
+            } : {}),
             
             // Disable default attribution control so we can add custom one
             attributionControl: false,

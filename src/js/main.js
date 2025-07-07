@@ -26,11 +26,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         // Initialize the Overture map
         const overtureMap = new OvertureMap('map', {
-            // override default options here
+            // Override default options here
             // bounds: [[-75.5, 44.0], [-74.5, 45.0]],
             // zoom: 14,
             // minZoom: 11,
-            // maxZoom: 16
+            // maxZoom: 16,
+            // clampToBounds: true // Uncomment to restrict camera movement to the defined bounds
         });
         
         // Make overtureMap available globally for debugging
