@@ -51,9 +51,6 @@ class OvertureMap {
             // Base layers (0-9)
             'background': 0,
             
-            // Terrain and elevation (10-19)
-            'hills': 10,          // Hillshade - draws over background but under everything else
-            
             // Land use and land cover (20-39)
             'land-use': 20,       // Land use polygons (residential, commercial, etc.)
             'land': 25,           // Natural land features (forest, grass, etc.)
@@ -62,7 +59,10 @@ class OvertureMap {
             'water-polygons': 40,        // Water body fills
             'water-polygon-outlines': 41, // Water body outlines
             'water-lines': 42,           // Rivers, streams, canals
-            
+                        
+            // Terrain and elevation 
+            'hills': 47,
+
             // Contour lines (50-59)
             'contours': 50,       // Contour lines
             'contour-text': 51,   // Contour elevation labels
@@ -399,12 +399,12 @@ class OvertureMap {
                     multiplier: 3.28084,
                     thresholds: {
                         // zoom: [minor, major] contour intervals in feet
-                        11: [200, 1000],
-                        12: [100, 500],
-                        13: [100, 500],
-                        14: [50, 200],
-                        15: [20, 100],
-                        16: [20, 100]
+                        11: [100, 400],
+                        12: [50, 200],
+                        13: [50, 200],
+                        14: [25, 100],
+                        15: [12.5, 100],
+                        16: [5, 100]
                     },
                     elevationKey: "ele",
                     levelKey: "level",
@@ -420,9 +420,9 @@ class OvertureMap {
             type: "hillshade",
             source: "dem",
             paint: {
-                "hillshade-exaggeration": 0.25,
-                "hillshade-shadow-color": "rgba(0,0,0,0.3)",
-                "hillshade-highlight-color": "rgba(255,255,255,0.3)"
+                "hillshade-exaggeration": 0.2,
+                "hillshade-shadow-color": "rgba(0,0,0,0.2)",
+                "hillshade-highlight-color": "rgba(255,255,255,0.2)"
             }
         };
         
@@ -448,18 +448,18 @@ class OvertureMap {
                     ["zoom"],
                     11, [
                         "case",
-                        ["==", ["get", "level"], 1], 0.9,  // Major contours
-                        0.45                                 // Minor contours
+                        ["==", ["get", "level"], 1], 0.7,  // Major contours
+                        0.35                                 // Minor contours
                     ],
                     13, [
                         "case", 
-                        ["==", ["get", "level"], 1], 1.1,  // Major contours
-                        0.5                                // Minor contours
+                        ["==", ["get", "level"], 1], 0.8,  // Major contours
+                        0.4                                // Minor contours
                     ],
                     15, [
                         "case",
-                        ["==", ["get", "level"], 1], 1.4,  // Major contours
-                        0.7                                // Minor contours
+                        ["==", ["get", "level"], 1], 1,  // Major contours
+                        0.5                                // Minor contours
                     ]
                 ],
                 "line-opacity": [
@@ -630,7 +630,7 @@ class OvertureMap {
      * Set contour blend mode (simulated through color adjustments)
      * @param {string} mode - 'darken', 'multiply', 'overlay', 'normal'
      */
-    setContourBlendMode(mode = 'normal') {
+    setContourBlendMode(mode = 'overlay') {
         if (!this.map || !this.map.getLayer('contours')) return;
         
         let colorExpression, opacityValue;
@@ -672,11 +672,11 @@ class OvertureMap {
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    11, "rgba(139, 69, 19, 0.3)",
+                    11, "rgba(139, 69, 19, 0.2)",
                     13, "rgba(160, 80, 40, 0.4)",
                     15, "rgba(180, 90, 45, 0.5)"
                 ];
-                opacityValue = 0.7;
+                opacityValue = 0.5;
                 break;
                 
             case 'normal':

@@ -15,10 +15,27 @@ extent_xmax = -74.5
 extent_ymin = 44.0
 extent_ymax = 45.0
 
+# Buffer for data download to ensure complete features at edges
+buffer_degrees = 0.5  # ~55km buffer
+
+# Buffered extent for data download
+buffered_xmin = extent_xmin - buffer_degrees
+buffered_xmax = extent_xmax + buffer_degrees
+buffered_ymin = extent_ymin - buffer_degrees
+buffered_ymax = extent_ymax + buffer_degrees
+
 
 def download_source_data():
-    """Download and process source data from Overture Maps"""
+    """Download and process source data from Overture Maps
+    
+    Uses a buffered extent to ensure complete features at map boundaries.
+    The buffer helps prevent edge clipping when generating tiles.
+    """
     print("=== DOWNLOADING SOURCE DATA ===")
+    print(f"Map extent: {extent_xmin}, {extent_ymin} to {extent_xmax}, {extent_ymax}")
+    print(f"Download extent (buffered): {buffered_xmin}, {buffered_ymin} to {buffered_xmax}, {buffered_ymax}")
+    print(f"Buffer: {buffer_degrees} degrees (~{buffer_degrees * 111:.1f}km)")
+    print()
         
     # Path to your SQL file
     sql_file_path = '/Users/matthewheaton/GitHub/basemap/overture/createLandTiles'
@@ -27,11 +44,11 @@ def download_source_data():
     with open(sql_file_path, 'r') as file:
         sql_content = file.read()
 
-    # Replace the variables in the SQL content
-    sql_content = sql_content.replace('$extent_xmin', str(extent_xmin))
-    sql_content = sql_content.replace('$extent_xmax', str(extent_xmax))
-    sql_content = sql_content.replace('$extent_ymin', str(extent_ymin))
-    sql_content = sql_content.replace('$extent_ymax', str(extent_ymax))
+    # Replace the variables in the SQL content with buffered extent
+    sql_content = sql_content.replace('$extent_xmin', str(buffered_xmin))
+    sql_content = sql_content.replace('$extent_xmax', str(buffered_xmax))
+    sql_content = sql_content.replace('$extent_ymin', str(buffered_ymin))
+    sql_content = sql_content.replace('$extent_ymax', str(buffered_ymax))
 
     # Split the SQL content into sections based on '-- breakpoint'
     sql_sections = sql_content.split('-- breakpoint')
@@ -71,7 +88,7 @@ def process_to_tiles():
         f for f in os.listdir(data_dir)
         if (f.endswith('.geojson') or f.endswith('.geojsonseq')) and not f.endswith('.pmtiles') 
         # optionally filter for specific features e.g. buildings
-        and 'buildings' in f 
+        and 'roads' in f 
     ]
 
     if not geojson_files:
@@ -106,7 +123,7 @@ def process_to_tiles():
                     '-zg',
                     '-l', layer_name,
                     '--detect-shared-borders',  # Better polygon boundary handling
-                    # '--simplify-only-low-zooms',  # Preserve detail at high zoom
+                    '--simplify-only-low-zooms',  # Preserve detail at high zoom
                     '--no-tiny-polygon-reduction',  # Keep small bodies
                     '--no-feature-limit',  # Don't limit features per tile
                     '--no-tile-size-limit',  # Don't limit tile size
@@ -119,23 +136,22 @@ def process_to_tiles():
                     input_path
                 ], check=True)
             elif 'roads' in geojson_file:
-                # Optimized settings for road features - better visibility across zoom levels
                 subprocess.run([
                     'tippecanoe',
                     '-fo', tile_path,
-                    '-z16',  # Match max zoom of map
+                    '-z14',  # Match max zoom of map
                     '-Z11',  # Start at map's minimum zoom level
                     '-l', layer_name,
-                    '--simplify-only-low-zooms',  # Keep detail at high zoom levels
-                    '--drop-rate=0.01',  # Keep most features, drop only 1%
+                    # '--simplify-only-low-zooms',  # Keep detail at high zoom levels
+                    '--drop-rate=0.03',  # Keep most features, drop only N%
                     '--drop-smallest',  # Drop smallest features first
-                    '--simplification=4',  # Use moderate simplification
-                    '--buffer=64',  # Larger buffer for smoother line rendering
+                    '--simplification=10',  # Use moderate simplification
+                    '--buffer=16',  # buffer for smoother line rendering
                     '--extend-zooms-if-still-dropping',
-                    '--maximum-tile-bytes=2097152',  # 2MB tile limit for roads
+                    '--maximum-tile-bytes=1048576',  # 1MB tile limit for roads
                     '--coalesce-smallest-as-needed',  # Merge small road segments
                     '--preserve-input-order',  # Maintain feature order
-                    '--minimum-detail=12',  # Start preserving full detail at zoom 12
+                    # '--minimum-detail=15',  # Start preserving full detail at zoom 15
                     '-P',
                     input_path
                 ], check=True)
@@ -169,6 +185,7 @@ def process_to_tiles():
                     '-zg',
                     '-l', layer_name,
                     '--drop-densest-as-needed',
+                    '--simplify-only-low-zooms', 
                     '-P',
                     input_path
                 ], check=True)
