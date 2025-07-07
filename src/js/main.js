@@ -24,6 +24,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Clear loading message
         mapContainer.innerHTML = '';
         
+        // Detect if we're on GitHub Pages and might need to use vector tiles
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        
         // Initialize the Overture map
         const overtureMap = new OvertureMap('map', {
             // Override default options here
@@ -32,6 +35,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             // minZoom: 11,
             // maxZoom: 16,
             // clampToBounds: true // Uncomment to restrict camera movement to the defined bounds
+            
+            // Automatically try vector tiles on GitHub Pages as fallback
+            // Set useVectorTiles: true if you have converted tiles available
+            useVectorTiles: false, // Change to true if you have vector tile directories
         });
         
         // Make overtureMap available globally for debugging

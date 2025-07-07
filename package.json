@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "convert-tiles": "node scripts/convert-pmtiles.js",
+    "serve-vector": "node scripts/serve-with-vector-tiles.js"
   },
   "dependencies": {
     "maplibre-contour": "^0.1.0",

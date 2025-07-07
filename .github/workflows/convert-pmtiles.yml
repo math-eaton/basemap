@@ -1,0 +1,67 @@
+name: Convert PMTiles to Vector Tiles (Fallback)
+
+on:
+  workflow_dispatch: # Manual trigger
+  push:
+    paths:
+      - 'public/tiles/*.pmtiles'
+
+jobs:
+  convert-tiles:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        
+    - name: Install tile conversion tools
+      run: |
+        npm install -g @mapbox/tippecanoe
+        npm install -g pmtiles
+        
+    - name: Create vector tile directories
+      run: |
+        mkdir -p public/vector-tiles
+        
+        # Convert each PMTiles file to vector tile directory
+        for pmtile in public/tiles/*.pmtiles; do
+          basename=$(basename "$pmtile" .pmtiles)
+          echo "Converting $basename..."
+          
+          # Extract tiles from PMTiles
+          pmtiles extract "$pmtile" "public/vector-tiles/$basename"
+        done
+        
+    - name: Create alternative style file
+      run: |
+        # Create a cartography-vector.json that uses traditional vector tiles
+        node -e "
+        const fs = require('fs');
+        const style = JSON.parse(fs.readFileSync('src/styles/cartography.json', 'utf8'));
+        
+        // Update sources to use traditional vector tiles
+        for (const [sourceId, source] of Object.entries(style.sources)) {
+          if (source.type === 'vector' && source.url && source.url.includes('pmtiles://')) {
+            const tileName = sourceId.replace('-tiles', '');
+            source.tiles = [\`https://yourusername.github.io/basemap/vector-tiles/\${tileName}/{z}/{x}/{y}.pbf\`];
+            source.minzoom = 0;
+            source.maxzoom = 14;
+            delete source.url;
+          }
+        }
+        
+        fs.writeFileSync('public/cartography-vector.json', JSON.stringify(style, null, 2));
+        "
+        
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add public/vector-tiles/ public/cartography-vector.json
+        git commit -m "Add vector tile fallback" || exit 0
+        git push

@@ -1,5 +1,6 @@
 import maplibregl from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
+import { PMTiles } from 'pmtiles';
 
 // Lazy load contour functionality
 let mlcontour = null;
@@ -29,17 +30,20 @@ class OvertureMap {
     constructor(containerId, options = {}) {
         this.containerId = containerId;
         this.options = {
-            // Default bounds for St. Lawrence County
+            // Default fallback bounds (DRC area) - will be replaced by PMTiles bounds
             bounds: [
-                [-75.5, 44.0], // Southwest coordinates [lng, lat]
-                [-74.5, 45.0]  // Northeast coordinates [lng, lat]
+                [22.0, -6.0], // Southwest coordinates [lng, lat]
+                [24.0, -4.0]  // Northeast coordinates [lng, lat]
             ],
-            center: [-74.986763650502, 44.66997929549087],
-            zoom: 13,
-            minZoom: 11,
+            // center: [-74.986763650502, 44.66997929549087],
+            center: [23.5967, -6.1307],
+            zoom: 14,
+            minZoom: 12.5,
             maxZoom: 16,
             showTileBoundaries: false,
-            clampToBounds: true, // limit view to bounds
+            clampToBounds: false,
+            useVectorTiles: false, // Set to true to use traditional vector tiles instead of PMTiles
+            useCustomCenter: true, // If true, use custom center. If false, auto-center to PMTiles extent
             ...options
         };
         
@@ -49,19 +53,19 @@ class OvertureMap {
         // Layer draw order index - lower numbers draw first (bottom), higher numbers draw on top
         this.layerDrawOrder = {
             // Base layers (0-9)
-            'background': 0,
+            'background': 1,
             
             // Land use and land cover (20-39)
             'land-use': 20,       // Land use polygons (residential, commercial, etc.)
             'land': 25,           // Natural land features (forest, grass, etc.)
-            
+                                    
+            // Terrain and elevation 
+            'hills': 47,
+
             // Water features (40-49)
             'water-polygons': 40,        // Water body fills
             'water-polygon-outlines': 41, // Water body outlines
             'water-lines': 42,           // Rivers, streams, canals
-                        
-            // Terrain and elevation 
-            'hills': 47,
 
             // Contour lines (50-59)
             'contours': 50,       // Contour lines
@@ -72,8 +76,9 @@ class OvertureMap {
             'roads-dashed': 61,    // Minor road lines (dashed)
             
             // Buildings and structures (80-89)
-            'buildings': 80,           // Building fills
-            'building-outlines': 81,   // Building outlines
+            'buildings-low-lod': 80,   // Building fills (low detail)
+            'buildings-high-lod': 81,  // Building fills (high detail)
+            'building-outlines': 82,   // Building outlines
             
             // Points of interest (90-99)
             'places': 90,         // Place points/circles
@@ -101,6 +106,9 @@ class OvertureMap {
             this.setupContourControls();
         }).catch(error => {
             console.error('Failed to load map style:', error);
+            // Show user-friendly error message
+            const mapContainer = document.getElementById(this.containerId);
+            mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: sans-serif; color: #e74c3c; text-align: center; padding: 20px;"><div><h3>Map Loading Error</h3><p>Unable to load map tiles. This may be due to hosting limitations.<br>Please try refreshing the page or contact the administrator.</p></div></div>';
         });
     }
     
@@ -109,14 +117,35 @@ class OvertureMap {
      */
     async loadStyle() {
         try {
-            const response = await fetch('./cartography.json');
+            // Choose style file based on tile type preference
+            const styleFile = this.options.useVectorTiles ? './cartography-vector.json' : './cartography.json';
+            const response = await fetch(styleFile);
+            
             if (!response.ok) {
+                // Fallback to main style if vector style doesn't exist
+                if (this.options.useVectorTiles) {
+                    console.warn('Vector tile style not found, falling back to PMTiles style');
+                    const fallbackResponse = await fetch('./cartography.json');
+                    if (!fallbackResponse.ok) {
+                        throw new Error(`Failed to load style: ${fallbackResponse.statusText}`);
+                    }
+                    const style = await fallbackResponse.json();
+                    this.updatePMTilesUrls(style);
+                    await this.addContourToStyle(style);
+                    this.sortLayersByDrawOrder(style);
+                    return style;
+                }
                 throw new Error(`Failed to load style: ${response.statusText}`);
             }
+            
             const style = await response.json();
             
-            // Update PMTiles URLs to be absolute for production
-            this.updatePMTilesUrls(style);
+            // Update URLs based on tile type
+            if (this.options.useVectorTiles) {
+                this.updateVectorTileUrls(style);
+            } else {
+                this.updatePMTilesUrls(style);
+            }
             
             // Add contour sources and layers to the style
             await this.addContourToStyle(style);
@@ -134,16 +163,122 @@ class OvertureMap {
 
     /**
      * Update PMTiles URLs to be absolute paths for production deployment
+     * Also adds error handling for GitHub Pages hosting issues
      */
     updatePMTilesUrls(style) {
-        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+        const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+        const isGitHubPages = window.location.hostname.includes('github.io');
+        
+        // For GitHub Pages, we need to include the repo name in the path
+        const repoName = isGitHubPages ? window.location.pathname.split('/')[1] : '';
+        const basePath = isGitHubPages ? `/${repoName}` : '';
+        
+        // console.log('Updating PMTiles URLs:', { 
+        //     isLocalhost, 
+        //     isGitHubPages, 
+        //     repoName, 
+        //     basePath 
+        // });
         
         for (const [sourceId, source] of Object.entries(style.sources)) {
             if (source.type === 'vector' && source.url && source.url.startsWith('pmtiles://tiles/')) {
                 const tilePath = source.url.replace('pmtiles://tiles/', '');
-                source.url = `pmtiles://${baseUrl}/tiles/${tilePath}`;
+                
+                let newUrl;
+                if (isLocalhost) {
+                    // Localhost: use relative path
+                    newUrl = `pmtiles://./tiles/${tilePath}`;
+                } else {
+                    // Production: use absolute path with proper base
+                    newUrl = `pmtiles://${basePath}/tiles/${tilePath}`;
+                }
+                
+                // console.log(`${sourceId}: ${source.url} → ${newUrl}`);
+                source.url = newUrl;
+                
+                // Add warning for GitHub Pages users
+                if (isGitHubPages) {
+                    console.warn(`PMTiles on GitHub Pages may have byte-serving issues. Consider using a CDN for ${sourceId}.`);
+                }
             }
         }
+        
+        // If on GitHub Pages, add error handling for missing tiles
+        if (isGitHubPages) {
+            this.addGitHubPagesWarning();
+        }
+    }
+    
+    /**
+     * Update vector tile URLs for traditional tile serving
+     */
+    updateVectorTileUrls(style) {
+        const baseUrl = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '');
+        
+        for (const [sourceId, source] of Object.entries(style.sources)) {
+            if (source.type === 'vector' && source.tiles) {
+                // Update relative URLs to absolute
+                source.tiles = source.tiles.map(tileUrl => {
+                    if (tileUrl.startsWith('./') || tileUrl.startsWith('/')) {
+                        return `${baseUrl}${tileUrl.replace('./', '/')}`;
+                    }
+                    return tileUrl;
+                });
+            }
+        }
+    }
+    
+    /**
+     * Add warning about GitHub Pages limitations
+     */
+    addGitHubPagesWarning() {
+        console.warn('⚠️  PMTiles on GitHub Pages Notice:');
+        console.warn('GitHub Pages may not properly support HTTP range requests required by PMTiles.');
+        console.warn('For better performance, consider hosting tiles on:');
+        console.warn('• Protomaps Cloud (free tier available)');
+        console.warn('• Cloudflare R2 or AWS S3');
+        console.warn('• Converting to traditional vector tile directories');
+        console.warn('See DEPLOYMENT_OPTIONS.md for details.');
+    }
+    
+    /**
+     * Show user-friendly error message for PMTiles issues
+     */
+    showPMTilesError() {
+        const mapContainer = document.getElementById(this.containerId);
+        const errorOverlay = document.createElement('div');
+        errorOverlay.style.cssText = `
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            right: 10px;
+            background: rgba(231, 76, 60, 0.95);
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: sans-serif;
+            font-size: 14px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        `;
+        errorOverlay.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                    <strong>⚠️ Tile Loading Issue</strong><br>
+                    GitHub Pages doesn't fully support the byte-serving required by PMTiles.<br>
+                    <small>Consider hosting tiles on a CDN for better reliability.</small>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; font-size: 18px; cursor: pointer; padding: 0 5px;">×</button>
+            </div>
+        `;
+        mapContainer.appendChild(errorOverlay);
+        
+        // Auto-remove after 10 seconds
+        setTimeout(() => {
+            if (errorOverlay.parentElement) {
+                errorOverlay.remove();
+            }
+        }, 10000);
     }
     
     /**
@@ -180,9 +315,16 @@ class OvertureMap {
         this.map = new maplibregl.Map({
             container: this.containerId,
             style: style,
-            // bounds: this.options.bounds,
-            center: this.options.center,
-            zoom: this.options.zoom,
+            // Use custom center if enabled, otherwise we'll set it after tiles load
+            ...(this.options.useCustomCenter ? {
+                center: this.options.center,
+                zoom: this.options.zoom
+            } : {
+                bounds: this.options.bounds,
+                fitBoundsOptions: {
+                    padding: 20
+                }
+            }),
             minZoom: this.options.minZoom,
             maxZoom: this.options.maxZoom,
             
@@ -225,22 +367,161 @@ class OvertureMap {
     setupEventHandlers() {
         // Map load event
         this.map.on('load', () => {
-            // console.log('Map loaded successfully!');
-            // console.log('Available sources:', this.map.getStyle().sources);
+            console.log('Map loaded successfully!');
+            // console.log('Available sources:', Object.keys(this.map.getStyle().sources));
             
-            // Check if layers exist
-            const layers = this.map.getStyle().layers;
-            const contoursLayer = layers.find(layer => layer.id === 'contours');
-            const hillshadeLayer = layers.find(layer => layer.id === 'hills');
+            // Check if layers exist and are visible
+            // const layers = this.map.getStyle().layers;
+            // console.log('All layers loaded:', layers.map(l => ({
+            //     id: l.id,
+            //     type: l.type,
+            //     source: l.source,
+            //     visibility: l.layout?.visibility || 'visible'
+            // })));
+            
+            // const contoursLayer = layers.find(layer => layer.id === 'contours');
+            // const hillshadeLayer = layers.find(layer => layer.id === 'hills');
             
             // console.log('Contours layer found:', contoursLayer ? 'Yes' : 'No');
             // console.log('Hillshade layer found:', hillshadeLayer ? 'Yes' : 'No');
             
+            // Check for PMTiles layers
+            // const pmtilesLayers = layers.filter(layer => 
+            //     layer.source && layer.source.includes('tiles') && 
+            //     !layer.source.includes('contours') && 
+            //     !layer.source.includes('dem')
+            // );
+            // console.log('PMTiles layers found:', pmtilesLayers.map(l => l.id));
+            
             // debugging
-            this.printLayerOrder();
+            // this.printLayerOrder();
             
             // contour controls now that map is loaded
             this.setupContourControls();
+            
+            // Auto-center to bounds if useCustomCenter is false
+            if (!this.options.useCustomCenter) {
+                this.map.fitBounds(this.options.bounds, { padding: 20 });
+            }
+            
+            // Update camera bounds if clampToBounds is enabled
+            if (this.options.clampToBounds) {
+                console.log('Camera bounds set to:', this.options.bounds);
+                this.map.setMaxBounds(this.options.bounds);
+            }
+            
+            // Debug: Force layer visibility after load
+            // setTimeout(() => {
+            //     const layers = ['land-use', 'land', 'water-polygons', 'water-lines', 'roads-solid', 'buildings'];
+            //     layers.forEach(layerId => {
+            //         if (this.map.getLayer(layerId)) {
+            //             this.map.setLayoutProperty(layerId, 'visibility', 'visible');
+            //             console.log(`Forced ${layerId} to visible`);
+            //         } else {
+            //             console.warn(`Layer ${layerId} not found`);
+            //         }
+            //     });
+            // }, 1000);
+        });
+        
+        // Add PMTiles-specific error handling
+        this.map.on('error', (e) => {
+            if (e.error && e.error.message) {
+            const errorMsg = e.error.message;
+            const sourceId = e.sourceId || 'unknown source';
+            const tileUrl = e.tile || 'unknown tile';
+            
+            if (errorMsg.includes('content-length') || errorMsg.includes('Byte Serving')) {
+                console.error(`PMTiles byte-serving error detected for source: ${sourceId}, tile: ${tileUrl}`);
+                console.error('Error message:', errorMsg);
+                console.error('This is likely due to hosting limitations. See DEPLOYMENT_OPTIONS.md for solutions.');
+                
+                // Show user-friendly message
+                this.showPMTilesError();
+            } else {
+                console.error(`Map error detected for source: ${sourceId}, tile: ${tileUrl}`);
+                console.error('Error message:', errorMsg);
+            }
+            }
+        });
+        
+        // Source loading feedback
+        // this.map.on('sourcedataloading', (e) => {
+        //     if (e.sourceId && e.sourceId.includes('tiles')) {
+        //         console.log(`Loading ${e.sourceId}...`);
+        //     }
+        // });
+        
+        this.map.on('sourcedata', (e) => {
+            if (e.sourceId && e.isSourceLoaded && e.sourceId.includes('tiles')) {
+                // console.log(`✓ ${e.sourceId} loaded successfully`);
+                
+                // Debug: Check if source has data
+                // const source = this.map.getSource(e.sourceId);
+                // if (source) {
+                //     console.log(`Source ${e.sourceId} details:`, {
+                //         type: source.type,
+                //         url: source._options?.url,
+                //         loaded: e.isSourceLoaded
+                //     });
+                // }
+                
+                // Debug: Query features from this source after it loads
+                // setTimeout(() => {
+                //     try {
+                //         const layersFromThisSource = this.map.getStyle().layers
+                //             .filter(layer => layer.source === e.sourceId)
+                //             .map(layer => layer.id);
+                        
+                //         // Log current map state
+                //         console.log(`Current map center: [${this.map.getCenter().lng.toFixed(4)}, ${this.map.getCenter().lat.toFixed(4)}]`);
+                //         console.log(`Current map zoom: ${this.map.getZoom().toFixed(2)}`);
+                //         console.log(`Current map bounds:`, this.map.getBounds());
+                        
+                //         if (layersFromThisSource.length > 0) {
+                //             const features = this.map.queryRenderedFeatures({
+                //                 layers: layersFromThisSource
+                //             });
+                //             console.log(`Features visible from ${e.sourceId}:`, features.length);
+                //             if (features.length > 0) {
+                //                 console.log(`Sample feature from ${e.sourceId}:`, features[0]);
+                //             } else {
+                //                 console.warn(`No features visible from ${e.sourceId} - this might indicate an issue`);
+                                
+                //                 // Additional debugging: Check source-layer configuration
+                //                 const sourceLayerInfo = layersFromThisSource.map(layerId => {
+                //                     const layer = this.map.getLayer(layerId);
+                //                     return {
+                //                         layerId: layerId,
+                //                         sourceLayer: layer['source-layer'],
+                //                         type: layer.type,
+                //                         visibility: layer.layout?.visibility || 'visible'
+                //                     };
+                //                 });
+                //                 console.log(`Source layer config for ${e.sourceId}:`, sourceLayerInfo);
+                                
+                //                 // Try querying without specifying layers to see if any features exist
+                //                 const allVisibleFeatures = this.map.queryRenderedFeatures();
+                //                 const featuresFromThisSource = allVisibleFeatures.filter(f => f.source === e.sourceId);
+                //                 console.log(`Total features from ${e.sourceId} (any layer):`, featuresFromThisSource.length);
+                                
+                //                 if (featuresFromThisSource.length > 0) {
+                //                     console.log(`Sample feature (any layer) from ${e.sourceId}:`, featuresFromThisSource[0]);
+                //                     console.log(`Source layer name found: "${featuresFromThisSource[0].sourceLayer}"`);
+                //                 } else {
+                //                     // The issue might be that we're not looking at the right geographic area
+                //                     // Let's check if the PMTiles data covers the current view
+                //                     console.log(`PMTiles file bounds from tippecanoe-decode suggest data around: 14.5-16.5°E, -5.0 to -3.0°N (DRC)`);
+                //                     console.log(`Current view is centered at: [${this.map.getCenter().lng.toFixed(4)}, ${this.map.getCenter().lat.toFixed(4)}]`);
+                //                     console.log(`Consider updating the map center to match the data bounds or regenerating tiles for your area of interest.`);
+                //                 }
+                //             }
+                //         }
+                //     } catch (error) {
+                //         console.error(`Error querying features from ${e.sourceId}:`, error);
+                //     }
+                // }, 500);
+            }
         });
         
         // Source data events
@@ -327,9 +608,23 @@ class OvertureMap {
             blendModeSelect.addEventListener('change', (e) => {
                 this.setContourBlendMode(e.target.value);
             });
-            
-            // Set initial blend mode
-            this.setContourBlendMode('darken');
+        }
+        
+        // Set initial blend mode after contours are loaded
+        if (this.map.getSource('contours')) {
+            // Wait for contours source to be loaded
+            const waitForContours = () => {
+                if (this.map.isSourceLoaded('contours')) {
+                    console.log('Contours source loaded, applying initial blend mode');
+                    this.setContourBlendMode('darken');
+                } else {
+                    console.log('Waiting for contours source to load...');
+                    setTimeout(waitForContours, 200);
+                }
+            };
+            waitForContours();
+        } else {
+            console.warn('Contours source not found during setup');
         }
     }
     
@@ -433,43 +728,29 @@ class OvertureMap {
             source: "contours",
             "source-layer": "contours",
             paint: {
-                // Use dark colors with transparency to create darkening effect
-                "line-color": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    11, "rgba(0, 0, 0, 0.4)",      // Very dark at low zoom
-                    13, "rgba(50, 25, 0, 0.5)",    // Dark brown at medium zoom
-                    15, "rgba(80, 40, 20, 0.6)"    // Medium brown at high zoom
-                ],
+                // Start with neutral values - will be overridden by setContourBlendMode
+                "line-color": "rgba(139, 69, 19, 0.3)",  // Neutral brown
                 "line-width": [
                     "interpolate",
                     ["linear"],
                     ["zoom"],
                     11, [
                         "case",
-                        ["==", ["get", "level"], 1], 0.7,  // Major contours
-                        0.35                                 // Minor contours
+                        ["==", ["get", "level"], 1], 0.1,  // Major contours
+                        0.075                                 // Minor contours
                     ],
                     13, [
                         "case", 
-                        ["==", ["get", "level"], 1], 0.8,  // Major contours
-                        0.4                                // Minor contours
+                        ["==", ["get", "level"], 1], 0.3,  // Major contours
+                        0.15                               // Minor contours
                     ],
                     15, [
                         "case",
-                        ["==", ["get", "level"], 1], 1,  // Major contours
-                        0.5                                // Minor contours
+                        ["==", ["get", "level"], 1], 0.5,  // Major contours
+                        0.25                              // Minor contours
                     ]
                 ],
-                "line-opacity": [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    11, 0.6,
-                    13, 0.7,
-                    15, 0.8
-                ]
+                "line-opacity": 1  // Simple neutral opacity - will be overridden
             },
             layout: {
                 "line-join": "round",
@@ -526,10 +807,10 @@ class OvertureMap {
             return orderA - orderB;
         });
         
-        console.log('Layer draw order applied:', style.layers.map(layer => ({
-            id: layer.id,
-            order: this.layerDrawOrder[layer.id] || 'unspecified'
-        })));
+        // console.log('Layer draw order applied:', style.layers.map(layer => ({
+        //     id: layer.id,
+        //     order: this.layerDrawOrder[layer.id] || 'unspecified'
+        // })));
         
         return style;
     }
@@ -630,8 +911,25 @@ class OvertureMap {
      * Set contour blend mode (simulated through color adjustments)
      * @param {string} mode - 'darken', 'multiply', 'overlay', 'normal'
      */
-    setContourBlendMode(mode = 'overlay') {
-        if (!this.map || !this.map.getLayer('contours')) return;
+    setContourBlendMode(mode = 'darken') {
+        // Enhanced error checking and debugging
+        if (!this.map) {
+            console.warn('Map not initialized for contour blend mode');
+            return;
+        }
+        
+        if (!this.map.getLayer('contours')) {
+            console.warn('Contours layer not found. Available layers:', 
+                this.map.getStyle().layers.map(l => l.id));
+            return;
+        }
+        
+        // Check if layer is loaded
+        if (!this.map.isSourceLoaded('contours')) {
+            console.warn('Contours source not yet loaded, retrying in 500ms...');
+            setTimeout(() => this.setContourBlendMode(mode), 500);
+            return;
+        }
         
         let colorExpression, opacityValue;
         
@@ -641,17 +939,17 @@ class OvertureMap {
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    11, "rgba(0, 0, 0, 0.4)",
-                    13, "rgba(50, 25, 0, 0.5)",
-                    15, "rgba(80, 40, 20, 0.6)"
+                    11, "rgba(0, 0, 0, 0.2)",      // Increased alpha for more visibility
+                    13, "rgba(50, 25, 0, 0.4)",    // Increased alpha
+                    15, "rgba(80, 40, 20, 0.6)"    // Increased alpha
                 ];
                 opacityValue = [
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    11, 0.6,
-                    13, 0.7,
-                    15, 0.8
+                    11, 0.8,   // Increased opacity
+                    13, 0.9,   // Increased opacity
+                    15, 1.0    // Full opacity at high zoom
                 ];
                 break;
                 
@@ -660,11 +958,11 @@ class OvertureMap {
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    11, "rgba(40, 20, 10, 0.3)",
-                    13, "rgba(60, 30, 15, 0.4)",
-                    15, "rgba(80, 40, 20, 0.5)"
+                    11, "rgba(40, 20, 10, 0.4)",   // Increased alpha
+                    13, "rgba(60, 30, 15, 0.6)",   // Increased alpha
+                    15, "rgba(80, 40, 20, 0.8)"    // Increased alpha
                 ];
-                opacityValue = 0.9;
+                opacityValue = 1.0;  // Full opacity for multiply effect
                 break;
                 
             case 'overlay':
@@ -672,24 +970,86 @@ class OvertureMap {
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    11, "rgba(139, 69, 19, 0.2)",
-                    13, "rgba(160, 80, 40, 0.4)",
-                    15, "rgba(180, 90, 45, 0.5)"
+                    11, "rgba(139, 69, 19, 0.3)",  // Increased alpha
+                    13, "rgba(160, 80, 40, 0.5)",  // Increased alpha
+                    15, "rgba(180, 90, 45, 0.7)"   // Increased alpha
                 ];
-                opacityValue = 0.5;
+                opacityValue = 0.8;  // Increased base opacity
                 break;
                 
             case 'normal':
             default:
-                colorExpression = "rgba(139, 69, 19, 0.6)";
-                opacityValue = 1;
+                colorExpression = "rgba(139, 69, 19, 0.6)";  // Increased alpha
+                opacityValue = 1.0;  // Full opacity
                 break;
         }
         
-        this.map.setPaintProperty('contours', 'line-color', colorExpression);
-        this.map.setPaintProperty('contours', 'line-opacity', opacityValue);
+        try {
+            // Get current properties for comparison
+            const currentColor = this.map.getPaintProperty('contours', 'line-color');
+            const currentOpacity = this.map.getPaintProperty('contours', 'line-opacity');
+            
+            console.log('Current contour properties:', {
+                color: currentColor,
+                opacity: currentOpacity
+            });
+            
+            // Apply new properties
+            this.map.setPaintProperty('contours', 'line-color', colorExpression);
+            this.map.setPaintProperty('contours', 'line-opacity', opacityValue);
+            
+            // Verify the change was applied
+            setTimeout(() => {
+                const newColor = this.map.getPaintProperty('contours', 'line-color');
+                const newOpacity = this.map.getPaintProperty('contours', 'line-opacity');
+                
+                console.log(`Contour blend mode set to: ${mode}`, {
+                    newColor,
+                    newOpacity,
+                    currentZoom: this.map.getZoom().toFixed(2)
+                });
+            }, 100);
+            
+        } catch (error) {
+            console.error('Error setting contour blend mode:', error);
+        }
+    }
+
+    /**
+     * Test contour blend mode (for console debugging)
+     * Usage: map.testContourBlendMode('multiply') 
+     */
+    testContourBlendMode(mode) {
+        console.log(`Testing contour blend mode: ${mode}`);
         
-        console.log(`Contour blend mode set to: ${mode}`);
+        // Show current zoom level for context
+        console.log(`Current zoom level: ${this.map.getZoom().toFixed(2)}`);
+        
+        // Apply the blend mode
+        this.setContourBlendMode(mode);
+        
+        // Force a repaint to ensure changes are visible
+        this.map.triggerRepaint();
+        
+        return `Applied blend mode: ${mode}`;
+    }
+
+    /**
+     * Get current contour paint properties (for debugging)
+     */
+    getContourProperties() {
+        if (!this.map || !this.map.getLayer('contours')) {
+            return 'Contours layer not available';
+        }
+        
+        return {
+            color: this.map.getPaintProperty('contours', 'line-color'),
+            opacity: this.map.getPaintProperty('contours', 'line-opacity'),
+            width: this.map.getPaintProperty('contours', 'line-width'),
+            zoom: this.map.getZoom(),
+            sourceLoaded: this.map.isSourceLoaded('contours'),
+            layerVisible: this.map.getLayoutProperty('contours', 'visibility') !== 'none'
+        };
     }
 
     /**

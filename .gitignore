@@ -25,6 +25,9 @@ pnpm-debug.log*
 
 # mjh
 *.pmtiles-journal
+overture/data/
+overture/tiles/
+public/tiles_stl/
 *.geojson*
 # ignore markdown files except readme
 *.md
