@@ -30,11 +30,12 @@ class OvertureMap {
         this.containerId = containerId;
         this.options = {
             // Default bounds for St. Lawrence County
-            bounds: [
-                [-75.5, 44.0], // Southwest coordinates [lng, lat]
-                [-74.5, 45.0]  // Northeast coordinates [lng, lat]
-            ],
-            zoom: 14,
+            // bounds: [
+            //     [-75.5, 44.0], // Southwest coordinates [lng, lat]
+            //     [-74.5, 45.0]  // Northeast coordinates [lng, lat]
+            // ],
+            center: [-74.986763650502, 44.66997929549087],
+            zoom: 13,
             minZoom: 11,
             maxZoom: 16,
             showTileBoundaries: false,
@@ -155,24 +156,14 @@ class OvertureMap {
         
         // Configure interaction options for better mobile experience
         const interactionOptions = {
-            // Universal settings
-            doubleClickZoom: true,
-            keyboard: !isMobile, // Disable keyboard controls on mobile
-            
-            // Mobile-optimized settings
+            // Only disable keyboard on mobile, let MapLibre handle desktop defaults
             ...(isMobile ? {
+                keyboard: false, // Disable keyboard controls on mobile
                 // Touch-specific optimizations
                 touchZoomRotate: true,
                 touchPitch: true,
                 dragPan: {
-                    // linearity: 0.3,      // Higher linearity for more responsive feel
-                    // maxSpeed: 1000,     
                     deceleration: 2400,  // Faster deceleration for more responsive feel (default: 1400)
-                    // easing: (t) => {
-                    //     // Custom easing function for smoother mobile feel
-                    //     // Cubic ease-out with faster initial response
-                    //     return 1 - Math.pow(1 - t, 2.2);
-                    // }
                 },
                 scrollZoom: {
                     around: 'center' // center point zoom
@@ -180,21 +171,22 @@ class OvertureMap {
                 pitchWithRotate: false,  // Disable pitch on rotate for simpler interaction
                 bearingSnap: 7          // Snap to cardinal directions more easily
             } : {
-                // Desktop settings - keep default behavior
-                dragPan: true,
-                scrollZoom: true,
-                touchZoomRotate: false,  // Disable touch on desktop
-                touchPitch: false
+                // Desktop: Use MapLibre defaults by not overriding anything
+                // This ensures the smoothest possible desktop experience
             })
         };
 
         this.map = new maplibregl.Map({
             container: this.containerId,
             style: style,
-            bounds: this.options.bounds,
+            // bounds: this.options.bounds,
+            center: this.options.center,
             zoom: this.options.zoom,
             minZoom: this.options.minZoom,
             maxZoom: this.options.maxZoom,
+            
+            // Disable default attribution control so we can add custom one
+            attributionControl: false,
             
             // Apply interaction optimizations
             ...interactionOptions,
@@ -278,11 +270,26 @@ class OvertureMap {
     
     // controls
     addControls() {
+        // Detect if user is on a mobile device (same logic as in createMap)
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         ('ontouchstart' in window) || 
+                         (navigator.maxTouchPoints > 0);
+        
         // Add navigation controls
         this.map.addControl(new maplibregl.NavigationControl(), 'top-right');
         
         // Add scale control
         this.map.addControl(new maplibregl.ScaleControl(), 'bottom-left');
+        
+        // Add custom attribution control with responsive compact setting
+        this.map.addControl(new maplibregl.AttributionControl({
+            customAttribution: [
+                '© <a href="https://overturemaps.org/" target="_blank">Overture Maps Foundation</a>',
+                '© <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>',
+                'Contours: <a href="https://www.usgs.gov/" target="_blank">USGS</a>'
+            ],
+            compact: isMobile // Compact on mobile, expanded on desktop
+        }), 'bottom-right');
     }
     
     // contour controls (gui, later)
