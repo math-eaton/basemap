@@ -148,14 +148,75 @@ class OvertureMap {
      * Create the MapLibre map instance
      */
     createMap(style) {
+        // Detect if user is on a mobile device
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || 
+                         ('ontouchstart' in window) || 
+                         (navigator.maxTouchPoints > 0);
+        
+        // Configure interaction options for better mobile experience
+        const interactionOptions = {
+            // Universal settings
+            doubleClickZoom: true,
+            keyboard: !isMobile, // Disable keyboard controls on mobile
+            
+            // Mobile-optimized settings
+            ...(isMobile ? {
+                // Touch-specific optimizations
+                touchZoomRotate: true,
+                touchPitch: true,
+                dragPan: {
+                    // linearity: 0.3,      // Higher linearity for more responsive feel
+                    // maxSpeed: 1000,     
+                    deceleration: 2400,  // Faster deceleration for more responsive feel (default: 1400)
+                    // easing: (t) => {
+                    //     // Custom easing function for smoother mobile feel
+                    //     // Cubic ease-out with faster initial response
+                    //     return 1 - Math.pow(1 - t, 2.2);
+                    // }
+                },
+                scrollZoom: {
+                    around: 'center' // center point zoom
+                },
+                pitchWithRotate: false,  // Disable pitch on rotate for simpler interaction
+                bearingSnap: 7          // Snap to cardinal directions more easily
+            } : {
+                // Desktop settings - keep default behavior
+                dragPan: true,
+                scrollZoom: true,
+                touchZoomRotate: false,  // Disable touch on desktop
+                touchPitch: false
+            })
+        };
+
         this.map = new maplibregl.Map({
             container: this.containerId,
             style: style,
             bounds: this.options.bounds,
             zoom: this.options.zoom,
             minZoom: this.options.minZoom,
-            maxZoom: this.options.maxZoom
+            maxZoom: this.options.maxZoom,
+            
+            // Apply interaction optimizations
+            ...interactionOptions,
+            
+            // Performance optimizations for mobile
+            ...(isMobile ? {
+                antialias: false, // performance
+                failIfMajorPerformanceCaveat: false,
+                preserveDrawingBuffer: false,
+                fadeDuration: 50, 
+                crossSourceCollisions: false,  // performance
+                optimizeForTerrain: false, // Disable terrain optimization for better touch performance
+                renderWorldCopies: false, // performance
+                refreshExpiredTiles: false // performance
+            } : {})
         });
+        
+        // Additional mobile optimizations after map creation
+        if (isMobile) {
+            // Add touch-specific event listeners for better responsiveness
+            this.setupMobileTouchOptimizations();
+        }
         
         this.map.showTileBoundaries = this.options.showTileBoundaries;
     }
@@ -672,6 +733,71 @@ class OvertureMap {
             'Draw Order': this.layerDrawOrder[layer.id] || 'unspecified',
             Type: layer.type
         })));
+    }
+    
+    /**
+     * Setup mobile-specific touch optimizations
+     */
+    setupMobileTouchOptimizations() {
+        if (!this.map) return;
+        
+        // Optimize canvas for touch interactions
+        const canvas = this.map.getCanvas();
+        canvas.style.touchAction = 'pan-x pan-y';
+        
+        // Improve rendering performance during touch interactions
+        this.map.on('touchstart', () => {
+            // Enable hardware acceleration during touch
+            canvas.style.willChange = 'transform';
+        });
+        
+        this.map.on('touchend', () => {
+            // Restore normal rendering after touch interaction
+            setTimeout(() => {
+                canvas.style.willChange = 'auto';
+            }, 200);
+        });
+        
+        // Optimize rendering during zoom for better performance
+        let isZooming = false;
+        this.map.on('zoomstart', () => {
+            isZooming = true;
+            // Temporarily reduce rendering quality during zoom
+            canvas.style.imageRendering = 'pixelated';
+        });
+        
+        this.map.on('zoomend', () => {
+            if (isZooming) {
+                isZooming = false;
+                // Restore high-quality rendering after zoom
+                canvas.style.imageRendering = 'auto';
+                // Force a repaint to ensure crisp rendering
+                setTimeout(() => {
+                    this.map.triggerRepaint();
+                }, 50);
+            }
+        });
+        
+        // Optimize move events for better performance
+        let isDragging = false;
+        this.map.on('movestart', (e) => {
+            if (e.originalEvent && e.originalEvent.type === 'touchstart') {
+                isDragging = true;
+                // Reduce quality during drag for better frame rate
+                canvas.style.imageRendering = 'optimizeSpeed';
+            }
+        });
+        
+        this.map.on('moveend', () => {
+            if (isDragging) {
+                isDragging = false;
+                // Restore quality after drag
+                canvas.style.imageRendering = 'auto';
+                setTimeout(() => {
+                    this.map.triggerRepaint();
+                }, 50);
+            }
+        });
     }
 }
 
