@@ -109,7 +109,6 @@ def process_to_tiles():
     geojson_files = [
         f for f in os.listdir(data_dir)
         if (f.endswith('.geojson') or f.endswith('.geojsonseq')) and not f.endswith('.pmtiles') 
-        # Process all files for now - we'll handle buildings specially
         and 'building' in f 
         # and 'buildings' not in f  # Uncomment to exclude buildings
     ]
@@ -210,7 +209,7 @@ def process_to_tiles():
 
     print("=== TILE PROCESSING COMPLETE ===\n")
 
-def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False, skip_medium_lod=False, skip_high_lod=False):
+def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False, skip_medium_lod=False, skip_high_lod=True):
     """Create separate low-LOD, medium-LOD, and high-LOD building tiles for smooth crossfading"""
     layer_name = 'layer'
     base_name = os.path.splitext(geojson_file)[0]
@@ -227,11 +226,11 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False
                 '-z9',  # Lower max zoom for low-LOD
                 '-Z0',  # Start at zoom 0
                 '-l', layer_name,
-                '--simplification=15',  # Higher simplification for smaller tile size
-                '--drop-rate=0.7',     # Drop 70% of features aggressively
+                '--simplification=10',  # Less aggressive simplification to preserve building shapes
+                '--drop-rate=0.25',     # Drop N% of features
                 '--drop-smallest',     # Drop smallest buildings first
-                '--buffer=2',          # Smaller buffer for tighter tiles
-                '--maximum-tile-bytes=65536',  # 64KB tiles for better performance
+                '--buffer=32',          # Smaller buffer for tighter tiles
+                '--maximum-tile-bytes=2097152',  # 2MB tiles for better detail
                 '--coalesce-smallest-as-needed',
                 '--detect-shared-borders',
                 '-P',
@@ -254,11 +253,11 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False
                 '-z13',  # Max zoom for medium-LOD
                 '-Z10',  # Start at zoom 10
                 '-l', layer_name,
-                '--simplification=10',  # Moderate simplification
-                '--drop-rate=0.4',     # Drop 40% of features
+                '--simplification=10',
+                '--drop-rate=0.1',     # Drop N% of features
                 '--drop-smallest',     # Drop smallest buildings first
-                '--buffer=4',          # Moderate buffer
-                '--maximum-tile-bytes=131072',  # 128KB tiles for better performance
+                '--buffer=16',          # Moderate buffer
+                '--maximum-tile-bytes=2097152',  # 2MB tiles for better detail
                 '--coalesce-smallest-as-needed',
                 '--detect-shared-borders',
                 '-P',
@@ -282,10 +281,10 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False
                 '-Z14',  # Start at zoom 14
                 '-l', layer_name,
                 '--simplification=8',  # Lower simplification for higher detail
-                '--drop-rate=0.2',     # Drop 20% of features
+                '--drop-rate=0.05',     # Drop 20% of features
                 '--drop-smallest',     # Drop smallest buildings first
                 '--buffer=8',          # Larger buffer for smoother transitions
-                '--maximum-tile-bytes=524288',  # 512KB tiles for better detail
+                '--maximum-tile-bytes=2097152',  # 2MB tiles for better detail
                 '--coalesce-smallest-as-needed',
                 '--detect-shared-borders',
                 '--preserve-input-order',

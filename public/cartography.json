@@ -18,11 +18,15 @@
       "type": "vector",
       "url": "pmtiles://tiles/roads.pmtiles"
     },
-    "buildings-low-lod-tiles": {
+    "buildings-low-lod": {
       "type": "vector",
       "url": "pmtiles://tiles/buildings_low_lod.pmtiles"
     },
-    "buildings-high-lod-tiles": {
+      "buildings-medium-lod": {
+      "type": "vector",
+      "url": "pmtiles://tiles/buildings_medium_lod.pmtiles"
+    },
+    "buildings-high-lod": {
       "type": "vector",
       "url": "pmtiles://tiles/buildings_high_lod.pmtiles"
     },
@@ -355,10 +359,65 @@
       "line-dasharray": [2, 2]
       }
     },
-        {
+    {
+      "id": "buildings-low-lod",
+      "type": "fill",
+      "source": "buildings-low-lod",
+      "source-layer": "layer",
+      "minzoom": 5,
+      "maxzoom": 11,
+      "layout": {},
+      "paint": {
+        "fill-color": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          6, "#bfbfbf",
+          10, "#bfbfbf"
+        ],
+        "fill-opacity": [
+          "interpolate",
+          ["exponential", 1.5],
+          ["zoom"],
+          3, 0,
+          6, 0.7,
+          9, 0.7,
+          10, 0.3,
+          11, 0
+        ]
+      }
+    },
+    {
+      "id": "buildings-medium-lod",
+      "type": "fill",
+      "source": "buildings-medium-lod",
+      "source-layer": "layer",
+      "minzoom": 9,
+      "maxzoom": 14,
+      "layout": {},
+      "paint": {
+        "fill-color": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          9, "#bfbfbf",
+          13, "#696969"
+        ],
+        "fill-opacity": [
+          "interpolate",
+          ["exponential", 1.5],
+          ["zoom"],
+          8, 0,
+          10, 0.7,
+          13, 0.7,
+          15, 0
+        ]
+      }
+    },
+    {
       "id": "buildings-high-lod",
       "type": "fill",
-      "source": "buildings-high-lod-tiles",
+      "source": "buildings-high-lod",
       "source-layer": "layer",
       "minzoom": 13,
       "layout": {},
@@ -375,15 +434,16 @@
           "interpolate",
           ["exponential", 1.5],
           ["zoom"],
-          14, 0,
+          12, 0,
+          14, 0.5,
           16, 1
         ]
       }
     },
-        {
+    {
       "id": "building-outlines",
       "type": "line",
-      "source": "buildings-high-lod-tiles",
+      "source": "buildings-high-lod",
       "source-layer": "layer",
       "minzoom": 14,
       "layout": {
@@ -400,35 +460,10 @@
         ],
         "line-opacity": [
           "interpolate",
-          ["exponential", 0.5],
+          ["exponential", 1.5],
           ["zoom"],
-          15, 0,
+          14, 0,
           16, 1
-        ]
-      }
-    },
-    {
-      "id": "buildings-low-lod",
-      "type": "fill",
-      "source": "buildings-low-lod-tiles",
-      "source-layer": "layer",
-      "minzoom": 9,
-      "maxzoom": 16,
-      "layout": {},
-      "paint": {
-        "fill-color": [
-          "interpolate",
-          ["linear"],
-          ["zoom"],
-          9, "DarkGrey",
-          13, "Grey"
-        ],
-        "fill-opacity": [
-          "interpolate",
-          ["exponential", 0.5],
-          ["zoom"],
-          13, 1,
-          16, 0
         ]
       }
     },

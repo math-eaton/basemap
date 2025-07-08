@@ -38,7 +38,7 @@ class OvertureMap {
             // center: [-74.986763650502, 44.66997929549087],
             center: [23.5967, -6.1307],
             zoom: 14,
-            minZoom: 12.5,
+            minZoom: 9.5,
             maxZoom: 16,
             showTileBoundaries: false,
             clampToBounds: false,
@@ -76,10 +76,11 @@ class OvertureMap {
             'roads-dashed': 61,    // Minor road lines (dashed)
             
             // Buildings and structures (80-89)
-            'buildings-low-lod': 80,   // Building fills (low detail)
-            'buildings-high-lod': 81,  // Building fills (high detail)
-            'building-outlines': 82,   // Building outlines
-            
+            'buildings-low-lod': 82,   // Building fills (low detail)
+            'buildings-medium-lod': 81, // Building fills (medium detail)
+            'buildings-high-lod': 80,  // Building fills (high detail)
+            'building-outlines': 83,   // Building outlines
+
             // Points of interest (90-99)
             'places': 90,         // Place points/circles
             
@@ -103,7 +104,6 @@ class OvertureMap {
             this.createMap(style);
             this.setupEventHandlers();
             this.addControls();
-            this.setupContourControls();
         }).catch(error => {
             console.error('Failed to load map style:', error);
             // Show user-friendly error message
@@ -152,7 +152,7 @@ class OvertureMap {
             
             // Sort layers according to draw order
             this.sortLayersByDrawOrder(style);
-            
+                        
             return style;
         } catch (error) {
             console.error('Error loading style:', error);
@@ -396,8 +396,6 @@ class OvertureMap {
             // debugging
             // this.printLayerOrder();
             
-            // contour controls now that map is loaded
-            this.setupContourControls();
             
             // Auto-center to bounds if useCustomCenter is false
             if (!this.options.useCustomCenter) {
@@ -579,54 +577,6 @@ class OvertureMap {
         }), 'bottom-right');
     }
     
-    // contour controls (gui, later)
-    setupContourControls() {
-        if (!this.map) {
-            console.warn('Map not yet initialized for contour controls');
-            return;
-        }
-        
-        // Contour toggle
-        const contoursToggle = document.getElementById('contoursToggle');
-        if (contoursToggle) {
-            contoursToggle.addEventListener('change', (e) => {
-                this.toggleContours(e.target.checked);
-            });
-        }
-        
-        // Hillshade toggle
-        const hillshadeToggle = document.getElementById('hillshadeToggle');
-        if (hillshadeToggle) {
-            hillshadeToggle.addEventListener('change', (e) => {
-                this.toggleHillshade(e.target.checked);
-            });
-        }
-        
-        // Blend mode selector
-        const blendModeSelect = document.getElementById('blendModeSelect');
-        if (blendModeSelect) {
-            blendModeSelect.addEventListener('change', (e) => {
-                this.setContourBlendMode(e.target.value);
-            });
-        }
-        
-        // Set initial blend mode after contours are loaded
-        if (this.map.getSource('contours')) {
-            // Wait for contours source to be loaded
-            const waitForContours = () => {
-                if (this.map.isSourceLoaded('contours')) {
-                    console.log('Contours source loaded, applying initial blend mode');
-                    this.setContourBlendMode('darken');
-                } else {
-                    console.log('Waiting for contours source to load...');
-                    setTimeout(waitForContours, 200);
-                }
-            };
-            waitForContours();
-        } else {
-            console.warn('Contours source not found during setup');
-        }
-    }
     
     // popups, later
     formatFeaturePopup(feature) {
@@ -722,29 +672,29 @@ class OvertureMap {
         };
         
         // mix-blend-mode approximation
+        // these opacity settings are the ones applied
         const contourLinesLayer = {
             id: "contours",
             type: "line",
             source: "contours",
             "source-layer": "contours",
             paint: {
-                // Start with neutral values - will be overridden by setContourBlendMode
                 "line-color": "rgba(139, 69, 19, 0.3)",  // Neutral brown
                 "line-width": [
                     "interpolate",
                     ["linear"],
                     ["zoom"],
-                    11, [
+                    8.5, [
                         "case",
                         ["==", ["get", "level"], 1], 0.1,  // Major contours
                         0.075                                 // Minor contours
                     ],
-                    13, [
+                    10.5, [
                         "case", 
                         ["==", ["get", "level"], 1], 0.3,  // Major contours
                         0.15                               // Minor contours
                     ],
-                    15, [
+                    13.5, [
                         "case",
                         ["==", ["get", "level"], 1], 0.5,  // Major contours
                         0.25                              // Minor contours
@@ -907,132 +857,113 @@ class OvertureMap {
         console.log(`Contour intervals set to: minor=${minorInterval}ft, major=${majorInterval}ft`);
     }
 
-    /**
-     * Set contour blend mode (simulated through color adjustments)
-     * @param {string} mode - 'darken', 'multiply', 'overlay', 'normal'
-     */
-    setContourBlendMode(mode = 'darken') {
-        // Enhanced error checking and debugging
-        if (!this.map) {
-            console.warn('Map not initialized for contour blend mode');
-            return;
-        }
+    // /**
+    //  * Set contour blend mode (simulated through color adjustments)
+    //  * @param {string} mode - 'darken', 'multiply', 'overlay', 'normal'
+    //  */
+    // setContourBlendMode(mode = 'darken') {
+    //     // Enhanced error checking and debugging
+    //     if (!this.map) {
+    //         console.warn('Map not initialized for contour blend mode');
+    //         return;
+    //     }
         
-        if (!this.map.getLayer('contours')) {
-            console.warn('Contours layer not found. Available layers:', 
-                this.map.getStyle().layers.map(l => l.id));
-            return;
-        }
+    //     if (!this.map.getLayer('contours')) {
+    //         console.warn('Contours layer not found. Available layers:', 
+    //             this.map.getStyle().layers.map(l => l.id));
+    //         return;
+    //     }
         
-        // Check if layer is loaded
-        if (!this.map.isSourceLoaded('contours')) {
-            console.warn('Contours source not yet loaded, retrying in 500ms...');
-            setTimeout(() => this.setContourBlendMode(mode), 500);
-            return;
-        }
+    //     // Check if layer is loaded
+    //     if (!this.map.isSourceLoaded('contours')) {
+    //         console.warn('Contours source not yet loaded, retrying in 500ms...');
+    //         setTimeout(() => this.setContourBlendMode(mode), 500);
+    //         return;
+    //     }
         
-        let colorExpression, opacityValue;
+    //     let colorExpression, opacityValue;
         
-        switch (mode) {
-            case 'darken':
-                colorExpression = [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    11, "rgba(0, 0, 0, 0.2)",      // Increased alpha for more visibility
-                    13, "rgba(50, 25, 0, 0.4)",    // Increased alpha
-                    15, "rgba(80, 40, 20, 0.6)"    // Increased alpha
-                ];
-                opacityValue = [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    11, 0.8,   // Increased opacity
-                    13, 0.9,   // Increased opacity
-                    15, 1.0    // Full opacity at high zoom
-                ];
-                break;
+    //     switch (mode) {
+    //         case 'darken':
+    //             colorExpression = [
+    //                 "interpolate",
+    //                 ["linear"],
+    //                 ["zoom"],
+    //                 11, "rgba(0, 0, 0, 0.2)",      // Increased alpha for more visibility
+    //                 13, "rgba(50, 25, 0, 0.4)",    // Increased alpha
+    //                 15, "rgba(93, 55, 79, 0.6)"    // Increased alpha
+    //             ];
+    //             opacityValue = [
+    //                 "interpolate",
+    //                 ["linear"],
+    //                 ["zoom"],
+    //                 11, 0.8,   // Increased opacity
+    //                 13, 0.9,   // Increased opacity
+    //                 15, 1.0    // Full opacity at high zoom
+    //             ];
+    //             break;
                 
-            case 'multiply':
-                colorExpression = [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    11, "rgba(40, 20, 10, 0.4)",   // Increased alpha
-                    13, "rgba(60, 30, 15, 0.6)",   // Increased alpha
-                    15, "rgba(80, 40, 20, 0.8)"    // Increased alpha
-                ];
-                opacityValue = 1.0;  // Full opacity for multiply effect
-                break;
+    //         case 'multiply':
+    //             colorExpression = [
+    //                 "interpolate",
+    //                 ["linear"],
+    //                 ["zoom"],
+    //                 11, "rgba(40, 20, 10, 0.4)",   // Increased alpha
+    //                 13, "rgba(60, 30, 15, 0.6)",   // Increased alpha
+    //                 15, "rgba(80, 40, 20, 0.8)"    // Increased alpha
+    //             ];
+    //             opacityValue = 1.0;  // Full opacity for multiply effect
+    //             break;
                 
-            case 'overlay':
-                colorExpression = [
-                    "interpolate",
-                    ["linear"],
-                    ["zoom"],
-                    11, "rgba(139, 69, 19, 0.3)",  // Increased alpha
-                    13, "rgba(160, 80, 40, 0.5)",  // Increased alpha
-                    15, "rgba(180, 90, 45, 0.7)"   // Increased alpha
-                ];
-                opacityValue = 0.8;  // Increased base opacity
-                break;
+    //         case 'overlay':
+    //             colorExpression = [
+    //                 "interpolate",
+    //                 ["linear"],
+    //                 ["zoom"],
+    //                 11, "rgba(139, 69, 19, 0.3)",  // Increased alpha
+    //                 13, "rgba(160, 80, 40, 0.5)",  // Increased alpha
+    //                 15, "rgba(180, 90, 45, 0.7)"   // Increased alpha
+    //             ];
+    //             opacityValue = 0.8;  // Increased base opacity
+    //             break;
                 
-            case 'normal':
-            default:
-                colorExpression = "rgba(139, 69, 19, 0.6)";  // Increased alpha
-                opacityValue = 1.0;  // Full opacity
-                break;
-        }
+    //         case 'normal':
+    //         default:
+    //             colorExpression = "rgba(139, 69, 19, 0.6)";  // Increased alpha
+    //             opacityValue = 1.0;  // Full opacity
+    //             break;
+    //     }
         
-        try {
-            // Get current properties for comparison
-            const currentColor = this.map.getPaintProperty('contours', 'line-color');
-            const currentOpacity = this.map.getPaintProperty('contours', 'line-opacity');
+    //     try {
+    //         // Get current properties for comparison
+    //         const currentColor = this.map.getPaintProperty('contours', 'line-color');
+    //         const currentOpacity = this.map.getPaintProperty('contours', 'line-opacity');
             
-            console.log('Current contour properties:', {
-                color: currentColor,
-                opacity: currentOpacity
-            });
+    //         console.log('Current contour properties:', {
+    //             color: currentColor,
+    //             opacity: currentOpacity
+    //         });
             
-            // Apply new properties
-            this.map.setPaintProperty('contours', 'line-color', colorExpression);
-            this.map.setPaintProperty('contours', 'line-opacity', opacityValue);
+    //         // Apply new properties
+    //         this.map.setPaintProperty('contours', 'line-color', colorExpression);
+    //         this.map.setPaintProperty('contours', 'line-opacity', opacityValue);
             
-            // Verify the change was applied
-            setTimeout(() => {
-                const newColor = this.map.getPaintProperty('contours', 'line-color');
-                const newOpacity = this.map.getPaintProperty('contours', 'line-opacity');
+    //         // Verify the change was applied
+    //         setTimeout(() => {
+    //             const newColor = this.map.getPaintProperty('contours', 'line-color');
+    //             const newOpacity = this.map.getPaintProperty('contours', 'line-opacity');
                 
-                console.log(`Contour blend mode set to: ${mode}`, {
-                    newColor,
-                    newOpacity,
-                    currentZoom: this.map.getZoom().toFixed(2)
-                });
-            }, 100);
+    //             console.log(`Contour blend mode set to: ${mode}`, {
+    //                 newColor,
+    //                 newOpacity,
+    //                 currentZoom: this.map.getZoom().toFixed(2)
+    //             });
+    //         }, 100);
             
-        } catch (error) {
-            console.error('Error setting contour blend mode:', error);
-        }
-    }
-
-    /**
-     * Test contour blend mode (for console debugging)
-     * Usage: map.testContourBlendMode('multiply') 
-     */
-    testContourBlendMode(mode) {
-        console.log(`Testing contour blend mode: ${mode}`);
-        
-        // Show current zoom level for context
-        console.log(`Current zoom level: ${this.map.getZoom().toFixed(2)}`);
-        
-        // Apply the blend mode
-        this.setContourBlendMode(mode);
-        
-        // Force a repaint to ensure changes are visible
-        this.map.triggerRepaint();
-        
-        return `Applied blend mode: ${mode}`;
-    }
+    //     } catch (error) {
+    //         console.error('Error setting contour blend mode:', error);
+    //     }
+    // }
 
     /**
      * Get current contour paint properties (for debugging)
