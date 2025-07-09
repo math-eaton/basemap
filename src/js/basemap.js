@@ -206,17 +206,17 @@ class OvertureMap {
                 // console.log(`${sourceId}: ${source.url} → ${newUrl}`);
                 source.url = newUrl;
                 
-                // Add warning for GitHub Pages users
-                if (isGitHubPages) {
-                    console.warn(`PMTiles on GitHub Pages may have byte-serving issues. Consider using a CDN for ${sourceId}.`);
-                }
+                // // Add warning for GitHub Pages users
+                // if (isGitHubPages) {
+                //     console.warn(`PMTiles on GitHub Pages may have byte-serving issues. Consider using a CDN for ${sourceId}.`);
+                // }
             }
         }
         
-        // If on GitHub Pages, add error handling for missing tiles
-        if (isGitHubPages) {
-            this.addGitHubPagesWarning();
-        }
+        // // If on GitHub Pages, add error handling for missing tiles
+        // if (isGitHubPages) {
+        //     this.addGitHubPagesWarning();
+        // }
     }
     
     /**
