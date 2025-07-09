@@ -188,10 +188,10 @@ def snap_to_tile_bounds(extent, zoom=6):
 # extent_ymax = -3.5
 
 # extent parameters for Kasai-Oriental Province, DRC
-#raw_extent = (20.0, -7.0, 26.0, -3.0)  # (xmin, ymin, xmax, ymax)
+raw_extent = (20.0, -7.0, 26.0, -3.0)  # (xmin, ymin, xmax, ymax)
 
 # testing extent - mbuji-mayi, drc
-raw_extent = (23.4, -6.2, 23.8, -5.8)  # (xmin, ymin, xmax, ymax)
+# raw_extent = (23.4, -6.2, 23.8, -5.8)  # (xmin, ymin, xmax, ymax)
 
 
 # Snap to tile boundaries to prevent rendering artifacts
@@ -674,7 +674,8 @@ def get_tippecanoe_command(input_path, tile_path, layer_name):
             '--maximum-tile-bytes=1048576',
             '--coalesce-smallest-as-needed',
             '--preserve-input-order',
-            '--minimum-detail=14',
+            '--low-detail=11',
+            '--full-detail=14',
         ]
     elif 'places' in filename:
         # Optimized for point features
@@ -684,9 +685,9 @@ def get_tippecanoe_command(input_path, tile_path, layer_name):
             '--maximum-tile-bytes=1048576',
             '--preserve-input-order',
         ]
-    elif 'building' in filename:
-        # Special handling for buildings - create low-LOD version
-        return get_building_command(input_path, tile_path, layer_name)
+    # elif 'building' in filename:
+    #     # Special handling for buildings - create low-LOD version
+    #     return get_building_command(input_path, tile_path, layer_name)
     else:
         # Default settings for other polygon features (land, land_use, etc.)
         return base_cmd + [
@@ -701,25 +702,25 @@ def get_tippecanoe_command(input_path, tile_path, layer_name):
             '--extend-zooms-if-still-dropping',
         ]
 
-def get_building_command(input_path, tile_path, layer_name):
-    """Get building-specific tippecanoe command with reduced drop rate"""
-    return [
-        'tippecanoe',
-        '-fo', str(tile_path),
-        '-zg',
-        '-l', layer_name,
-        # Clip to the same extent as other tiles
-        '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-        '--drop-rate=0.02',  # Much lower drop rate for better density
-        '--drop-smallest',
-        '--buffer=8',
-        '--maximum-tile-bytes=2097152',  # 2MB for buildings
-        '--coalesce-smallest-as-needed',
-        '--detect-shared-borders',
-        '--preserve-input-order',
-        '-P',
-        str(input_path)
-    ]
+# def get_building_command(input_path, tile_path, layer_name):
+#     """Get building-specific tippecanoe command with reduced drop rate"""
+#     return [
+#         'tippecanoe',
+#         '-fo', str(tile_path),
+#         '-zg',
+#         '-l', layer_name,
+#         # Clip to the same extent as other tiles
+#         '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
+#         '--drop-rate=0.02',  # Much lower drop rate for better density
+#         '--drop-smallest',
+#         '--buffer=8',
+#         '--maximum-tile-bytes=2097152',  # 2MB for buildings
+#         '--coalesce-smallest-as-needed',
+#         '--detect-shared-borders',
+#         '--preserve-input-order',
+#         '-P',
+#         str(input_path)
+#     ]
 
 def create_tilejson():
     """Generate TileJSON for MapLibre integration - dynamically includes all available PMTiles"""
@@ -808,7 +809,7 @@ def create_tilejson():
     
     return tilejson_path
 
-def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False, skip_medium_lod=False, skip_high_lod=False):
+def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=True, skip_medium_lod=True, skip_high_lod=False):
     """Create separate low-LOD, medium-LOD, and high-LOD building tiles for smooth crossfading"""
     layer_name = 'layer'
     base_name = Path(geojson_file).stem
@@ -828,7 +829,7 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False
                 # Clip to the same extent as other tiles
                 '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
                 '--simplification=10',
-                '--drop-rate=0.02',  # Much lower drop rate for better density
+                '--drop-rate=0.5',
                 '--drop-smallest',
                 '--buffer=8',
                 '--maximum-tile-bytes=2097152',  # 2MB tiles for better detail
@@ -858,7 +859,7 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False
                 # Clip to the same extent as other tiles
                 '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
                 '--simplification=10',
-                '--drop-rate=0.02',  # Much lower drop rate for better density
+                '--drop-rate=0.25',  # Much lower drop rate for better density
                 '--drop-smallest',
                 '--buffer=8',
                 '--maximum-tile-bytes=2097152',  # 2MB tiles for better detail
@@ -880,23 +881,23 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False
 
         try:
             subprocess.run([
-                'tippecanoe',
-                '-fo', str(high_lod_path),
-                '-z16',  # Higher max zoom for high-LOD
-                '-Z14',  # Start at zoom 14
-                '-l', layer_name,
-                # Clip to the same extent as other tiles
-                '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-                '--simplification=7',  # Lower simplification for higher detail
-                '--drop-rate=0.02',  # Much lower drop rate for better density
-                '--drop-smallest',
-                '--buffer=8',
-                '--maximum-tile-bytes=2097152',  # 2MB tiles for better detail
-                '--coalesce-smallest-as-needed',
-                '--detect-shared-borders',
-                '--preserve-input-order',
-                '-P',
-                str(input_path)
+            'tippecanoe',
+            '-fo', str(high_lod_path),
+            '-z15',  # Higher max zoom for high-LOD
+            '-Z14',  # Start at zoom 14
+            '-l', layer_name,
+            # Clip to the same extent as other tiles
+            '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
+            '--simplification=7',  # More aggressive simplification
+            '--drop-rate=0.15',  # Slightly higher drop rate to reduce file size
+            '--drop-smallest',
+            '--buffer=4',
+            '--maximum-tile-bytes=1048576',  # Reduce max tile size to 1MB
+            '--coalesce-smallest-as-needed',
+            '--detect-shared-borders',
+            '--preserve-input-order',
+            '-P',
+            str(input_path)
             ], check=True)
             print(f"High-LOD building tiles generated successfully.")
         except subprocess.CalledProcessError as e:

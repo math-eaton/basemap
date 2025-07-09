@@ -4,10 +4,10 @@
   "minzoom": 0,
   "maxzoom": 14,
   "bounds": [
-    22.5,
+    16.875,
     -11.178401873711781,
     28.125,
-    -5.615985819155334
+    0.0
   ],
   "tiles": [
     "pmtiles://tiles/base.pmtiles",

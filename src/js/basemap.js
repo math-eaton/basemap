@@ -678,9 +678,31 @@ class OvertureMap {
             type: "hillshade",
             source: "dem",
             paint: {
-                "hillshade-exaggeration": .5,
-                "hillshade-shadow-color": "rgba(0,0,0,.05)",
-                "hillshade-highlight-color": "rgba(255,255,255,.05)"
+            "hillshade-exaggeration": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, 1,
+                9, 0.7,
+                11, 0.4,
+                16, 0.1
+            ],
+            "hillshade-shadow-color": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, "rgba(0,0,0,0.35)",
+                11, "rgba(0,0,0,0.15)",
+                16, "rgba(123, 123, 123, 0.1)"
+            ],
+            "hillshade-highlight-color": [
+                "interpolate",
+                ["linear"],
+                ["zoom"],
+                0, "rgba(255,255,255,0.2)",
+                11, "rgba(255,255,255,0.15)",
+                16, "rgba(239, 239, 239, 0.1)"
+            ]
             }
         };
         
