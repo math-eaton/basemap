@@ -1,0 +1,113 @@
+{
+  "tilejson": "3.0.0",
+  "name": "Basemap prototype",
+  "minzoom": 0,
+  "maxzoom": 14,
+  "bounds": [
+    22.5,
+    -11.178401873711781,
+    28.125,
+    -5.615985819155334
+  ],
+  "tiles": [
+    "pmtiles://tiles/base.pmtiles",
+    "pmtiles://tiles/buildings_high_lod.pmtiles",
+    "pmtiles://tiles/buildings_low_lod.pmtiles",
+    "pmtiles://tiles/buildings_medium_lod.pmtiles",
+    "pmtiles://tiles/places.pmtiles",
+    "pmtiles://tiles/transportation.pmtiles"
+  ],
+  "vector_layers": [
+    {
+      "id": "land",
+      "description": "Land polygons",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "land_use",
+      "description": "Land use polygons",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "land_residential",
+      "description": "Residential areas",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "water",
+      "description": "Water bodies",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "infrastructure",
+      "description": "Infrastructure",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "buildings",
+      "description": "Buildings (High LOD)",
+      "fields": {
+        "name": "String",
+        "height": "Number",
+        "level": "Number"
+      }
+    },
+    {
+      "id": "buildings",
+      "description": "Buildings (Low LOD)",
+      "fields": {
+        "name": "String",
+        "height": "Number",
+        "level": "Number"
+      }
+    },
+    {
+      "id": "buildings",
+      "description": "Buildings (Medium LOD)",
+      "fields": {
+        "name": "String",
+        "height": "Number",
+        "level": "Number"
+      }
+    },
+    {
+      "id": "places",
+      "description": "Points of interest",
+      "fields": {
+        "category": "String",
+        "confidence": "Number"
+      }
+    },
+    {
+      "id": "placenames",
+      "description": "Place names",
+      "fields": {
+        "subtype": "String",
+        "locality_type": "String"
+      }
+    },
+    {
+      "id": "roads",
+      "description": "Road network",
+      "fields": {
+        "class": "String",
+        "subclass": "String"
+      }
+    }
+  ]
+}

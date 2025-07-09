@@ -13,7 +13,7 @@
   "dependencies": {
     "maplibre-contour": "^0.1.0",
     "maplibre-gl": "^4.0.0",
-    "pmtiles": "^3.0.6"
+    "pmtiles": "^3.2.1"
   },
   "devDependencies": {
     "vite": "^5.0.0"

@@ -46,6 +46,57 @@ document.addEventListener('DOMContentLoaded', async () => {
         
         console.log('Overture map initialization complete');
         
+        // Ensure the legend is populated after the map is initialized
+        const legendContainer = document.getElementById('map-legend');
+        if (legendContainer) {
+            const layers = [
+                'background',
+                'land-use',
+                'land',
+                'land-cover',
+                'water-polygons',
+                'roads-solid',
+                'buildings-low-lod',
+                'buildings-medium-lod',
+                'buildings-high-lod',
+                'settlement-extents-fill',
+                'settlement-extents-outlines',
+                'places'
+            ];
+
+            layers.forEach(layerId => {
+                const layerItem = document.createElement('div');
+                layerItem.style.display = 'flex';
+                layerItem.style.alignItems = 'center';
+                layerItem.style.marginBottom = '5px';
+
+                const soloButton = document.createElement('div');
+                soloButton.style.width = '5px';
+                soloButton.style.height = '5px';
+                soloButton.style.borderRadius = '50%';
+                soloButton.style.backgroundColor = '#333';
+                soloButton.style.marginRight = '5px';
+                soloButton.style.cursor = 'pointer';
+                soloButton.title = `Solo ${layerId}`;
+                soloButton.addEventListener('click', () => {
+                    window.overtureMap.soloLayer(layerId);
+                });
+
+                const layerName = document.createElement('span');
+                layerName.textContent = layerId;
+                layerName.style.cursor = 'pointer';
+                layerName.title = `Toggle ${layerId}`;
+                layerName.addEventListener('click', () => {
+                    const currentVisibility = window.overtureMap.getMap().getLayoutProperty(layerId, 'visibility');
+                    window.overtureMap.toggleLayer(layerId, currentVisibility === 'none');
+                });
+
+                layerItem.appendChild(soloButton);
+                layerItem.appendChild(layerName);
+                legendContainer.appendChild(layerItem);
+            });
+        }
+        
     } catch (error) {
         console.error('Failed to load map:', error);
         mapContainer.innerHTML = '<div style="display: flex; align-items: center; justify-content: center; height: 100%; font-family: sans-serif; color: #e74c3c;">Failed to load map. Please refresh the page.</div>';

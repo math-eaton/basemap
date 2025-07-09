@@ -1,0 +1,25 @@
+{
+  "tilejson": "3.0.0",
+  "name": "Basemap prototype",
+  "minzoom": 0,
+  "maxzoom": 14,
+  "bounds": [
+    22.5,
+    -11.178401873711781,
+    28.125,
+    -5.615985819155334
+  ],
+  "tiles": [
+    "pmtiles://tiles/GRID3_COD_settlement_extents_v3_1.pmtiles"
+  ],
+  "vector_layers": [
+    {
+      "id": "layer",
+      "description": "Custom layer: GRID3_COD_settlement_extents_v3_1",
+      "fields": {
+        "id": "String",
+        "name": "String"
+      }
+    }
+  ]
+}

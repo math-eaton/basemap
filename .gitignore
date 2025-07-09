@@ -32,3 +32,5 @@ public/tiles_stl/
 # ignore markdown files except readme
 *.md
 !README.md
+data/
+input/

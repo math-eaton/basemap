@@ -38,7 +38,7 @@ class OvertureMap {
             // center: [-74.986763650502, 44.66997929549087],
             center: [23.5967, -6.1307],
             zoom: 14,
-            minZoom: 9.5,
+            minZoom: 11.5,
             maxZoom: 16,
             showTileBoundaries: false,
             clampToBounds: false,
@@ -54,10 +54,14 @@ class OvertureMap {
         this.layerDrawOrder = {
             // Base layers (0-9)
             'background': 1,
-            
+
+            'settlement-extents-fill': 2, // Settlement extent fills
+            'settlement-extents-outlines': 3, // Settlement extent outlines
+
             // Land use and land cover (20-39)
-            'land-use': 20,       // Land use polygons (residential, commercial, etc.)
-            'land': 25,           // Natural land features (forest, grass, etc.)
+            'land': 2,           // Natural land features (forest, grass, etc.)
+            'land-cover': 20,     // Land cover data (forest, crop, grass, etc.)
+            'land-use': 10,       // Land use polygons (residential, commercial, etc.)
                                     
             // Terrain and elevation 
             'hills': 47,
@@ -70,10 +74,16 @@ class OvertureMap {
             // Contour lines (50-59)
             'contours': 50,       // Contour lines
             'contour-text': 51,   // Contour elevation labels
+
             
             // Transportation (60-79)
             'roads-solid': 60,    // Major road lines (solid)
-            'roads-dashed': 61,    // Minor road lines (dashed)
+            'roads-dashed': 61,   // Minor road lines (dashed)
+            
+            // Infrastructure (70-79)
+            'infrastructure-polygons': 70,  // Infrastructure polygon fills
+            'infrastructure-lines': 71,     // Infrastructure lines (power, communication, etc.)
+            'infrastructure-points': 72,    // Infrastructure points (towers, utilities, etc.)
             
             // Buildings and structures (80-89)
             'buildings-low-lod': 82,   // Building fills (low detail)
@@ -228,18 +238,18 @@ class OvertureMap {
         }
     }
     
-    /**
-     * Add warning about GitHub Pages limitations
-     */
-    addGitHubPagesWarning() {
-        console.warn('⚠️  PMTiles on GitHub Pages Notice:');
-        console.warn('GitHub Pages may not properly support HTTP range requests required by PMTiles.');
-        console.warn('For better performance, consider hosting tiles on:');
-        console.warn('• Protomaps Cloud (free tier available)');
-        console.warn('• Cloudflare R2 or AWS S3');
-        console.warn('• Converting to traditional vector tile directories');
-        console.warn('See DEPLOYMENT_OPTIONS.md for details.');
-    }
+    // /**
+    //  * Add warning about GitHub Pages limitations
+    //  */
+    // addGitHubPagesWarning() {
+    //     console.warn('⚠️  PMTiles on GitHub Pages Notice:');
+    //     console.warn('GitHub Pages may not properly support HTTP range requests required by PMTiles.');
+    //     console.warn('For better performance, consider hosting tiles on:');
+    //     console.warn('• Protomaps Cloud (free tier available)');
+    //     console.warn('• Cloudflare R2 or AWS S3');
+    //     console.warn('• Converting to traditional vector tile directories');
+    //     console.warn('See DEPLOYMENT_OPTIONS.md for details.');
+    // }
     
     /**
      * Show user-friendly error message for PMTiles issues
@@ -371,13 +381,13 @@ class OvertureMap {
             // console.log('Available sources:', Object.keys(this.map.getStyle().sources));
             
             // Check if layers exist and are visible
-            // const layers = this.map.getStyle().layers;
-            // console.log('All layers loaded:', layers.map(l => ({
-            //     id: l.id,
-            //     type: l.type,
-            //     source: l.source,
-            //     visibility: l.layout?.visibility || 'visible'
-            // })));
+            const layers = this.map.getStyle().layers;
+            console.log('All layers loaded:', layers.map(l => ({
+                id: l.id,
+                type: l.type,
+                source: l.source,
+                visibility: l.layout?.visibility || 'visible'
+            })));
             
             // const contoursLayer = layers.find(layer => layer.id === 'contours');
             // const hillshadeLayer = layers.find(layer => layer.id === 'hills');
@@ -575,6 +585,9 @@ class OvertureMap {
             ],
             compact: isMobile // Compact on mobile, expanded on desktop
         }), 'bottom-right');
+        
+        // Add layer legend control
+        this.addLayerLegend();
     }
     
     
@@ -665,9 +678,9 @@ class OvertureMap {
             type: "hillshade",
             source: "dem",
             paint: {
-                "hillshade-exaggeration": 0.2,
-                "hillshade-shadow-color": "rgba(0,0,0,0.2)",
-                "hillshade-highlight-color": "rgba(255,255,255,0.2)"
+                "hillshade-exaggeration": .5,
+                "hillshade-shadow-color": "rgba(0,0,0,.05)",
+                "hillshade-highlight-color": "rgba(255,255,255,.05)"
             }
         };
         
@@ -1101,6 +1114,101 @@ class OvertureMap {
                     this.map.triggerRepaint();
                 }, 50);
             }
+        });
+    }
+    
+    /**
+     * Toggle layer visibility
+     */
+    toggleLayerVisibility(layerId, visibility) {
+        if (!this.map.getLayer(layerId)) {
+            console.warn(`Layer with ID '${layerId}' does not exist.`);
+            return;
+        }
+        this.map.setLayoutProperty(layerId, 'visibility', visibility);
+    }
+
+    /**
+     * Mute a layer (hide it)
+     */
+    muteLayer(layerId) {
+        this.toggleLayerVisibility(layerId, 'none');
+    }
+
+    /**
+     * Solo a layer (show only this layer)
+     */
+    soloLayer(layerId) {
+        const layers = this.map.getStyle().layers;
+        layers.forEach(layer => {
+            const currentVisibility = this.map.getLayoutProperty(layer.id, 'visibility');
+            if (currentVisibility !== 'none') {
+                this.toggleLayerVisibility(layer.id, layer.id === layerId ? 'visible' : 'none');
+            }
+        });
+    }
+
+    /**
+     * Add layer legend to the map
+     */
+    addLayerLegend() {
+        document.addEventListener('DOMContentLoaded', () => {
+            const legendContainer = document.createElement('div');
+            legendContainer.id = 'map-legend';
+            legendContainer.style.position = 'absolute';
+            legendContainer.style.top = '10px';
+            legendContainer.style.right = '10px';
+            legendContainer.style.backgroundColor = 'rgba(255, 255, 255, 0.8)';
+            legendContainer.style.padding = '10px';
+            legendContainer.style.borderRadius = '5px';
+            legendContainer.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+
+            const layers = [
+                'background',
+                'land-use',
+                'land',
+                'land-cover',
+                'water-polygons',
+                'roads-solid',
+                'buildings-low-lod',
+                'buildings-medium-lod',
+                'buildings-high-lod',
+                'places'
+            ];
+
+            layers.forEach(layerId => {
+                const layerItem = document.createElement('div');
+                layerItem.style.display = 'flex';
+                layerItem.style.alignItems = 'center';
+                layerItem.style.marginBottom = '5px';
+
+                const soloButton = document.createElement('div');
+                soloButton.style.width = '10px';
+                soloButton.style.height = '10px';
+                soloButton.style.borderRadius = '50%';
+                soloButton.style.backgroundColor = '#333';
+                soloButton.style.marginRight = '5px';
+                soloButton.style.cursor = 'pointer';
+                soloButton.title = `Solo ${layerId}`;
+                soloButton.addEventListener('click', () => {
+                    this.soloLayer(layerId);
+                });
+
+                const layerName = document.createElement('span');
+                layerName.textContent = layerId;
+                layerName.style.cursor = 'pointer';
+                layerName.title = `Toggle ${layerId}`;
+                layerName.addEventListener('click', () => {
+                    const currentVisibility = this.getMap().getLayoutProperty(layerId, 'visibility');
+                    this.toggleLayer(layerId, currentVisibility === 'none');
+                });
+
+                layerItem.appendChild(soloButton);
+                layerItem.appendChild(layerName);
+                legendContainer.appendChild(layerItem);
+            });
+
+            document.body.appendChild(legendContainer);
         });
     }
 }
