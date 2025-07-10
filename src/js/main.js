@@ -44,6 +44,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Make overtureMap available globally for debugging
         window.overtureMap = overtureMap;
         
+        // Add convenience methods to global scope for testing
+        window.toggleSettlementExtents = (visible) => overtureMap.toggleSettlementExtents(visible);
+        window.toggleContours = (visible) => overtureMap.toggleContours(visible);
+        window.toggleHillshade = (visible) => overtureMap.toggleHillshade(visible);
+        
         console.log('Overture map initialization complete');
         
         // Ensure the legend is populated after the map is initialized

@@ -38,7 +38,7 @@ class OvertureMap {
             // center: [-74.986763650502, 44.66997929549087],
             center: [23.5967, -6.1307],
             zoom: 14,
-            minZoom: 11.5,
+            minZoom: 11,
             maxZoom: 16,
             showTileBoundaries: false,
             clampToBounds: false,
@@ -55,13 +55,16 @@ class OvertureMap {
             // Base layers (0-9)
             'background': 1,
 
-            'settlement-extents-fill': 2, // Settlement extent fills
-            'settlement-extents-outlines': 3, // Settlement extent outlines
 
             // Land use and land cover (20-39)
             'land': 2,           // Natural land features (forest, grass, etc.)
             'land-cover': 20,     // Land cover data (forest, crop, grass, etc.)
-            'land-use': 10,       // Land use polygons (residential, commercial, etc.)
+
+            'settlement-extents-fill': 25, // Settlement extent fills
+            'settlement-extents-outlines': 89, // Settlement extent outlines
+
+            'land-use': 30, // built env
+            'land-residential': 15, // residential areas
                                     
             // Terrain and elevation 
             'hills': 47,
@@ -79,7 +82,8 @@ class OvertureMap {
             // Transportation (60-79)
             'roads-solid': 60,    // Major road lines (solid)
             'roads-dashed': 61,   // Minor road lines (dashed)
-            
+            'roads-solid-background': 59, // Background for solid roads (for better contrast)
+
             // Infrastructure (70-79)
             'infrastructure-polygons': 70,  // Infrastructure polygon fills
             'infrastructure-lines': 71,     // Infrastructure lines (power, communication, etc.)
@@ -621,6 +625,7 @@ class OvertureMap {
     getBasicStyle() {
         return {
             version: 8,
+            glyphs: "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
             sources: {},
             layers: [
                 {
@@ -868,6 +873,14 @@ class OvertureMap {
     toggleContours(visible = null) {
         this.toggleLayer('contours', visible);
         this.toggleLayer('contour-text', visible);
+    }
+    
+    /**
+     * Toggle settlement extents layers visibility
+     */
+    toggleSettlementExtents(visible = null) {
+        this.toggleLayer('settlement-extents-fill', visible);
+        this.toggleLayer('settlement-extents-outlines', visible);
     }
     
     /**
@@ -1190,6 +1203,8 @@ class OvertureMap {
                 'land-use',
                 'land',
                 'land-cover',
+                'settlement-extents-fill',
+                'settlement-extents-outlines',
                 'water-polygons',
                 'roads-solid',
                 'buildings-low-lod',

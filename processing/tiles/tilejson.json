@@ -10,16 +10,39 @@
     0.0
   ],
   "tiles": [
-    "pmtiles://tiles/buildings_high_lod.pmtiles"
+    "pmtiles://tiles/base.pmtiles"
   ],
   "vector_layers": [
     {
-      "id": "buildings",
-      "description": "Buildings (High LOD)",
+      "id": "land_use",
+      "description": "Land use polygons",
       "fields": {
-        "name": "String",
-        "height": "Number",
-        "level": "Number"
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "land_residential",
+      "description": "Residential areas",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "water",
+      "description": "Water bodies",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
+      }
+    },
+    {
+      "id": "infrastructure",
+      "description": "Infrastructure",
+      "fields": {
+        "subtype": "String",
+        "class": "String"
       }
     }
   ]

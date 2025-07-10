@@ -1,5 +1,7 @@
 INSTALL spatial;
 LOAD spatial; -- noqa
+INSTALL httpfs;
+LOAD httpfs;
 
 SET s3_region='us-west-2';
 
@@ -7,18 +9,8 @@ SET s3_region='us-west-2';
 
 COPY (
     SELECT
-        subtypCOPY (
-    SELECT
         subtype,
-        locality_type,
-        names.primary AS name,
-        geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
-    FROM read_parquet('az://overturemapswestus2.blob.core.windows.net/release/2024-04-16-beta.0/theme=admins/type=locality/*', filename=true, hive_partitioning=1)
-    WHERE
-        bbox.xmin < $extent_xmax AND bbox.xmax > $extent_xmin
-        AND bbox.ymin < $extent_ymax AND bbox.ymax > $extent_ymin
-) TO '{{overture_data_dir}}/placenames.geojson'
-WITH (FORMAT GDAL, DRIVER 'GeoJSON', SRS 'EPSG:4326');lass,
+        class,
         names.primary AS name,
         geometry -- DuckDB v.1.1.0 will autoload this as a `geometry` type
     FROM read_parquet('s3://overturemaps-us-west-2/release/2025-06-25.0/theme=base/type=land/*', filename=true, hive_partitioning=1)

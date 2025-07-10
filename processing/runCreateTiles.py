@@ -247,9 +247,9 @@ def download_source_data():
     quadkeys = get_quadkeys_for_extent(buffered_xmin, buffered_ymin, buffered_xmax, buffered_ymax, zoom=6)
     total_possible_quadkeys = 4**6  # 6 zoom levels, 4 quadrants each = 4096 total
     efficiency_percent = (len(quadkeys) / total_possible_quadkeys) * 100
-    print(f"QuadKey optimization: {len(quadkeys)}/{total_possible_quadkeys} partitions to read ({efficiency_percent:.1f}% of global data)")
-    print(f"Estimated data reduction: {100 - efficiency_percent:.1f}% less data to download")
-    print(f"QuadKeys: {quadkeys[:10]}{'...' if len(quadkeys) > 10 else ''}")
+    # print(f"QuadKey optimization: {len(quadkeys)}/{total_possible_quadkeys} partitions to read ({efficiency_percent:.1f}% of global data)")
+    # print(f"Estimated data reduction: {100 - efficiency_percent:.1f}% less data to download")
+    # print(f"QuadKeys: {quadkeys[:10]}{'...' if len(quadkeys) > 10 else ''}")
     
     # Apply QuadKey filtering to S3 URLs in the SQL
     # Temporarily disable QuadKey optimization
@@ -437,12 +437,13 @@ def process_custom_tiles(custom_inputs, filter_pattern=None):
     print("=== CUSTOM TILES PROCESSING COMPLETE ===\n")
     return processed_files
 
-def process_to_tiles(custom_inputs=None, filter_pattern=None):
+def process_to_tiles(custom_inputs=None, filter_pattern=None, theme_filter=None):
     """Process GeoJSON/GeoJSONSeq files into theme-based PMTiles
     
     Args:
         custom_inputs (list, optional): List of custom input paths to process first
         filter_pattern (str, optional): Only process files matching this pattern (e.g., 'roads*')
+        theme_filter (str, optional): Only process specific theme (e.g., 'base', 'transportation')
     """
     print("=== PROCESSING TO TILES ===")
     
@@ -458,13 +459,20 @@ def process_to_tiles(custom_inputs=None, filter_pattern=None):
     # Define themes and their corresponding files
     themes = {
         'base': {
-            'files': ['land.geojsonseq', 'land_use.geojsonseq', 'land_residential.geojsonseq', 'water.geojsonseq', 'infrastructure.geojsonseq'],
+            'files': ['land_use.geojsonseq', 'land_cover.geojsonseq', 'land_residential.geojsonseq', 'water.geojsonseq', 'infrastructure.geojsonseq'],
             'layers': {
-                'land': 'land.geojsonseq',
-                'land_use': 'land_use.geojsonseq', 
+                # 'land': 'land.geojsonseq',
+                'land_use': 'land_use.geojsonseq',
+                'land_cover': 'land_cover.geojsonseq',
                 'land_residential': 'land_residential.geojsonseq',
                 'water': 'water.geojsonseq',
                 'infrastructure': 'infrastructure.geojsonseq'
+            }
+        },
+        'settlement-extents': {
+            'files': ['*extents*.geojsonseq'],
+            'layers': {
+                'settlementextents': '*extent*.geojsonseq'
             }
         },
         'transportation': {
@@ -491,6 +499,11 @@ def process_to_tiles(custom_inputs=None, filter_pattern=None):
     
     # Process each theme
     for theme_name, theme_config in themes.items():
+        # Apply theme filter if provided
+        if theme_filter and theme_name != theme_filter:
+            print(f"Skipping {theme_name} theme (doesn't match filter: {theme_filter})")
+            continue
+            
         print(f"\n--- Processing {theme_name} theme ---")
         
         # Find files for this theme
@@ -526,62 +539,48 @@ def process_to_tiles(custom_inputs=None, filter_pattern=None):
             '-zg'
         ]
         
-        # Add layer specifications
+        # Add layer specifications with layer-specific settings
         for layer_name, file_pattern in theme_config['layers'].items():
-            matching_files = [f for f in theme_files if f.name == file_pattern]
+            # Use fnmatch for pattern matching instead of exact match
+            matching_files = [f for f in theme_files if fnmatch.fnmatch(f.name, file_pattern)]
             if matching_files:
+                print(f"Adding layer '{layer_name}' from file: {matching_files[0]}")
                 # Use --named-layer for .geojsonseq files as recommended
-                if file_pattern.endswith('.geojsonseq'):
+                if file_pattern.endswith('.geojsonseq') or matching_files[0].name.endswith('.geojsonseq'):
                     cmd.extend(['--named-layer', f'{layer_name}:{matching_files[0]}'])
                 else:
                     cmd.extend(['-L', f'{layer_name}:{matching_files[0]}'])
         
-        # Add theme-specific optimizations
-        if theme_name == 'base':
-            cmd.extend([
-                '--buffer=8',
-                '--no-polygon-splitting',
-                '--detect-shared-borders',
-                '--simplification=5',
-                '--low-detail=11',
-                '--full-detail=14',
-                '--drop-densest-as-needed',
-                '--maximum-tile-bytes=1048576',
-                '--extend-zooms-if-still-dropping',
-            ])
-        elif theme_name == 'transportation':
-            cmd.extend([
-                '--buffer=16',
-                '--drop-rate=0.05',
-                '--drop-smallest',
-                '--simplification=5',
-                '--extend-zooms-if-still-dropping',
-                '--maximum-tile-bytes=1048576',
-                '--coalesce-smallest-as-needed',
-                '--preserve-input-order',
-                '--minimum-detail=14',
-            ])
-        elif theme_name == 'places':
-            cmd.extend([
-                '--cluster-distance=35',
-                '--drop-rate=0.1',
-                '--maximum-tile-bytes=1048576',
-                '--preserve-input-order',
-            ])
+        # Add layer-specific optimizations based on the theme
+        if theme_name == 'settlement-extents':
+            # Use the special settlement-extents settings
+            layer_settings = get_layer_tippecanoe_settings('settlement-extents', 'settlement-extents')
+            cmd.extend(layer_settings)
+            # Add the clip bounding box for settlement-extents
+            cmd.extend(['--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}"])
         else:
-            # Default settings
-            cmd.extend([
-                '--buffer=8',
-                '--simplification=5',
-                '--maximum-tile-bytes=1048576',
-                '--extend-zooms-if-still-dropping',
-            ])
+            # For multi-layer themes, use settings from the primary layer type
+            primary_layer = None
+            if theme_name == 'base':
+                primary_layer = 'base-polygons'
+            elif theme_name == 'transportation':
+                primary_layer = 'roads'
+            elif theme_name == 'places':
+                primary_layer = 'places'
+            
+            if primary_layer:
+                layer_settings = get_layer_tippecanoe_settings(primary_layer)
+                cmd.extend(layer_settings)
         
         # Execute tippecanoe
         try:
             print(f"Generating {theme_name}.pmtiles...")
-            subprocess.run(cmd, check=True)
+            print(f"Command: {' '.join(cmd)}")
+            
+            # Run tippecanoe command
+            result = subprocess.run(cmd, check=True, text=True)
             print(f"SUCCESS: {theme_name}.pmtiles generated successfully")
+                
         except subprocess.CalledProcessError as e:
             print(f"ERROR: Error generating {theme_name}.pmtiles: {e.stderr.decode() if e.stderr else str(e)}")
         except Exception as e:
@@ -630,42 +629,92 @@ def process_single_file(file_path):
     except Exception as e:
         return {"success": False, "message": f"Error: {str(e)}"}
 
-def get_tippecanoe_command(input_path, tile_path, layer_name):
-    """Get optimized tippecanoe command based on file type"""
-    base_cmd = [
-        'tippecanoe',
-        '-fo', str(tile_path),
-        '-zg',
-        '-l', layer_name,
-        # Clip to the same extent as other tiles
-        '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-        '-P',
-        str(input_path)
-    ]
+def get_layer_tippecanoe_settings(layer_name, filename=None):
+    """Get layer-specific tippecanoe settings based on layer name and filename"""
     
-    filename = input_path.name.lower()
+    # Determine layer type from layer name or filename
+    layer_type = None
     
-    if 'water' in filename:
-        # Optimized for water polygons
-        return base_cmd + [
-            '--buffer=8',  # Prevent seams
-            '--no-polygon-splitting',  # Maintain polygon integrity
+    # Check layer name first for explicit layer type detection
+    if layer_name:
+        layer_name_lower = layer_name.lower()
+        if layer_name_lower in ['water']:
+            layer_type = 'water'
+        elif layer_name_lower in ['settlement-extents', 'settlementextents']:
+            layer_type = 'settlement-extents'
+        elif layer_name_lower in ['roads']:
+            layer_type = 'roads'
+        elif layer_name_lower in ['places', 'placenames']:
+            layer_type = 'places'
+        elif layer_name_lower in ['land_use', 'land_cover', 'land_residential', 'infrastructure']:
+            layer_type = 'base-polygons'
+    
+    # If layer type not determined from layer name, check filename
+    if layer_type is None and filename:
+        filename_lower = filename.lower()
+        # Check for base-polygons first to give land* patterns priority
+        # Look for any land-related keywords or specific land layer patterns
+        land_keywords = ['land_use', 'land_cover', 'land_residential', 'infrastructure', 'land']
+        if any(keyword in filename_lower for keyword in land_keywords):
+            layer_type = 'base-polygons'
+        elif 'water' in filename_lower:
+            layer_type = 'water'
+        elif 'extents' in filename_lower or 'settlement' in filename_lower:
+            layer_type = 'settlement-extents'
+        elif 'roads' in filename_lower:
+            layer_type = 'roads'
+        elif 'places' in filename_lower or 'placenames' in filename_lower:
+            layer_type = 'places'
+    
+    # Return layer-specific tippecanoe flags directly
+    if layer_type == 'water':
+        # Optimized for water polygons with enhanced detail at zoom 13+
+        return [
+            '--buffer=8',
+            '--no-polygon-splitting',
             '--detect-shared-borders',
-            '--simplification=5',
+            '--simplification=2',        # Reduced for better coastline detail
+            '--low-detail=11',           # Earlier detail start
+            '--full-detail=13',          # Full detail at zoom 13 to match base
             '--no-tiny-polygon-reduction',
-            '--low-detail=11',
-            '--full-detail=14',
             '--no-feature-limit',
             '--drop-fraction-as-needed',
             '--preserve-input-order',
             '--coalesce-densest-as-needed',
             '--extend-zooms-if-still-dropping',
-            '--maximum-tile-bytes=1048576',
+            '--maximum-tile-bytes=2097152',  # 2MB for water features
+            '--maximum-zoom=16',         # Extended to match base polygons
+            '--gamma=0.9',               # Less aggressive for water bodies
         ]
-    elif 'roads' in filename:
+    
+    elif layer_type == 'settlement-extents':
+        # Settlement extents with special preserved settings
+        return [
+            '--buffer=8',
+            '--no-polygon-splitting',
+            '--detect-shared-borders',
+            '--simplification=5',
+            '--drop-rate=0.2',
+            '--drop-smallest',
+            '--low-detail=11',
+            '--full-detail=14',
+            '--maximum-tile-bytes=1048576',
+            '--coalesce-densest-as-needed',
+            '--extend-zooms-if-still-dropping',
+            '--preserve-input-order',
+            '--coalesce-smallest-as-needed',
+            '--gamma=0.8',
+            '--maximum-zoom=13',
+            '--minimum-zoom=6',
+            '--drop-fraction-as-needed',
+            '--hilbert',
+            '--cluster-distance=10',
+        ]
+    
+    elif layer_type == 'roads':
         # Optimized for road lines
-        return base_cmd + [
-            '--no-line-simplification',  # Keep crisp joins for zoom > 13
+        return [
+            '--no-line-simplification',
             '--buffer=16',
             '--drop-rate=0.05',
             '--drop-smallest',
@@ -677,50 +726,70 @@ def get_tippecanoe_command(input_path, tile_path, layer_name):
             '--low-detail=11',
             '--full-detail=14',
         ]
-    elif 'places' in filename:
+    
+    elif layer_type == 'places':
         # Optimized for point features
-        return base_cmd + [
-            '--cluster-distance=35',  # Enable progressive clustering
+        return [
+            '--cluster-distance=35',
             '--drop-rate=0.1',
             '--maximum-tile-bytes=1048576',
             '--preserve-input-order',
         ]
-    # elif 'building' in filename:
-    #     # Special handling for buildings - create low-LOD version
-    #     return get_building_command(input_path, tile_path, layer_name)
-    else:
-        # Default settings for other polygon features (land, land_use, etc.)
-        return base_cmd + [
-            '--buffer=8',  # Prevent seams
-            '--no-polygon-splitting',  # Maintain polygon integrity
-            '--simplification=5',
-            '--low-detail=11',
-            '--full-detail=14',
-            '--drop-densest-as-needed',
+    
+    elif layer_type == 'base-polygons':
+        # Optimized for base polygon layers (land_use, land_cover, etc.)
+        # Enhanced detail for zoom 13+ with 3x filesize allowance
+        return [
+            '--buffer=8',
+            '--no-polygon-splitting',
             '--detect-shared-borders',
+            '--simplification=2',        # More aggressive simplification reduction
+            '--drop-rate=0.05',         # Very conservative dropping to keep features
+            '--drop-smallest',
+            '--low-detail=12',          # Start detail reduction later
+            '--full-detail=13',         # Full detail starts at zoom 13 as requested
+            '--maximum-tile-bytes=3145728',  # 3MB tiles for 3x size increase
+            '--coalesce-densest-as-needed',
+            '--extend-zooms-if-still-dropping',
+            '--preserve-input-order',
+            '--coalesce-smallest-as-needed',
+            '--gamma=0.9',              # Less aggressive density reduction
+            '--maximum-zoom=16',        # Extended to zoom 16 for high detail
+            '--minimum-zoom=6',
+            '--drop-fraction-as-needed',
+            '--cluster-distance=5',     # Tighter clustering for more detail
+            '--no-tiny-polygon-reduction',  # Preserve small polygons at high zoom
+        ]
+    
+    else:
+        # Default settings
+        return [
+            '--buffer=8',
+            '--simplification=5',
             '--maximum-tile-bytes=1048576',
             '--extend-zooms-if-still-dropping',
+            '--low-detail=11',
+            '--full-detail=14',
         ]
 
-# def get_building_command(input_path, tile_path, layer_name):
-#     """Get building-specific tippecanoe command with reduced drop rate"""
-#     return [
-#         'tippecanoe',
-#         '-fo', str(tile_path),
-#         '-zg',
-#         '-l', layer_name,
-#         # Clip to the same extent as other tiles
-#         '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-#         '--drop-rate=0.02',  # Much lower drop rate for better density
-#         '--drop-smallest',
-#         '--buffer=8',
-#         '--maximum-tile-bytes=2097152',  # 2MB for buildings
-#         '--coalesce-smallest-as-needed',
-#         '--detect-shared-borders',
-#         '--preserve-input-order',
-#         '-P',
-#         str(input_path)
-#     ]
+def get_tippecanoe_command(input_path, tile_path, layer_name):
+    """Get optimized tippecanoe command based on layer name and file type"""
+    base_cmd = [
+        'tippecanoe',
+        '-fo', str(tile_path),
+        '-zg',
+        '-l', layer_name,
+        # Clip to the same extent as other tiles
+        '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
+        '-P',
+        str(input_path)
+    ]
+    
+    # Get layer-specific settings
+    layer_settings = get_layer_tippecanoe_settings(layer_name, input_path.name)
+    
+    return base_cmd + layer_settings
+
 
 def create_tilejson():
     """Generate TileJSON for MapLibre integration - dynamically includes all available PMTiles"""
@@ -743,11 +812,16 @@ def create_tilejson():
     core_tiles = {
         "base.pmtiles": {
             "layers": [
-                {"id": "land", "description": "Land polygons", "fields": {"subtype": "String", "class": "String"}},
+                # {"id": "land", "description": "Land polygons", "fields": {"subtype": "String", "class": "String"}},
                 {"id": "land_use", "description": "Land use polygons", "fields": {"subtype": "String", "class": "String"}},
                 {"id": "land_residential", "description": "Residential areas", "fields": {"subtype": "String", "class": "String"}},
                 {"id": "water", "description": "Water bodies", "fields": {"subtype": "String", "class": "String"}},
                 {"id": "infrastructure", "description": "Infrastructure", "fields": {"subtype": "String", "class": "String"}},
+            ]
+        },
+        "settlement-extents.pmtiles": {
+            "layers": [
+                {"id": "settlementextents", "description": "Settlement boundary extents", "fields": {"name": "String", "type": "String", "id": "String"}},
             ]
         },
         "transportation.pmtiles": {
@@ -809,7 +883,7 @@ def create_tilejson():
     
     return tilejson_path
 
-def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=True, skip_medium_lod=True, skip_high_lod=False):
+def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False, skip_medium_lod=False, skip_high_lod=True):
     """Create separate low-LOD, medium-LOD, and high-LOD building tiles for smooth crossfading"""
     layer_name = 'layer'
     base_name = Path(geojson_file).stem
@@ -889,7 +963,7 @@ def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=True,
             # Clip to the same extent as other tiles
             '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
             '--simplification=7',  # More aggressive simplification
-            '--drop-rate=0.15',  # Slightly higher drop rate to reduce file size
+            '--drop-rate=0.1',  # Slightly higher drop rate to reduce file size
             '--drop-smallest',
             '--buffer=4',
             '--maximum-tile-bytes=1048576',  # Reduce max tile size to 1MB
@@ -963,6 +1037,7 @@ if __name__ == "__main__":
                         help='Command to execute')
     parser.add_argument('--input', nargs='+', help='Custom input file(s) to process')
     parser.add_argument('--filter', help='Only process files matching this pattern')
+    parser.add_argument('--theme', help='Only process specific theme (base, transportation, places, buildings, settlement-extents)')
     parser.add_argument('--layer', help='Layer name for custom input (for multi-layer sources)')
     parser.add_argument('--output', help='Output file path (for convert command)')
     parser.add_argument('--where', help='SQL WHERE clause to filter features (for convert command)')
@@ -975,11 +1050,11 @@ if __name__ == "__main__":
     if command == "download":
         download_source_data()
     elif command == "tiles":
-        process_to_tiles(custom_inputs=args.input, filter_pattern=args.filter)
+        process_to_tiles(custom_inputs=args.input, filter_pattern=args.filter, theme_filter=args.theme)
         create_tilejson()
     elif command == "all":
         download_source_data()
-        process_to_tiles(custom_inputs=args.input, filter_pattern=args.filter)
+        process_to_tiles(custom_inputs=args.input, filter_pattern=args.filter, theme_filter=args.theme)
         create_tilejson()
     elif command == "custom":
         if not args.input:
@@ -1040,6 +1115,7 @@ if __name__ == "__main__":
         print("Usage:")
         print("  python runCreateTiles.py download                                    # Download source data only")
         print("  python runCreateTiles.py tiles                                       # Process to tiles only")
+        print("  python runCreateTiles.py tiles --theme=base                         # Process only base theme")
         print("  python runCreateTiles.py tiles --input settlement.geojsonseq        # Process with custom files")
         print("  python runCreateTiles.py tiles --filter='roads*'                    # Process only roads files")
         print("  python runCreateTiles.py custom --input settlement.geojsonseq       # Process only custom files")
