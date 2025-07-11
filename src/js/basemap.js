@@ -39,7 +39,7 @@ class OvertureMap {
             center: [23.5967, -6.1307],
             zoom: 14,
             minZoom: 11,
-            maxZoom: 16,
+            maxZoom: 15,
             showTileBoundaries: false,
             clampToBounds: false,
             useVectorTiles: false, // Set to true to use traditional vector tiles instead of PMTiles
@@ -690,7 +690,7 @@ class OvertureMap {
                 0, 1,
                 9, 0.7,
                 11, 0.4,
-                16, 0.1
+                16, 0.15
             ],
             "hillshade-shadow-color": [
                 "interpolate",
@@ -704,9 +704,9 @@ class OvertureMap {
                 "interpolate",
                 ["linear"],
                 ["zoom"],
-                0, "rgba(255,255,255,0.2)",
                 11, "rgba(255,255,255,0.15)",
-                16, "rgba(239, 239, 239, 0.1)"
+                13, "rgba(255,255,255,.5)",
+                16, "rgba(239, 239, 239, 0.2)"
             ]
             }
         };
@@ -719,25 +719,25 @@ class OvertureMap {
             source: "contours",
             "source-layer": "contours",
             paint: {
-                "line-color": "rgba(139, 69, 19, 0.3)",  // Neutral brown
+                "line-color": "rgba(139, 69, 19, 0.4)",  // Neutral brown
                 "line-width": [
                     "interpolate",
                     ["linear"],
                     ["zoom"],
                     8.5, [
                         "case",
-                        ["==", ["get", "level"], 1], 0.1,  // Major contours
-                        0.075                                 // Minor contours
+                        ["==", ["get", "level"], 1], 0.15,  // Major contours
+                        0.07                                 // Minor contours
                     ],
                     10.5, [
                         "case", 
-                        ["==", ["get", "level"], 1], 0.3,  // Major contours
-                        0.15                               // Minor contours
+                        ["==", ["get", "level"], 1], 0.35,  // Major contours
+                        0.2                               // Minor contours
                     ],
                     13.5, [
                         "case",
-                        ["==", ["get", "level"], 1], 0.5,  // Major contours
-                        0.25                              // Minor contours
+                        ["==", ["get", "level"], 1], 0.6,  // Major contours
+                        0.3                              // Minor contours
                     ]
                 ],
                 "line-opacity": 1  // Simple neutral opacity - will be overridden

@@ -4,14 +4,13 @@
   "minzoom": 0,
   "maxzoom": 14,
   "bounds": [
-    16.875,
-    -11.178401873711781,
-    28.125,
-    0.0
+    19.6875,
+    -7.0136679275666305,
+    26.71875,
+    -2.8113711933311296
   ],
   "tiles": [
     "pmtiles://tiles/base.pmtiles",
-    "pmtiles://tiles/buildings_low_lod.pmtiles",
     "pmtiles://tiles/buildings_medium_lod.pmtiles",
     "pmtiles://tiles/places.pmtiles",
     "pmtiles://tiles/settlement-extents.pmtiles",
@@ -48,15 +47,6 @@
       "fields": {
         "subtype": "String",
         "class": "String"
-      }
-    },
-    {
-      "id": "buildings",
-      "description": "Buildings (Low LOD)",
-      "fields": {
-        "name": "String",
-        "height": "Number",
-        "level": "Number"
       }
     },
     {

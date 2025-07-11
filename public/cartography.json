@@ -121,7 +121,7 @@
       "paint": {
       "fill-color": [
         "interpolate",
-        ["linear"],
+        ["exponential", 2],
         ["zoom"],
         11, [
           "match",
@@ -153,9 +153,9 @@
         14, [
           "match",
           ["get", "subtype"],
-          "forest", "#4a7a45",
-          "wood", "#4a7a45",
-          "tree", "#2e6d2a",
+          "forest", "#6b9b66",
+          "wood", "#6b9b66",
+          "tree", "#6b9b66",
           "shrub", "#a1c76b",
           "grass", "#b2d47a",
           "grassland", "#b2d47a",
@@ -837,17 +837,17 @@
       "source": "buildings-low-lod-tiles",
       "source-layer": "layer",
       "minzoom": 5,
-      "maxzoom": 11,
+      "maxzoom": 12,
       "layout": {
         "visibility": "visible"
       },
       "paint": {
         "fill-color": [
           "interpolate",
-          ["linear"],
+          ["exponential", 2],
           ["zoom"],
-          6, "#373A36",
-          10, "#bfbfbf"
+          5, "#000",
+          11, "#fff"
         ],
         "fill-opacity": [
           "interpolate",
@@ -856,8 +856,7 @@
           3, 1,
           6, 0.9,
           9, 0.75,
-          10, 0.3,
-          11, 0
+          12, 0
         ]
       }
     },
@@ -866,7 +865,7 @@
       "type": "fill",
       "source": "buildings-medium-lod-tiles",
       "source-layer": "layer",
-      "minzoom": 9,
+      "minzoom": 10,
       "maxzoom": 14,
       "layout": {
         "visibility": "visible"
@@ -876,7 +875,7 @@
           "interpolate",
           ["linear"],
           ["zoom"],
-          9, "#bfbfbf",
+          9, "#fff",
           15, "#7c8389"
         ],
         "fill-opacity": [
@@ -884,8 +883,8 @@
           ["exponential", 1.5],
           ["zoom"],
           8, 0,
-          10, 0.7,
-          13, 0.7,
+          12, 0.9,
+          13, 0.8,
           15, 0
         ]
       }
@@ -904,7 +903,7 @@
           "interpolate",
           ["linear"],
           ["zoom"],
-          12, "#696969",
+          12, "#7c8389",
           16, "#BFB8AF"
         ],
         "fill-opacity": [
@@ -913,7 +912,7 @@
           ["zoom"],
           11, 0,
           14, 0.5,
-          16, 0.8
+          15, 1
         ]
       }
     },
@@ -922,25 +921,33 @@
       "type": "line",
       "source": "buildings-high-lod-tiles",
       "source-layer": "layer",
-      "minzoom": 14,
+      "minzoom": 12,
       "layout": {
         "visibility": "visible"
       },
       "paint": {
-        "line-color": "#696969",
+        "line-color": [
+          "interpolate",
+          ["exponential", 2],
+          ["zoom"],
+          11.5, "#fff",
+          13, "#BFB8AF",
+          15.5, "#696969"
+        ],
         "line-width": [
           "interpolate",
           ["linear"],
           ["zoom"],
-          12.5, 0.2,
-          15.5, 0.4
+          11.5, 0.3,
+          15.5, 0.5
         ],
         "line-opacity": [
           "interpolate",
           ["exponential", 1.5],
           ["zoom"],
-          14, 0,
-          16, 1
+          11.5, 0,
+          14, 0.5,
+          15, 1
         ]
       }
     },
@@ -983,47 +990,39 @@
       "source-layer": "settlementextents",
       "minzoom": 8,
       "layout": {
-        "visibility": "visible"
+      "visibility": "visible"
       },
       "paint": {
-        "fill-color": [
-          "interpolate",
-          ["exponential", 1.5],
-          ["zoom"],
-          10, [
-        "match",
-        ["get", "type"],
-        "Built-up Area", "#9370DB",
-        "Hamlet", "#BA55D3",
-        "Small Settlement Area", "#DA70D6",
-        "#D8BFD8"
-          ],
-          12, [
-        "match",
-        ["get", "type"],
-        "Built-up Area", "#6A5ACD",
-        "Hamlet", "#8A2BE2",
-        "Small Settlement Area", "#9400D3",
-        "#9932CC"
-          ],
-          15, [
-        "match",
-        ["get", "type"],
-        "Built-up Area", "#BEBEBE",
-        "Hamlet", "#BEBEBE",
-        "Small Settlement Area", "#BEBEBE",
-        "#BEBEBE"
-          ]
+      "fill-color": [
+        "interpolate",
+        ["exponential", 1.5],
+        ["zoom"],
+        10, [
+      "match",
+      ["get", "type"],
+      "Built-up Area", "#C7B5E3",
+      "Hamlet", "#D4AAE6",
+      "Small Settlement Area", "#C7B5E3",
+      "#E9DFEC"
         ],
-        "fill-opacity": [
-          "interpolate",
-          ["exponential", 1.5],
-          ["zoom"],
-          5, 0.6,
-          9, 0.4,
-          14, 0.3,
-          16, 0.2
+        12, [
+      "match",
+      ["get", "type"],
+      "Built-up Area", "#B5A2E6",
+      "Hamlet", "#C395E8",
+      "Small Settlement Area", "#B5A2E6",
+      "#CC99E5"
+        ],
+        15, [
+      "match",
+      ["get", "type"],
+      "Built-up Area", "#E5E5E5",
+      "Hamlet", "#E5E5E5",
+      "Small Settlement Area", "#E5E5E5",
+      "#E5E5E5"
         ]
+      ],
+      "fill-opacity": 1
       }
     },
     {
