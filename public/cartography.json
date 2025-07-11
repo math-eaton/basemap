@@ -29,6 +29,17 @@
     "settlement-extents-tiles": {
       "type": "vector",
       "url": "pmtiles://tiles/settlement-extents.pmtiles"
+    },
+    "admin-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/admin.pmtiles"
+    },
+    "esri": {
+      "type": "vector",
+      "url": "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer",
+      "tiles": [
+        "https://basemaps.arcgis.com/arcgis/rest/services/World_Basemap_v2/VectorTileServer/tile/{z}/{y}/{x}.pbf"
+      ]
     }
   },
   "layers": [
@@ -150,12 +161,12 @@
           "urban", "#f5f5f5",
           "#ffffff00"
         ],
-        14, [
+        16, [
           "match",
           ["get", "subtype"],
-          "forest", "#6b9b66",
-          "wood", "#6b9b66",
-          "tree", "#6b9b66",
+          "forest", "#48A23F",
+          "wood", "#48A23F",
+          "tree", "#48A23F",
           "shrub", "#a1c76b",
           "grass", "#b2d47a",
           "grassland", "#b2d47a",
@@ -875,8 +886,8 @@
           "interpolate",
           ["linear"],
           ["zoom"],
-          9, "#fff",
-          15, "#7c8389"
+          9, "#f2bdfc",
+          15, "#a93e89"
         ],
         "fill-opacity": [
           "interpolate",
@@ -903,7 +914,7 @@
           "interpolate",
           ["linear"],
           ["zoom"],
-          12, "#7c8389",
+          12, "#a93e89",
           16, "#BFB8AF"
         ],
         "fill-opacity": [
@@ -921,7 +932,7 @@
       "type": "line",
       "source": "buildings-high-lod-tiles",
       "source-layer": "layer",
-      "minzoom": 12,
+      "minzoom": 11,
       "layout": {
         "visibility": "visible"
       },
@@ -945,7 +956,7 @@
           "interpolate",
           ["exponential", 1.5],
           ["zoom"],
-          11.5, 0,
+          11, 0,
           14, 0.5,
           15, 1
         ]
@@ -969,10 +980,10 @@
       "type": "symbol",
       "source": "places-tiles",
       "source-layer": "places",
-      "minzoom": 15,
+      "minzoom": 14,
       "layout": {
         "text-field": ["get", "name"],
-        "text-font": ["Metropolis Light Italic"],
+        "text-font": ["Metropolis Medium Italic"],
         "text-size": 12,
         "text-offset": [0, 1.5],
         "text-anchor": "top"
@@ -997,7 +1008,7 @@
         "interpolate",
         ["exponential", 1.5],
         ["zoom"],
-        10, [
+        8, [
       "match",
       ["get", "type"],
       "Built-up Area", "#C7B5E3",
@@ -1013,7 +1024,7 @@
       "Small Settlement Area", "#B5A2E6",
       "#CC99E5"
         ],
-        15, [
+        14, [
       "match",
       ["get", "type"],
       "Built-up Area", "#E5E5E5",
@@ -1118,10 +1129,10 @@
       "type": "symbol",
       "source": "places-tiles",
       "source-layer": "placenames",
-      "minzoom": 11,
+      "minzoom": 13,
       "layout": {
       "text-field": ["get", "name"],
-      "text-font": ["Metropolis Light Italic"],
+      "text-font": ["Metropolis Medium Italic"],
       "text-size": [
         "interpolate",
         ["linear"],
@@ -1134,6 +1145,310 @@
       "text-color": "#000000",
       "text-halo-color": "#ffffff",
       "text-halo-width": 1
+      }
+    },
+    {
+      "id": "esri-openspace-forest",
+      "type": "fill", 
+      "source": "esri",
+      "source-layer": "Openspace or forest",
+      "minzoom": 11,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#599507",
+        "fill-opacity": {
+          "stops": [
+            [11, 0.15],
+            [13, 0.20],
+            [15, 0.25]
+          ]
+        },
+        "fill-antialias": false
+      }
+    },
+    {
+      "id": "esri-admin0-forest",
+      "type": "fill",
+      "source": "esri", 
+      "source-layer": "Admin0 forest or park",
+      "minzoom": 11,
+      "maxzoom": 13,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#599507",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "stops": [
+            [11, 0.12],
+            [13, 0.18]
+          ]
+        }
+      }
+    },
+    {
+      "id": "esri-admin1-forest", 
+      "type": "fill",
+      "source": "esri",
+      "source-layer": "Admin1 forest or park", 
+      "minzoom": 11,
+      "maxzoom": 14,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "fill-color": "#599507",
+        "fill-antialias": false,
+        "fill-opacity": {
+          "stops": [
+            [11, 0.10],
+            [12, 0.15],
+            [14, 0.20]
+          ]
+        }
+      }
+    },
+    {
+      "id": "health-areas",
+      "type": "fill",
+      "source": "admin-tiles",
+      "source-layer": "health_areas",
+      "minzoom": 8,
+      "maxzoom": 16,
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "fill-color": "#e8f4fd",
+        "fill-opacity": 0.4,
+        "fill-outline-color": "#2196f3"
+      }
+    },
+    {
+      "id": "health-areas-outline",
+      "type": "line",
+      "source": "admin-tiles",
+      "source-layer": "health_areas",
+      "minzoom": 12.5,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "line-color": "#330072",
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          8, 0.5,
+          12, 0.75
+        ],
+        "line-opacity": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          13, 0,
+          15, 1
+        ],
+        "line-dasharray": [2, 2]
+      }
+    },
+    {
+      "id": "health-zones",
+      "type": "fill",
+      "source": "admin-tiles",
+      "source-layer": "health_zones",
+      "minzoom": 8,
+      "maxzoom": 16,
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "fill-color": "#fff3e0",
+        "fill-opacity": 0.3,
+        "fill-outline-color": "#ff9800"
+      }
+    },
+    {
+      "id": "health-zones-outline",
+      "type": "line",
+      "source": "admin-tiles",
+      "source-layer": "health_zones",
+      "minzoom": 8,
+      "maxzoom": 16,
+      "layout": {
+        "visibility": "none"
+      },
+      "paint": {
+        "line-color": "#00AB84",
+        "line-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          8, 1,
+          12, 1.5,
+          16, 2.5
+        ],
+        "line-opacity": 0.9,
+        "line-dasharray": [3, 2]
+      }
+    },
+    {
+      "id": "health-zones-labels",
+      "type": "symbol",
+      "source": "admin-tiles",
+      "source-layer": "health_zones",
+      "minzoom": 11.25,
+      "maxzoom": 14,
+      "layout": {
+      "visibility": "visible",
+      "text-field": ["concat", "ZS ", ["get", "zonesante"]],
+      "text-font": ["Metropolis Bold"],
+      "text-size": [
+        "interpolate",
+        ["linear"],
+        ["zoom"],
+        10, 10,
+        14, 12,
+        16, 14
+      ],
+      "text-transform": "uppercase",
+      "text-letter-spacing": 1.2,
+      "symbol-placement": "point",
+      "text-max-width": 15,
+      "text-justify": "center",
+      "text-allow-overlap": false,
+      "text-ignore-placement": false
+      },
+      "paint": {
+      "text-color": "#53565A",
+      "text-halo-color": "#ffffff",
+      "text-halo-width": 2
+      }
+    },
+    {
+      "id": "health-areas-labels",
+      "type": "symbol",
+      "source": "admin-tiles",
+      "source-layer": "health_areas",
+      "minzoom": 13,
+      "layout": {
+        "visibility": "visible",
+        "text-field": ["concat", "AS ", ["get", "airesante"]],
+        "text-font": ["Metropolis Bold"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          11, 7,
+          14, 8.5,
+          16, 12
+        ],
+        "text-transform": "uppercase",
+        "text-letter-spacing": 0.1,
+        "symbol-placement": "point",
+        "text-max-width": 12,
+        "text-justify": "center",
+        "text-allow-overlap": false,
+        "text-ignore-placement": false
+      },
+      "paint": {
+        "text-color": "#63666A",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 2
+      }
+    },
+    {
+      "id": "health-facilities",
+      "type": "circle",
+      "source": "places-tiles",
+      "source-layer": "places",
+      "minzoom": 13.5,
+      "layout": {
+        "visibility": "visible"
+      },
+      "paint": {
+        "circle-radius": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, 2,
+          16, 3
+        ],
+        "circle-color": "#e74c3c",
+        "circle-stroke-color": "#ffffff",
+        "circle-stroke-width": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          10, 0.1,
+          16, 0.5
+        ],
+        "circle-opacity": 1
+      }
+    },
+    {
+      "id": "health-facilities-labels",
+      "type": "symbol",
+      "source": "places-tiles",
+      "source-layer": "places",
+      "minzoom": 13.5,
+      "layout": {
+        "visibility": "visible",
+        "text-field": [
+          "case",
+          ["has", "essnom1"], ["get", "essnom1"],
+          ["has", "name"], ["get", "name"],
+          "Health Facility"
+        ],
+        "text-font": ["Metropolis Medium"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          12, 9,
+          16, 14
+        ],
+        "text-offset": [0, 2],
+        "text-anchor": "top",
+        "text-max-width": 12,
+        "text-allow-overlap": false,
+        "text-ignore-placement": false
+      },
+      "paint": {
+        "text-color": "#2c3e50",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 2
+      }
+    },
+    {
+      "id": "settlement-names",
+      "type": "symbol",
+      "source": "places-tiles",
+      "source-layer": "settlement_names",
+      "minzoom": 13.5,
+      "maxzoom": 16,
+      "layout": {
+        "visibility": "visible",
+        "text-field": ["get", "localite"],
+        "text-font": ["Metropolis Medium Italic"],
+        "text-size": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          11, 9,
+          14, 12,
+          16, 18
+        ],
+        "text-transform": "none",
+        "text-letter-spacing": 0.1
+      },
+      "paint": {
+        "text-color": "#424242",
+        "text-halo-color": "#ffffff",
+        "text-halo-width": 2
       }
     }
   ]

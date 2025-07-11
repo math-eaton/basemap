@@ -59,6 +59,11 @@ class OvertureMap {
             // Land use and land cover (20-39)
             'land': 2,           // Natural land features (forest, grass, etc.)
             'land-cover': 20,     // Land cover data (forest, crop, grass, etc.)
+            
+            // ESRI forest layers
+            'esri-admin0-forest': 21,   // Large scale admin forest/parks
+            'esri-admin1-forest': 22,   // Medium scale admin forest/parks  
+            'esri-openspace-forest': 23, // Local scale forest/openspace
 
             'settlement-extents-fill': 25, // Settlement extent fills
             'settlement-extents-outlines': 89, // Settlement extent outlines
@@ -73,7 +78,7 @@ class OvertureMap {
             'water-polygons': 40,        // Water body fills
             'water-polygon-outlines': 41, // Water body outlines
             'water-lines': 42,           // Rivers, streams, canals
-
+            
             // Contour lines (50-59)
             'contours': 50,       // Contour lines
             'contour-text': 51,   // Contour elevation labels
@@ -95,11 +100,21 @@ class OvertureMap {
             'buildings-high-lod': 80,  // Building fills (high detail)
             'building-outlines': 83,   // Building outlines
 
+            // Administrative boundaries (85-89)
+            'health-areas': 85,        // Health administrative areas (fill)
+            'health-zones': 86,        // Health administrative zones (fill)
+            'health-areas-outline': 87, // Health areas outline
+            'health-zones-outline': 88, // Health zones outline
+
             // Points of interest (90-99)
-            'places': 90,         // Place points/circles
+            'places': 90,              // Place points/circles
+            'health-facilities': 91,   // Health facilities points
             
             // Labels and text (100+)
-            'place-labels': 100   // Place name labels - always on top
+            'place-labels': 100,       // Place name labels
+            'health-facilities-labels': 101, // Health facility labels
+            'settlement-names': 102,   // Settlement name labels - highest priority
+            'placenames': 103         // Other place names
         };
         
         this.init();

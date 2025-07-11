@@ -59,14 +59,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 'land-use',
                 'land',
                 'land-cover',
+                'esri-admin0-forest',
+                'esri-admin1-forest', 
+                'esri-openspace-forest',
                 'water-polygons',
+                'esri-marsh-base',
+                'esri-marsh-grass-1',
+                'esri-marsh-grass-2',
+                'esri-marsh-water-channels',
+                'esri-marsh-outline',
                 'roads-solid',
                 'buildings-low-lod',
                 'buildings-medium-lod',
                 'buildings-high-lod',
                 'settlement-extents-fill',
                 'settlement-extents-outlines',
-                'places'
+                'places',
+                'health-facilities',
+                'health-facilities-labels'
             ];
 
             layers.forEach(layerId => {

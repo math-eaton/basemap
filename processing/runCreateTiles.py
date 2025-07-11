@@ -482,10 +482,19 @@ def process_to_tiles(custom_inputs=None, filter_pattern=None, theme_filter=None)
             }
         },
         'places': {
-            'files': ['places.geojson', 'placenames.geojson'],
+            'files': ['places.geojson', 'placenames.geojson', 'GRID3_COD_health_facilities_v5_0.geojson', 'GRID3_COD_settlement_names_v5_0.geojson'],
             'layers': {
                 'places': 'places.geojson',
-                'placenames': 'placenames.geojson'
+                'placenames': 'placenames.geojson',
+                'health_facilities': 'GRID3_COD_health_facilities_v5_0.geojson',
+                'settlement_names': 'GRID3_COD_settlement_names_v5_0.geojson'
+            }
+        },
+        'admin': {
+            'files': ['GRID3_COD_health_areas_v5_0.geojson', 'GRID3_COD_health_zones_v5_0.geojson'],
+            'layers': {
+                'health_areas': 'GRID3_COD_health_areas_v5_0.geojson',
+                'health_zones': 'GRID3_COD_health_zones_v5_0.geojson'
             }
         },
         'buildings': {
@@ -601,8 +610,96 @@ def process_single_file(file_path):
     except Exception as e:
         return {"success": False, "message": f"Error: {str(e)}"}
 
-def get_layer_tippecanoe_settings(layer_name, filename=None):
-    """Get layer-specific tippecanoe settings based on layer name and filename
+def detect_geometry_type(file_path):
+    """Detect the primary geometry type from a GeoJSON or GeoJSONSeq file
+    
+    Returns: 'Point', 'LineString', 'Polygon', 'MultiPoint', 'MultiLineString', 'MultiPolygon', or 'Mixed'
+    """
+    try:
+        geometry_types = set()
+        sample_count = 0
+        max_samples = 100  # Sample first 100 features for performance
+        
+        with open(file_path, 'r') as f:
+            # First, try to detect if this is actually a line-delimited JSON file
+            # even if it has a .geojson extension
+            first_line = f.readline().strip()
+            f.seek(0)  # Reset file pointer
+            
+            # Check if first line is a complete JSON object (feature)
+            is_line_delimited = False
+            try:
+                first_obj = json.loads(first_line)
+                if isinstance(first_obj, dict) and first_obj.get('type') == 'Feature':
+                    # Check if there's more content after the first line
+                    f.readline()  # Skip first line
+                    second_line = f.readline().strip()
+                    if second_line:
+                        try:
+                            second_obj = json.loads(second_line)
+                            if isinstance(second_obj, dict) and second_obj.get('type') == 'Feature':
+                                is_line_delimited = True
+                        except json.JSONDecodeError:
+                            pass
+                f.seek(0)  # Reset file pointer again
+            except json.JSONDecodeError:
+                pass
+            
+            if file_path.suffix == '.geojsonseq' or is_line_delimited:
+                # Handle GeoJSONSeq files or line-delimited JSON files
+                for line in f:
+                    line = line.strip()
+                    if line and sample_count < max_samples:
+                        try:
+                            feature = json.loads(line)
+                            if 'geometry' in feature and feature['geometry'] and 'type' in feature['geometry']:
+                                geom_type = feature['geometry']['type']
+                                geometry_types.add(geom_type)
+                                sample_count += 1
+                        except json.JSONDecodeError:
+                            continue
+            else:
+                # Handle regular GeoJSON files
+                try:
+                    data = json.load(f)
+                    if 'features' in data:
+                        for feature in data['features'][:max_samples]:
+                            if 'geometry' in feature and feature['geometry'] and 'type' in feature['geometry']:
+                                geom_type = feature['geometry']['type']
+                                geometry_types.add(geom_type)
+                                sample_count += 1
+                    elif 'geometry' in data and data['geometry'] and 'type' in data['geometry']:
+                        # Single feature GeoJSON
+                        geometry_types.add(data['geometry']['type'])
+                except json.JSONDecodeError:
+                    return 'Unknown'
+        
+        # Normalize geometry types to base types
+        normalized_types = set()
+        for geom_type in geometry_types:
+            if geom_type in ['Point', 'MultiPoint']:
+                normalized_types.add('Point')
+            elif geom_type in ['LineString', 'MultiLineString']:
+                normalized_types.add('LineString')
+            elif geom_type in ['Polygon', 'MultiPolygon']:
+                normalized_types.add('Polygon')
+            else:
+                normalized_types.add(geom_type)
+        
+        # Return the primary geometry type
+        if len(normalized_types) == 1:
+            return list(normalized_types)[0]
+        elif len(normalized_types) > 1:
+            return 'Mixed'
+        else:
+            return 'Unknown'
+            
+    except Exception as e:
+        print(f"Warning: Could not detect geometry type for {file_path}: {e}")
+        return 'Unknown'
+
+def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
+    """Get layer-specific tippecanoe settings based on layer name and filename/path
     
     Common options have been consolidated into the base tippecanoe command:
     - --buffer=8 (most layers, higher quality)
@@ -616,23 +713,49 @@ def get_layer_tippecanoe_settings(layer_name, filename=None):
     
     This function now returns only truly layer-specific options.
     """
+    import time
+    start_time = time.time()
+    
+    # Handle both Path objects and filename strings
+    if filename_or_path:
+        if hasattr(filename_or_path, 'name'):  # Path object
+            filename = filename_or_path.name
+            file_path = filename_or_path
+        else:  # String filename
+            filename = filename_or_path
+            file_path = None
+            # Try to find the file in data directories
+            for data_dir in [DATA_DIR, OVERTURE_DATA_DIR]:
+                potential_path = data_dir / filename
+                if potential_path.exists():
+                    file_path = potential_path
+                    break
+    else:
+        filename = None
+        file_path = None
     
     # Determine layer type from layer name or filename
     layer_type = None
+    detection_method = None
     
     # Check layer name first for explicit layer type detection
     if layer_name:
         layer_name_lower = layer_name.lower()
         if layer_name_lower in ['water']:
             layer_type = 'water'
+            detection_method = 'layer_name'
         elif layer_name_lower in ['settlement-extents', 'settlementextents']:
             layer_type = 'settlement-extents'
+            detection_method = 'layer_name'
         elif layer_name_lower in ['roads']:
             layer_type = 'roads'
+            detection_method = 'layer_name'
         elif layer_name_lower in ['places', 'placenames']:
             layer_type = 'places'
+            detection_method = 'layer_name'
         elif layer_name_lower in ['land_use', 'land_cover', 'land_residential', 'infrastructure']:
             layer_type = 'base-polygons'
+            detection_method = 'layer_name'
     
     # If layer type not determined from layer name, check filename
     if layer_type is None and filename:
@@ -642,19 +765,28 @@ def get_layer_tippecanoe_settings(layer_name, filename=None):
         land_keywords = ['land_use', 'land_cover', 'land_residential', 'infrastructure', 'land']
         if any(keyword in filename_lower for keyword in land_keywords):
             layer_type = 'base-polygons'
+            detection_method = 'filename_pattern'
         elif 'water' in filename_lower:
             layer_type = 'water'
+            detection_method = 'filename_pattern'
         elif 'extents' in filename_lower or 'settlement' in filename_lower:
             layer_type = 'settlement-extents'
+            detection_method = 'filename_pattern'
         elif 'roads' in filename_lower:
             layer_type = 'roads'
+            detection_method = 'filename_pattern'
         elif 'places' in filename_lower or 'placenames' in filename_lower:
             layer_type = 'places'
+            detection_method = 'filename_pattern'
+    
+    # Track whether geometry detection was needed
+    geometry_detection_time = 0
+    geometry_type = None
     
     # Return layer-specific tippecanoe flags (common options moved to base command)
     if layer_type == 'water':
         # Optimized for water polygons with enhanced detail at zoom 13+
-        return [
+        settings = [
             '--simplification=2',        # Reduced for better coastline detail (better than default)
             '--low-detail=11',           # Earlier detail start
             '--full-detail=13',          # Full detail at zoom 13 to match base
@@ -668,7 +800,7 @@ def get_layer_tippecanoe_settings(layer_name, filename=None):
     
     elif layer_type == 'settlement-extents':
         # Settlement extents with special preserved settings
-        return [
+        settings = [
             '--simplification=5',
             '--drop-rate=0.25',
             '--low-detail=11',
@@ -683,7 +815,7 @@ def get_layer_tippecanoe_settings(layer_name, filename=None):
     
     elif layer_type == 'roads':
         # Optimized for road lines
-        return [
+        settings = [
             '--no-line-simplification',  # Unique to roads
             '--buffer=16',               # Override base buffer for roads (better quality)
             '--drop-rate=0.05',          # Very conservative for roads
@@ -699,14 +831,14 @@ def get_layer_tippecanoe_settings(layer_name, filename=None):
     
     elif layer_type == 'places':
         # Optimized for point features (minimal settings needed)
-        return [
+        settings = [
             '--cluster-distance=35',     # Unique to point features
             '--drop-rate=0.1',
         ]
     
     elif layer_type == 'base-polygons':
         # Optimized for base polygon layers (land_use, land_cover, etc.)
-        return [
+        settings = [
             '--simplification=5',        # More aggressive simplification reduction
             '--drop-rate=0.1',          # Very conservative dropping to keep features
             '--low-detail=10',          # Start detail reduction later
@@ -719,19 +851,93 @@ def get_layer_tippecanoe_settings(layer_name, filename=None):
         ]
     
     else:
-        # Default settings (higher quality options chosen)
-        return [
-            '--simplification=2',        # Better quality than 5
-            '--drop-rate=0.1',          # More conservative than 0.15
-            '--low-detail=10',          # Later start for better quality
-            '--full-detail=12',    
-            '--coalesce-smallest-as-needed',
-            '--extend-zooms-if-still-dropping',
-            '--gamma=0.5',              # Balanced density reduction
-            '--maximum-zoom=15',        # Higher quality than 14
-            '--minimum-zoom=9',
-            # '--cluster-distance=25',
-        ]
+        # Default settings based on geometry type detection
+        detection_method = 'geometry_detection'
+        if file_path and file_path.exists():
+            geom_start_time = time.time()
+            geometry_type = detect_geometry_type(file_path)
+            geometry_detection_time = time.time() - geom_start_time
+            print(f"  Detected geometry type: {geometry_type} for {filename} ({geometry_detection_time:.3f}s)")
+        else:
+            geometry_type = 'Unknown'
+            print(f"  Could not detect geometry type for {filename}, using polygon defaults")
+        
+        # Return geometry-specific settings
+        if geometry_type == 'Point':
+            # Optimized for point features
+            settings = [
+                '--cluster-distance=35',     # Point clustering for better display
+                '--drop-rate=0.05',         # Very conservative for points
+                '--low-detail=8',           # Earlier detail for points visibility
+                '--full-detail=11',         # Earlier full detail for points
+                '--coalesce-smallest-as-needed',
+                '--extend-zooms-if-still-dropping',
+                '--gamma=0.3',              # Less aggressive for point density
+                '--maximum-zoom=15',
+                '--minimum-zoom=6',         # Points visible at lower zooms
+                '--simplification=1',       # Minimal simplification for points
+            ]
+        
+        elif geometry_type == 'LineString':
+            # Optimized for line features (roads, infrastructure, etc.)
+            settings = [
+                '--no-line-simplification', # Preserve line geometry
+                '--drop-rate=0.08',         # Conservative for linear features
+                '--low-detail=9',           # Good detail preservation
+                '--full-detail=12',         
+                '--coalesce-smallest-as-needed',
+                '--extend-zooms-if-still-dropping',
+                '--gamma=0.4',              # Moderate density reduction
+                '--maximum-zoom=15',
+                '--minimum-zoom=7',         # Lines visible at medium zooms
+                '--simplification=3',       # Moderate simplification for lines
+                '--buffer=12',              # Higher buffer for line features
+            ]
+        
+        elif geometry_type == 'Polygon':
+            # Optimized for polygon features (default polygon settings)
+            settings = [
+                '--simplification=5',        # Moderate simplification for polygons
+                '--drop-rate=0.1',          # Conservative dropping
+                '--low-detail=10',          # Standard detail start
+                '--full-detail=13',         # Good full detail
+                '--coalesce-smallest-as-needed',
+                '--extend-zooms-if-still-dropping',
+                '--gamma=0.5',              # Balanced density reduction
+                '--maximum-zoom=15',
+                '--minimum-zoom=8',         # Polygons at higher zooms
+                '--no-tiny-polygon-reduction',  # Preserve small polygons
+            ]
+        
+        else:
+            # Mixed or Unknown geometry types - use conservative polygon defaults
+            settings = [
+                '--simplification=3',        # Conservative simplification
+                '--drop-rate=0.08',         # Very conservative dropping
+                '--low-detail=9',           # Early detail preservation
+                '--full-detail=12',         
+                '--coalesce-smallest-as-needed',
+                '--extend-zooms-if-still-dropping',
+                '--gamma=0.4',              # Moderate density reduction
+                '--maximum-zoom=15',
+                '--minimum-zoom=7',
+            ]
+    
+    # Log performance and decision metrics
+    total_time = time.time() - start_time
+    
+    # Only log detailed metrics if debugging is enabled (check for debug flag or verbose mode)
+    if hasattr(sys, 'argv') and ('--debug' in sys.argv or '--verbose' in sys.argv):
+        identifier = layer_name if layer_name else (filename if filename else 'unknown')
+        print(f"  Settings selection for '{identifier}':")
+        print(f"    Method: {detection_method}")
+        print(f"    Layer type: {layer_type}")
+        print(f"    Geometry type: {geometry_type}")
+        print(f"    Total time: {total_time:.3f}s")
+        print(f"    Geometry detection time: {geometry_detection_time:.3f}s")
+        print(f"    Settings count: {len(settings)}")
+    
+    return settings
 
 def get_tippecanoe_command(input_path, tile_path, layer_name):
     """Get optimized tippecanoe command based on layer name and file type"""
@@ -760,7 +966,7 @@ def get_tippecanoe_command(input_path, tile_path, layer_name):
     ]
     
     # Get layer-specific settings (now only the truly unique options)
-    layer_settings = get_layer_tippecanoe_settings(layer_name, input_path.name)
+    layer_settings = get_layer_tippecanoe_settings(layer_name, input_path)
     
     return base_cmd + layer_settings
 
@@ -849,6 +1055,14 @@ def create_tilejson():
             "layers": [
                 {"id": "places", "description": "Points of interest", "fields": {"category": "String", "confidence": "Number"}},
                 {"id": "placenames", "description": "Place names", "fields": {"subtype": "String", "locality_type": "String"}},
+                {"id": "health_facilities", "description": "Health facilities", "fields": {"name": "String", "type": "String", "id": "String"}},
+                {"id": "settlement_names", "description": "Settlement names", "fields": {"name": "String", "type": "String", "id": "String"}},
+            ]
+        },
+        "admin.pmtiles": {
+            "layers": [
+                {"id": "health_areas", "description": "Health administrative areas", "fields": {"name": "String", "type": "String", "id": "String"}},
+                {"id": "health_zones", "description": "Health administrative zones", "fields": {"name": "String", "type": "String", "id": "String"}},
             ]
         },
         "buildings_low_lod.pmtiles": {
@@ -899,7 +1113,7 @@ def create_tilejson():
     
     return tilejson_path
 
-def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=True, skip_medium_lod=False, skip_high_lod=True):
+def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False, skip_medium_lod=False, skip_high_lod=True):
     """Create separate low-LOD, medium-LOD, and high-LOD building tiles for smooth crossfading"""
     layer_name = 'layer'
     base_name = Path(geojson_file).stem

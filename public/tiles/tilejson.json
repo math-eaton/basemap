@@ -10,13 +10,33 @@
     -2.8113711933311296
   ],
   "tiles": [
+    "pmtiles://tiles/admin.pmtiles",
     "pmtiles://tiles/base.pmtiles",
+    "pmtiles://tiles/buildings_low_lod.pmtiles",
     "pmtiles://tiles/buildings_medium_lod.pmtiles",
     "pmtiles://tiles/places.pmtiles",
     "pmtiles://tiles/settlement-extents.pmtiles",
     "pmtiles://tiles/transportation.pmtiles"
   ],
   "vector_layers": [
+    {
+      "id": "health_areas",
+      "description": "Health administrative areas",
+      "fields": {
+        "name": "String",
+        "type": "String",
+        "id": "String"
+      }
+    },
+    {
+      "id": "health_zones",
+      "description": "Health administrative zones",
+      "fields": {
+        "name": "String",
+        "type": "String",
+        "id": "String"
+      }
+    },
     {
       "id": "land_use",
       "description": "Land use polygons",
@@ -51,6 +71,15 @@
     },
     {
       "id": "buildings",
+      "description": "Buildings (Low LOD)",
+      "fields": {
+        "name": "String",
+        "height": "Number",
+        "level": "Number"
+      }
+    },
+    {
+      "id": "buildings",
       "description": "Buildings (Medium LOD)",
       "fields": {
         "name": "String",
@@ -72,6 +101,24 @@
       "fields": {
         "subtype": "String",
         "locality_type": "String"
+      }
+    },
+    {
+      "id": "health_facilities",
+      "description": "Health facilities",
+      "fields": {
+        "name": "String",
+        "type": "String",
+        "id": "String"
+      }
+    },
+    {
+      "id": "settlement_names",
+      "description": "Settlement names",
+      "fields": {
+        "name": "String",
+        "type": "String",
+        "id": "String"
       }
     },
     {

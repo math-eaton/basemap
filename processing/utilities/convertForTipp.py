@@ -63,7 +63,7 @@ def create_parser():
     parser.add_argument('--batch-size', type=int, default=10000, 
                         help='Number of features to process in each batch')
     
-    return parser
+    return parser 
 
 def open_dataset(input_path):
     """Open the input dataset using OGR"""
