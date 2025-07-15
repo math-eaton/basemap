@@ -101,16 +101,19 @@ class OvertureMap {
             'building-outlines': 83,   // Building outlines
 
             // Administrative boundaries (85-89)
-            'health-areas': 85,        // Health administrative areas (fill)
+            'health-areas': 84,        // Health administrative areas (fill)
             'health-zones': 86,        // Health administrative zones (fill)
+            'health-zones-outline': 85, // Health zones outline
             'health-areas-outline': 87, // Health areas outline
-            'health-zones-outline': 88, // Health zones outline
+            'health-areas-centerline': 86,
 
             // Points of interest (90-99)
             'places': 90,              // Place points/circles
             'health-facilities': 91,   // Health facilities points
             
             // Labels and text (100+)
+            'health-areas-labels': 98, // Health area labels
+            'health-zones-labels': 99, // Health zone labels
             'place-labels': 100,       // Place name labels
             'health-facilities-labels': 101, // Health facility labels
             'settlement-names': 102,   // Settlement name labels - highest priority
