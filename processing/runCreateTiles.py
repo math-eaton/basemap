@@ -1,16 +1,27 @@
-import duckdb
+#!/usr/bin/env python3
+"""
+runCreateTiles.py - Convert geospatial data to PMTiles using Tippecanoe
+
+This module handles the conversion of GeoJSON/GeoJSONSeq files to PMTiles
+using optimized Tippecanoe settings. Can be used standalone or imported
+into other scripts like Jupyter notebooks.
+
+Usage:
+    python runCreateTiles.py --extent="20.0,-7.0,26.0,-3.0" --input-dir="/path/to/data"
+    
+    # From another script:
+    from runCreateTiles import process_to_tiles
+    process_to_tiles(extent=(20.0, -7.0, 26.0, -3.0), input_dirs=["/path/to/data"])
+"""
+
 import os
 import subprocess
 import fnmatch
-import re
+import time
 from tqdm import tqdm
 import sys
 import json
-import tempfile
-import shutil
 import argparse
-import mercantile
-import math
 from pathlib import Path
 from concurrent.futures import ProcessPoolExecutor, as_completed
 
@@ -20,554 +31,6 @@ DATA_DIR = PROJECT_ROOT / "processing" / "data"
 TILE_DIR = PROJECT_ROOT / "processing" / "tiles"
 OVERTURE_DATA_DIR = PROJECT_ROOT / "overture" / "data"
 PUBLIC_TILES_DIR = PROJECT_ROOT / "public" / "tiles"
-
-def deg2num(lat_deg, lon_deg, zoom):
-    """Convert lat/lon to tile coordinates"""
-    lat_rad = math.radians(lat_deg)
-    n = 2.0 ** zoom
-    xtile = int((lon_deg + 180.0) / 360.0 * n)
-    ytile = int((1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n)
-    return (xtile, ytile)
-
-def tile_to_quadkey(x, y, zoom):
-    """Convert tile coordinates to QuadKey"""
-    quadkey = []
-    for i in range(zoom, 0, -1):
-        digit = 0
-        mask = 1 << (i - 1)
-        if (x & mask) != 0:
-            digit += 1
-        if (y & mask) != 0:
-            digit += 2
-        quadkey.append(str(digit))
-    return ''.join(quadkey)
-
-def get_quadkeys_for_extent(xmin, ymin, xmax, ymax, zoom=6):
-    """Get all QuadKeys that intersect with the given extent at specified zoom level"""
-    # Convert extent to tile coordinates
-    x1, y1 = deg2num(ymax, xmin, zoom)  # Top-left
-    x2, y2 = deg2num(ymin, xmax, zoom)  # Bottom-right
-    
-    # Ensure proper ordering
-    x1, x2 = min(x1, x2), max(x1, x2)
-    y1, y2 = min(y1, y2), max(y1, y2)
-    
-    quadkeys = []
-    for x in range(x1, x2 + 1):
-        for y in range(y1, y2 + 1):
-            quadkey = tile_to_quadkey(x, y, zoom)
-            quadkeys.append(quadkey)
-    
-    return quadkeys
-
-def optimize_parquet_paths(base_url, quadkeys, url_type="s3"):
-    """Convert base URL to QuadKey-filtered paths for faster parquet reading"""
-    # Extract the base path before the wildcard
-    if base_url.endswith('/*'):
-        base_path = base_url[:-2]
-    else:
-        base_path = base_url
-    
-    # Generate QuadKey-specific paths
-    optimized_paths = []
-    for quadkey in quadkeys:
-        if url_type == "s3":
-            # S3 uses QuadKey partitioning like: .../quadkey=012301/part-*.parquet
-            path = f"{base_path}/quadkey={quadkey}/*"
-        elif url_type == "azure":
-            # Azure also uses QuadKey partitioning with the same structure
-            path = f"{base_path}/quadkey={quadkey}/*"
-        else:
-            # Default to S3 structure
-            path = f"{base_path}/quadkey={quadkey}/*"
-        
-        optimized_paths.append(path)
-    
-    return optimized_paths
-
-def optimize_sql_with_quadkeys(sql_content, quadkeys):
-    """Replace S3 and Azure URLs in SQL with QuadKey-filtered paths for faster parquet reading"""
-    import re
-    
-    # Pattern to match S3 URLs in read_parquet() calls
-    s3_pattern = r"read_parquet\('(s3://overturemaps-us-west-2/release/[\d-]+\.\d+/theme=([^/]+)/type=([^/]+)/\*)'([^)]*)\)"
-    
-    # Pattern to match Azure URLs in read_parquet() calls
-    azure_pattern = r"read_parquet\('(az://overturemapswestus2\.blob\.core\.windows\.net/release/[\d-]+[\w.-]*/theme=([^/]+)/type=([^/]+)/\*)'([^)]*)\)"
-    
-    # Pattern to match S3 places URLs (special case with /*/* structure)
-    s3_places_pattern = r"read_parquet\('(s3://overturemaps-us-west-2/release/[\d-]+\.\d+/theme=(places)/\*)/\*'([^)]*)\)"
-    
-    def replace_url(match, url_type="s3"):
-        original_url = match.group(1)
-        theme = match.group(2)
-        data_type = match.group(3) if len(match.groups()) >= 3 else "unknown"
-        additional_params = match.group(4) if len(match.groups()) >= 4 else ""
-        
-        # Get optimized paths for this URL
-        optimized_paths = optimize_parquet_paths(original_url, quadkeys, url_type)
-        
-        # Create array of paths for read_parquet
-        paths_array = "[" + ", ".join(f"'{path}'" for path in optimized_paths) + "]"
-        
-        # Reconstruct the read_parquet call with the optimized paths
-        result = f"read_parquet({paths_array}{additional_params})"
-        
-        # Log the optimization
-        print(f"  Optimized {theme}/{data_type} ({url_type.upper()}): {len(optimized_paths)} partitions (was: full dataset)")
-        
-        return result
-    
-    def replace_s3_url(match):
-        return replace_url(match, "s3")
-    
-    def replace_azure_url(match):
-        return replace_url(match, "azure")
-    
-    def replace_s3_places_url(match):
-        # Special handler for places URLs with /*/* structure
-        original_url = match.group(1)
-        theme = match.group(2)
-        additional_params = match.group(3)
-        
-        # For places, we need to handle the /*/* structure
-        optimized_paths = optimize_parquet_paths(original_url + "/*", quadkeys, "s3")
-        
-        # Create array of paths for read_parquet
-        paths_array = "[" + ", ".join(f"'{path}'" for path in optimized_paths) + "]"
-        
-        # Reconstruct the read_parquet call with the optimized paths
-        result = f"read_parquet({paths_array}{additional_params})"
-        
-        # Log the optimization
-        print(f"  Optimized {theme}/all (S3): {len(optimized_paths)} partitions (was: full dataset)")
-        
-        return result
-    
-    # Apply the optimization to all URL types
-    optimized_sql = re.sub(s3_pattern, replace_s3_url, sql_content)
-    optimized_sql = re.sub(azure_pattern, replace_azure_url, optimized_sql)
-    optimized_sql = re.sub(s3_places_pattern, replace_s3_places_url, optimized_sql)
-    
-    return optimized_sql
-
-def snap_to_tile_bounds(extent, zoom=8):
-    """Snap extent to align with slippy tile boundaries to prevent rendering artifacts"""
-    xmin, ymin, xmax, ymax = extent
-    tiles = list(mercantile.tiles(xmin, ymin, xmax, ymax, zoom))
-    if not tiles:
-        return extent
-    
-    snapped = mercantile.bounds(tiles[0])
-    for t in tiles[1:]:
-        b = mercantile.bounds(t)
-        snapped = mercantile.LngLatBbox(
-            min(snapped.west, b.west),
-            min(snapped.south, b.south),
-            max(snapped.east, b.east),
-            max(snapped.north, b.north),
-        )
-    return (snapped.west, snapped.south, snapped.east, snapped.north)
-
-# extent parameters for New York State
-# extent_xmin = -79.76259
-# extent_xmax = -71.85621
-# extent_ymin = 40.49612
-# extent_ymax = 45.01585
-
-# extent parameters for st lawrence county, ny
-# extent_xmin = -75.5
-# extent_xmax = -74.5
-# extent_ymin = 44.0
-# extent_ymax = 45.0
-
-# extent parameters for Kinshasa Province, DRC
-# extent_xmin = 15.0
-# extent_xmax = 16.0
-# extent_ymin = -4.5
-# extent_ymax = -3.5
-
-# extent parameters for Kasai-Oriental Province, DRC
-raw_extent = (20.0, -7.0, 26.0, -3.0)  # (xmin, ymin, xmax, ymax)
-
-# testing extent - mbuji-mayi, drc
-# raw_extent = (23.4, -6.2, 23.8, -5.8)  # (xmin, ymin, xmax, ymax)
-
-
-# Snap to tile boundaries to prevent rendering artifacts
-snapped_extent = snap_to_tile_bounds(raw_extent, zoom=8)
-extent_xmin, extent_ymin, extent_xmax, extent_ymax = snapped_extent
-
-print(f"Raw extent: {raw_extent}")
-print(f"Snapped extent: {snapped_extent}")
-
-# Buffer for data download to ensure complete features at edges
-# Optimized: reduced from 1° to 0.2° (80% reduction in download area)
-buffer_degrees = 0.2  # ~22km buffer (was ~111km)
-
-# Buffered extent for data download
-buffered_xmin = extent_xmin - buffer_degrees
-buffered_xmax = extent_xmax + buffer_degrees
-buffered_ymin = extent_ymin - buffer_degrees
-buffered_ymax = extent_ymax + buffer_degrees
-
-
-def download_source_data():
-    """Download and process source data from Overture Maps
-    
-    Uses a buffered extent to ensure complete features at map boundaries.
-    The buffer helps prevent edge clipping when generating tiles.
-    """
-    print("=== DOWNLOADING SOURCE DATA ===")
-    print(f"Map extent: {extent_xmin}, {extent_ymin} to {extent_xmax}, {extent_ymax}")
-    print(f"Download extent (buffered): {buffered_xmin}, {buffered_ymin} to {buffered_xmax}, {buffered_ymax}")
-    print(f"Buffer: {buffer_degrees} degrees (~{buffer_degrees * 111:.1f}km)")
-    print()
-    
-    # Ensure directories exist
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    OVERTURE_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    
-    # Read the SQL template file
-    template_path = Path(__file__).parent / 'tileQueries.template'
-    with open(template_path, 'r') as file:
-        template_content = file.read()
-
-    # Replace template variables with actual paths
-    sql_content = template_content.replace('{{data_dir}}', str(DATA_DIR))
-    sql_content = sql_content.replace('{{overture_data_dir}}', str(OVERTURE_DATA_DIR))
-    
-    # Replace the extent variables with buffered extent
-    sql_content = sql_content.replace('$extent_xmin', str(buffered_xmin))
-    sql_content = sql_content.replace('$extent_xmax', str(buffered_xmax))
-    sql_content = sql_content.replace('$extent_ymin', str(buffered_ymin))
-    sql_content = sql_content.replace('$extent_ymax', str(buffered_ymax))
-
-    # OPTIMIZATION: Get QuadKeys for the buffered extent to filter parquet files
-    quadkeys = get_quadkeys_for_extent(buffered_xmin, buffered_ymin, buffered_xmax, buffered_ymax, zoom=6)
-    total_possible_quadkeys = 4**6  # 6 zoom levels, 4 quadrants each = 4096 total
-    efficiency_percent = (len(quadkeys) / total_possible_quadkeys) * 100
-    # print(f"QuadKey optimization: {len(quadkeys)}/{total_possible_quadkeys} partitions to read ({efficiency_percent:.1f}% of global data)")
-    # print(f"Estimated data reduction: {100 - efficiency_percent:.1f}% less data to download")
-    # print(f"QuadKeys: {quadkeys[:10]}{'...' if len(quadkeys) > 10 else ''}")
-    
-    # Apply QuadKey filtering to S3 URLs in the SQL
-    # Temporarily disable QuadKey optimization
-    # sql_content = optimize_sql_with_quadkeys(sql_content, quadkeys)
-
-    # Split the SQL content into sections based on '-- breakpoint'
-    sql_sections = sql_content.split('-- breakpoint')
-
-    # Connect to DuckDB
-    conn = duckdb.connect()
-
-    # Create a progress bar for the overall process
-    with tqdm(total=len([s for s in sql_sections if s.strip() and not s.strip().startswith('SET extent_')]), 
-              desc="Overall progress", unit="section", position=0, leave=True) as pbar:
-        
-        # Execute each section
-        for i, section in enumerate(sql_sections):
-            section = section.strip()
-            if section and not section.startswith('SET extent_'):  # Skip empty sections and SET commands
-                # Extract URL and data type from the section
-                url_info = get_db_url(section)
-                if url_info:
-                    desc = f"Section {i + 1}: {url_info['description']}"
-                    tqdm.write(f"Executing {desc}")
-                    tqdm.write(f"  -> Querying: {url_info['url']}")
-                    tqdm.write(f"  -> Output: {url_info['output_file']}")
-                else:
-                    desc = f"Section {i + 1}"
-                    tqdm.write(f"Executing {desc}...")
-                
-                try:
-                    # Create a callback for progress updates during query execution
-                    class ProgressTracker:
-                        def __init__(self):
-                            self.progress_bar = None
-                            self.last_progress = 0
-                            self.current_step = 0
-                            self.total_steps = 100  # Estimate
-                        
-                        def progress(self, current, total=None):
-                            if total is not None and total > 0:
-                                self.total_steps = total
-                            
-                            # Initialize progress bar if not already done
-                            if self.progress_bar is None:
-                                self.progress_bar = tqdm(
-                                    total=self.total_steps, 
-                                    desc=f"  {desc}", 
-                                    unit="op", 
-                                    position=1, 
-                                    leave=False
-                                )
-                            
-                            # Update progress bar only for significant changes
-                            if current > self.last_progress:
-                                self.progress_bar.update(current - self.last_progress)
-                                self.last_progress = current
-                            
-                            # Complete the progress bar when done
-                            if current >= self.total_steps:
-                                if self.progress_bar:
-                                    self.progress_bar.close()
-                                    self.progress_bar = None
-                    
-                    # Create a tracker for this query
-                    tracker = ProgressTracker()
-                    
-                    # Execute the query
-                    conn.execute(section)
-                    
-                    # Make sure progress bar is closed
-                    if tracker.progress_bar:
-                        tracker.progress_bar.close()
-                    
-                    tqdm.write(f"  SUCCESS: Section {i + 1} executed successfully.")
-                except Exception as e:
-                    tqdm.write(f"  ERROR: Error executing section {i + 1}: {e}")
-                    tqdm.write(f"  Section content: {section[:200]}...")
-                
-                # Update the main progress bar
-                pbar.update(1)
-
-    # Close the connection
-    conn.close()
-    tqdm.write("=== SOURCE DATA DOWNLOAD COMPLETE ===\n")
-
-def process_custom_tiles(custom_inputs, filter_pattern=None):
-    """Process custom/non-Overture vector data into standalone PMTiles
-    
-    Args:
-        custom_inputs (list): List of custom input paths to process
-        filter_pattern (str, optional): Only process files matching this pattern
-    """
-    print("=== PROCESSING CUSTOM TILES ===")
-    
-    # Ensure directories exist
-    TILE_DIR.mkdir(parents=True, exist_ok=True)
-    
-    # Define search directories for custom data
-    custom_data_dirs = [
-        DATA_DIR,
-        OVERTURE_DATA_DIR,
-        PROJECT_ROOT / "processing" / "input",
-        PROJECT_ROOT / "processing" / "data",
-        PROJECT_ROOT / "processing" / "utilities"
-    ]
-    
-    processed_files = []
-    
-    # Process each custom input
-    for custom_input in custom_inputs:
-        custom_path = Path(custom_input)
-        
-        # If not absolute path, search in data directories
-        if not custom_path.is_absolute():
-            found_file = None
-            for data_dir in custom_data_dirs:
-                potential_path = data_dir / custom_path
-                if potential_path.exists():
-                    found_file = potential_path
-                    break
-                # Also try with glob pattern
-                glob_matches = list(data_dir.glob(str(custom_path)))
-                if glob_matches:
-                    found_file = glob_matches[0]
-                    break
-            
-            if found_file:
-                custom_path = found_file
-            else:
-                print(f"ERROR: Custom file not found: {custom_input}")
-                print(f"   Searched in: {[str(d) for d in custom_data_dirs]}")
-                continue
-        
-        # Check if file exists
-        if not custom_path.exists():
-            print(f"ERROR: Custom file not found: {custom_path}")
-            continue
-        
-        # Apply filter if provided
-        if filter_pattern and not fnmatch.fnmatch(custom_path.name, filter_pattern):
-            print(f"SKIPPING {custom_path.name} (doesn't match filter: {filter_pattern})")
-            continue
-        
-        # Process the file
-        print(f"\n--- Processing custom file: {custom_path.name} ---")
-        
-        # Determine output name (remove .geojsonseq/.geojson extension)
-        base_name = custom_path.stem
-        if base_name.endswith('.geojsonseq'):
-            base_name = base_name[:-12]  # Remove .geojsonseq
-        
-        tile_path = TILE_DIR / f"{base_name}.pmtiles"
-        
-        # Get optimized tippecanoe command
-        # Use consistent "layer" name for all PMTiles to ensure interoperability
-        layer_name = 'layer'  # Standardized layer name for all PMTiles
-        cmd = get_tippecanoe_command(custom_path, tile_path, layer_name)
-        
-        # Execute tippecanoe
-        try:
-            print(f"Generating {base_name}.pmtiles...")
-            result = subprocess.run(cmd, check=True, text=True)
-            print(f"SUCCESS: {base_name}.pmtiles generated successfully")
-            processed_files.append({
-                'name': base_name,
-                'path': tile_path,
-                'layer': layer_name,
-                'source': custom_path
-            })
-        except subprocess.CalledProcessError as e:
-            print(f"ERROR: Error generating {base_name}.pmtiles:")
-            print(f"   Command: {' '.join(cmd)}")
-            print(f"   Error: {e.stderr if e.stderr else str(e)}")
-        except Exception as e:
-            print(f"ERROR: {str(e)}")
-    
-    if processed_files:
-        print(f"\nSUCCESS: Successfully processed {len(processed_files)} custom files:")
-        for file_info in processed_files:
-            print(f"   - {file_info['name']}.pmtiles (layer: {file_info['layer']})")
-    else:
-        print("\nWARNING: No custom files were processed")
-    
-    print("=== CUSTOM TILES PROCESSING COMPLETE ===\n")
-    return processed_files
-
-def process_to_tiles(custom_inputs=None, filter_pattern=None, theme_filter=None):
-    """Process GeoJSON/GeoJSONSeq files into theme-based PMTiles
-    
-    Args:
-        custom_inputs (list, optional): List of custom input paths to process first
-        filter_pattern (str, optional): Only process files matching this pattern (e.g., 'roads*')
-        theme_filter (str, optional): Only process specific theme (e.g., 'base', 'transportation')
-    """
-    print("=== PROCESSING TO TILES ===")
-    
-    # Ensure directories exist
-    DATA_DIR.mkdir(parents=True, exist_ok=True)
-    OVERTURE_DATA_DIR.mkdir(parents=True, exist_ok=True)
-    TILE_DIR.mkdir(parents=True, exist_ok=True)
-    
-    # First, process any custom inputs as standalone tiles
-    if custom_inputs:
-        process_custom_tiles(custom_inputs, filter_pattern)
-    
-    # Define themes and their corresponding files
-    themes = {
-        'base': {
-            'files': ['land_use.geojsonseq', 'land_cover.geojsonseq', 'land_residential.geojsonseq', 'water.geojsonseq', 'infrastructure.geojsonseq'],
-            'layers': {
-                # 'land': 'land.geojsonseq',
-                'land_use': 'land_use.geojsonseq',
-                'land_cover': 'land_cover.geojsonseq',
-                'land_residential': 'land_residential.geojsonseq',
-                'water': 'water.geojsonseq',
-                'infrastructure': 'infrastructure.geojsonseq'
-            }
-        },
-        'settlement-extents': {
-            'files': ['*extents*.geojsonseq'],
-            'layers': {
-                'settlementextents': '*extent*.geojsonseq'
-            }
-        },
-        'transportation': {
-            'files': ['roads.geojsonseq'],
-            'layers': {
-                'roads': 'roads.geojsonseq'
-            }
-        },
-        'places': {
-            'files': ['places.geojson', 'placenames.geojson', 'GRID3_COD_health_facilities_v5_0.geojson', 'GRID3_COD_settlement_names_v5_0.geojson'],
-            'layers': {
-                'places': 'places.geojson',
-                'placenames': 'placenames.geojson',
-                'health_facilities': 'GRID3_COD_health_facilities_v5_0.geojson',
-                'settlement_names': 'GRID3_COD_settlement_names_v5_0.geojson'
-            }
-        },
-        'admin': {
-            'files': ['GRID3_COD_health_areas_v5_0.geojson', 'GRID3_COD_health_zones_v5_0.geojson'],
-            'layers': {
-                'health_areas': 'GRID3_COD_health_areas_v5_0.geojson',
-                'health_zones': 'GRID3_COD_health_zones_v5_0.geojson'
-            }
-        },
-        'buildings': {
-            'files': ['buildings.geojsonseq'],
-            'layers': {
-                'buildings': 'buildings.geojsonseq'
-            },
-            'multi_lod': True  # Special handling for buildings
-        }
-    }
-    
-    # Process each theme
-    for theme_name, theme_config in themes.items():
-        # Apply theme filter if provided
-        if theme_filter and theme_name != theme_filter:
-            print(f"Skipping {theme_name} theme (doesn't match filter: {theme_filter})")
-            continue
-            
-        print(f"\n--- Processing {theme_name} theme ---")
-        
-        # Find files for this theme
-        theme_files = []
-        for file_pattern in theme_config['files']:
-            # Check in both data directories
-            for data_dir in [DATA_DIR, OVERTURE_DATA_DIR]:
-                matching_files = list(data_dir.glob(file_pattern))
-                theme_files.extend(matching_files)
-        
-        # Apply filter if provided
-        if filter_pattern:
-            theme_files = [f for f in theme_files if fnmatch.fnmatch(f.name, filter_pattern)]
-        
-        if not theme_files:
-            print(f"No files found for {theme_name} theme")
-            continue
-            
-        # Special handling for buildings (multi-LOD)
-        if theme_config.get('multi_lod') and any('building' in f.name for f in theme_files):
-            print(f"Processing buildings with multi-LOD approach...")
-            building_files = [f for f in theme_files if 'building' in f.name]
-            for building_file in building_files:
-                create_building_tiles(building_file, TILE_DIR, building_file.name)
-            continue
-        
-        # Build tippecanoe command for this theme
-        theme_tile_path = TILE_DIR / f"{theme_name}.pmtiles"
-        
-        # Collect layer files for this theme
-        layer_files = {}
-        for layer_name, file_pattern in theme_config['layers'].items():
-            # Use fnmatch for pattern matching instead of exact match
-            matching_files = [f for f in theme_files if fnmatch.fnmatch(f.name, file_pattern)]
-            if matching_files:
-                layer_files[layer_name] = matching_files[0]
-        
-        # Get consolidated tippecanoe command
-        cmd = get_theme_tippecanoe_command(theme_name, theme_tile_path, layer_files)
-        
-        # Execute tippecanoe
-        try:
-            print(f"Generating {theme_name}.pmtiles...")
-            print(f"Command: {' '.join(cmd)}")
-            
-            # Run tippecanoe command
-            result = subprocess.run(cmd, check=True, text=True)
-            print(f"SUCCESS: {theme_name}.pmtiles generated successfully")
-                
-        except subprocess.CalledProcessError as e:
-            print(f"ERROR: Error generating {theme_name}.pmtiles: {e.stderr.decode() if e.stderr else str(e)}")
-        except Exception as e:
-            print(f"ERROR: {str(e)}")
-
-    print("=== TILE PROCESSING COMPLETE ===\n")
 
 def validate_geojson(file_path):
     """Validate and clean GeoJSON files"""
@@ -587,28 +50,6 @@ def validate_geojson(file_path):
 
     with open(file_path, 'w') as f:
         json.dump(data, f)
-
-def process_single_file(file_path):
-    """Process a single file into PMTiles - designed for parallel execution"""
-    try:
-        layer_name = 'layer'
-        tile_path = TILE_DIR / f"{file_path.stem}.pmtiles"
-        
-        if not file_path.exists():
-            return {"success": False, "message": f"File does not exist: {file_path}"}
-            
-        # Get optimized tippecanoe settings based on file type
-        cmd = get_tippecanoe_command(file_path, tile_path, layer_name)
-        
-        # Execute tippecanoe
-        subprocess.run(cmd, check=True)
-        
-        return {"success": True, "message": f"Tiles generated successfully"}
-        
-    except subprocess.CalledProcessError as e:
-        return {"success": False, "message": f"Tippecanoe error: {e.stderr.decode() if e.stderr else str(e)}"}
-    except Exception as e:
-        return {"success": False, "message": f"Error: {str(e)}"}
 
 def detect_geometry_type(file_path):
     """Detect the primary geometry type from a GeoJSON or GeoJSONSeq file
@@ -671,31 +112,19 @@ def detect_geometry_type(file_path):
                     elif 'geometry' in data and data['geometry'] and 'type' in data['geometry']:
                         # Single feature GeoJSON
                         geometry_types.add(data['geometry']['type'])
+                        sample_count = 1
                 except json.JSONDecodeError:
                     return 'Unknown'
         
-        # Normalize geometry types to base types
-        normalized_types = set()
-        for geom_type in geometry_types:
-            if geom_type in ['Point', 'MultiPoint']:
-                normalized_types.add('Point')
-            elif geom_type in ['LineString', 'MultiLineString']:
-                normalized_types.add('LineString')
-            elif geom_type in ['Polygon', 'MultiPolygon']:
-                normalized_types.add('Polygon')
-            else:
-                normalized_types.add(geom_type)
-        
-        # Return the primary geometry type
-        if len(normalized_types) == 1:
-            return list(normalized_types)[0]
-        elif len(normalized_types) > 1:
-            return 'Mixed'
-        else:
+        if not geometry_types:
             return 'Unknown'
+        elif len(geometry_types) == 1:
+            return list(geometry_types)[0]
+        else:
+            return 'Mixed'
             
     except Exception as e:
-        print(f"Warning: Could not detect geometry type for {file_path}: {e}")
+        print(f"Error detecting geometry type for {file_path}: {e}")
         return 'Unknown'
 
 def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
@@ -711,9 +140,8 @@ def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
     - --coalesce-densest-as-needed (most layers)
     - --drop-fraction-as-needed (most layers)
     
-    This function now returns only truly layer-specific options.
+    This function now returns only layer-specific options.
     """
-    import time
     start_time = time.time()
     
     # Handle both Path objects and filename strings
@@ -787,15 +215,10 @@ def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
     if layer_type == 'water':
         # Optimized for water polygons with enhanced detail at zoom 13+
         settings = [
-            '--simplification=2',        # Reduced for better coastline detail (better than default)
-            '--low-detail=11',           # Earlier detail start
-            '--full-detail=13',          # Full detail at zoom 13 to match base
             '--no-tiny-polygon-reduction',
-            '--no-feature-limit',
             '--extend-zooms-if-still-dropping',
             '--maximum-tile-bytes=2097152',  # 2MB for water features (override base)
             '--maximum-zoom=15',         # Extended to match base polygons
-            '--gamma=0.9',               # Less aggressive for water bodies
         ]
     
     elif layer_type == 'settlement-extents':
@@ -824,7 +247,6 @@ def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
             '--minimum-zoom=7',
             '--extend-zooms-if-still-dropping',
             '--coalesce-smallest-as-needed',
-            # '--low-detail=11',
             '--full-detail=13',
             '--minimum-detail=10'
         ]
@@ -832,22 +254,21 @@ def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
     elif layer_type == 'places':
         # Optimized for point features (minimal settings needed)
         settings = [
-            '--cluster-distance=35',     # Unique to point features
-            '--drop-rate=0.1',
+            '--cluster-distance=10',     # Reduced for better point preservation
+            '--drop-rate=0.0',          # NO dropping for point features
+            '--no-feature-limit',       # Ensure all points are preserved
+            '--extend-zooms-if-still-dropping',  # Extend zooms to prevent dropping
+            '--maximum-zoom=16',        # Ensure points visible at highest zooms
         ]
     
     elif layer_type == 'base-polygons':
         # Optimized for base polygon layers (land_use, land_cover, etc.)
         settings = [
-            '--simplification=5',        # More aggressive simplification reduction
-            '--drop-rate=0.1',          # Very conservative dropping to keep features
-            '--low-detail=10',          # Start detail reduction later
-            '--full-detail=14',         # Higher quality full detail
-            '--coalesce-smallest-as-needed',
-            '--maximum-zoom=15',        # Extended for high detail
-            '--minimum-zoom=9',
-            # '--cluster-distance=25',    # Tighter clustering for more detail
-            '--no-tiny-polygon-reduction',  # Preserve small polygons at high zoom
+            '--extend-zooms-if-still-dropping-maximum=16',
+            '--drop-rate=0.1',
+            '--coalesce-densest-as-needed',
+            '--minimum-zoom=8',
+            '--maximum-zoom=15',
         ]
     
     else:
@@ -906,19 +327,17 @@ def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
                 '--gamma=0.5',              # Balanced density reduction
                 '--maximum-zoom=15',
                 '--minimum-zoom=8',         # Polygons at higher zooms
-                '--no-tiny-polygon-reduction',  # Preserve small polygons
             ]
         
         else:
             # Mixed or Unknown geometry types - use conservative polygon defaults
             settings = [
-                '--simplification=3',        # Conservative simplification
+                '--simplification=19',        # Conservative simplification
                 '--drop-rate=0.08',         # Very conservative dropping
                 '--low-detail=9',           # Early detail preservation
-                '--full-detail=12',         
+                '--full-detail=15',         
                 '--coalesce-smallest-as-needed',
                 '--extend-zooms-if-still-dropping',
-                '--gamma=0.4',              # Moderate density reduction
                 '--maximum-zoom=15',
                 '--minimum-zoom=7',
             ]
@@ -939,400 +358,384 @@ def get_layer_tippecanoe_settings(layer_name, filename_or_path=None):
     
     return settings
 
-def get_tippecanoe_command(input_path, tile_path, layer_name):
-    """Get optimized tippecanoe command based on layer name and file type"""
-    # Base command with common high-quality settings moved from layer-specific options
+def get_tippecanoe_command(input_path, tile_path, layer_name, extent=None):
+    """Generate optimized tippecanoe command for converting GeoJSON to PMTiles
+    
+    Args:
+        input_path (Path): Path to input GeoJSON/GeoJSONSeq file
+        tile_path (Path): Path for output PMTiles file
+        layer_name (str): Name for the tile layer
+        extent (tuple): Optional bounding box (xmin, ymin, xmax, ymax)
+    
+    Returns:
+        list: Command arguments for subprocess.run()
+    """
+    
+    # Base tippecanoe command with common optimizations
     base_cmd = [
         'tippecanoe',
-        '-fo', str(tile_path),
-        '-zg',
-        '-l', layer_name,
-        '--single-precision',
-        # Clip to the same extent as other tiles
-        '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-        
-        # Common high-quality options consolidated from layer types
-        '--buffer=8',                    # Most layers use 8, higher quality than 4
-        '--no-polygon-splitting',        # Used by most polygon layers
-        '--detect-shared-borders',       # Used by most polygon layers
-        '--drop-smallest',               # Used by most layers for quality
-        '--maximum-tile-bytes=1048576',  # Standard 1MB tiles across most layers
-        '--preserve-input-order',        # Used by all layers for consistency
-        '--coalesce-densest-as-needed',  # Used by most layers
-        '--drop-fraction-as-needed',     # Used by most layers
-        
-        '-P',
-        str(input_path)
+        '-fo', str(tile_path),  # Force overwrite output to PMTiles
+        '-l', layer_name,       # Layer name
+        '--buffer=8',           # Higher quality buffer (most layers)
+        '--drop-smallest',      # Quality optimization
+        '--maximum-tile-bytes=1048576',  # 1MB standard tile size
+        '--preserve-input-order',        # Consistency
+        '--coalesce-densest-as-needed',  # Most layers
+        '--drop-fraction-as-needed',     # Most layers
+        '-P',                   # Parallel processing
     ]
     
-    # Get layer-specific settings (now only the truly unique options)
+    # Add extent clipping if provided
+    if extent:
+        xmin, ymin, xmax, ymax = extent
+        base_cmd.extend(['--clip-bounding-box', f"{xmin},{ymin},{xmax},{ymax}"])
+    
+    # Add polygon-specific options for non-point layers
+    # We'll detect this based on the layer settings
     layer_settings = get_layer_tippecanoe_settings(layer_name, input_path)
     
-    return base_cmd + layer_settings
-
-def get_building_tippecanoe_command(input_path, tile_path, layer_name, lod_type, zoom_range):
-    """Get consolidated tippecanoe command for building tiles with LOD-specific settings"""
-    base_cmd = [
-        'tippecanoe',
-        '-fo', str(tile_path),
-        f'-z{zoom_range["max"]}',
-        f'-Z{zoom_range["min"]}',
-        '-l', layer_name,
-        '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-        
-        # Common building options
-        '--drop-smallest',
-        '--coalesce-smallest-as-needed',
-        '--detect-shared-borders',
-        '--preserve-input-order',
-        '--maximum-tile-bytes=1048576',  # 1MB tiles
-        
-        '-P',
-        str(input_path)
-    ]
+    # Check if this appears to be a polygon layer (add polygon-specific options)
+    if not any('cluster-distance' in setting for setting in layer_settings):
+        # This is likely a polygon layer, add polygon-specific optimizations
+        base_cmd.extend([
+            '--no-polygon-splitting',
+            '--detect-shared-borders',
+        ])
     
-    # LOD-specific settings
-    if lod_type == 'low':
-        base_cmd.extend([
-            '--simplification=10',
-            '--drop-rate=0.5',
-            '--buffer=8',
-        ])
-    elif lod_type == 'medium':
-        base_cmd.extend([
-            '--simplification=5',
-            '--drop-rate=0.333',
-            '--buffer=8',
-        ])
-    elif lod_type == 'high':
-        base_cmd.extend([
-            '--simplification=10',
-            '--drop-rate=0.1',
-            '--buffer=4',
-        ])
+    # Add layer-specific settings
+    base_cmd.extend(layer_settings)
+    
+    # Add input file at the end
+    base_cmd.append(str(input_path))
     
     return base_cmd
 
-def create_tilejson():
-    """Generate TileJSON for MapLibre integration - dynamically includes all available PMTiles"""
+def process_single_file(file_path, extent=None, output_dir=None):
+    """Process a single file into PMTiles - designed for parallel execution"""
+    try:
+        layer_name = file_path.stem.replace('_', '-')  # Use filename as layer name
+        
+        # Determine output directory
+        if output_dir:
+            tile_dir = Path(output_dir)
+        else:
+            tile_dir = TILE_DIR
+        
+        tile_dir.mkdir(parents=True, exist_ok=True)
+        tile_path = tile_dir / f"{file_path.stem}.pmtiles"
+        
+        if not file_path.exists():
+            return {"success": False, "message": f"File does not exist: {file_path}"}
+        
+        # Validate GeoJSON structure
+        validate_geojson(file_path)
+        
+        # Get optimized tippecanoe settings based on file type
+        cmd = get_tippecanoe_command(file_path, tile_path, layer_name, extent)
+        
+        # Execute tippecanoe
+        result = subprocess.run(cmd, check=True, capture_output=True, text=True)
+        
+        return {
+            "success": True,
+            "message": f"Tiles generated successfully: {tile_path.name}",
+            "output_file": tile_path,
+            "layer_name": layer_name
+        }
+        
+    except subprocess.CalledProcessError as e:
+        return {
+            "success": False,
+            "message": f"Tippecanoe error: {e.stderr if e.stderr else str(e)}",
+            "command": ' '.join(cmd) if 'cmd' in locals() else 'unknown'
+        }
+    except Exception as e:
+        return {"success": False, "message": f"Error: {str(e)}"}
+
+def process_to_tiles(extent=None, input_dirs=None, filter_pattern=None, 
+                    output_dir=None, parallel=True, verbose=True):
+    """Process GeoJSON/GeoJSONSeq files into PMTiles
+    
+    Args:
+        extent (tuple): Bounding box as (xmin, ymin, xmax, ymax)
+        input_dirs (list): List of directories to search for input files
+        filter_pattern (str): Only process files matching this pattern
+        output_dir (str): Directory to write output PMTiles (default: TILE_DIR)
+        parallel (bool): Use parallel processing (default: True)
+        verbose (bool): Show progress information (default: True)
+    
+    Returns:
+        dict: Results including processed files and any errors
+    """
+    if verbose:
+        print("=== PROCESSING TO TILES ===")
+    
+    # Default input directories
+    if input_dirs is None:
+        input_dirs = [DATA_DIR, OVERTURE_DATA_DIR]
+    else:
+        input_dirs = [Path(d) for d in input_dirs]
+    
+    # Ensure directories exist
+    for data_dir in input_dirs:
+        Path(data_dir).mkdir(parents=True, exist_ok=True)
+    
+    if output_dir:
+        Path(output_dir).mkdir(parents=True, exist_ok=True)
+    else:
+        TILE_DIR.mkdir(parents=True, exist_ok=True)
+    
+    # Find all GeoJSON/GeoJSONSeq files in data directories
+    geojson_files = []
+    
+    # Search in all input directories
+    for data_dir in input_dirs:
+        data_dir = Path(data_dir)
+        if data_dir.exists():
+            for pattern in ['*.geojson', '*.geojsonseq']:
+                geojson_files.extend(data_dir.glob(pattern))
+    
+    # Apply filter if provided
+    if filter_pattern:
+        filtered_files = []
+        for f in geojson_files:
+            if fnmatch.fnmatch(f.name, filter_pattern):
+                filtered_files.append(f)
+        geojson_files = filtered_files
+    
+    if not geojson_files:
+        message = "No GeoJSON/GeoJSONSeq files found"
+        if filter_pattern:
+            message += f" matching pattern '{filter_pattern}'"
+        print(message)
+        return {"success": False, "message": message, "processed_files": [], "errors": []}
+    
+    if verbose:
+        print(f"Found {len(geojson_files)} files to process:")
+        for f in geojson_files:
+            print(f"  {f.name}")
+    
+    results = {
+        "success": True,
+        "processed_files": [],
+        "errors": [],
+        "total_files": len(geojson_files)
+    }
+    
+    # Process files
+    if parallel and len(geojson_files) > 1:
+        # Parallel processing
+        with ProcessPoolExecutor(max_workers=min(4, len(geojson_files))) as executor:
+            # Submit all jobs
+            future_to_file = {
+                executor.submit(process_single_file, geojson_file, extent, output_dir): geojson_file
+                for geojson_file in geojson_files
+            }
+            
+            # Process results with progress bar
+            if verbose:
+                progress_bar = tqdm(total=len(geojson_files), desc="Processing files", unit="file")
+            
+            for future in as_completed(future_to_file):
+                geojson_file = future_to_file[future]
+                try:
+                    result = future.result()
+                    if result["success"]:
+                        results["processed_files"].append({
+                            "input_file": geojson_file.name,
+                            "output_file": result.get("output_file"),
+                            "layer_name": result.get("layer_name")
+                        })
+                        if verbose:
+                            tqdm.write(f"✓ {geojson_file.name} -> {result.get('output_file', 'unknown')}")
+                    else:
+                        results["errors"].append({
+                            "file": geojson_file.name,
+                            "error": result["message"]
+                        })
+                        if verbose:
+                            tqdm.write(f"✗ {geojson_file.name}: {result['message']}")
+                except Exception as e:
+                    error_msg = f"Unexpected error: {str(e)}"
+                    results["errors"].append({
+                        "file": geojson_file.name,
+                        "error": error_msg
+                    })
+                    if verbose:
+                        tqdm.write(f"✗ {geojson_file.name}: {error_msg}")
+                
+                if verbose:
+                    progress_bar.update(1)
+            
+            if verbose:
+                progress_bar.close()
+    
+    else:
+        # Sequential processing
+        if verbose:
+            progress_bar = tqdm(geojson_files, desc="Processing files", unit="file")
+        else:
+            progress_bar = geojson_files
+        
+        for geojson_file in progress_bar:
+            result = process_single_file(geojson_file, extent, output_dir)
+            
+            if result["success"]:
+                results["processed_files"].append({
+                    "input_file": geojson_file.name,
+                    "output_file": result.get("output_file"),
+                    "layer_name": result.get("layer_name")
+                })
+                if verbose:
+                    tqdm.write(f"✓ {geojson_file.name} -> {result.get('output_file', 'unknown')}")
+            else:
+                results["errors"].append({
+                    "file": geojson_file.name,
+                    "error": result["message"]
+                })
+                if verbose:
+                    tqdm.write(f"✗ {geojson_file.name}: {result['message']}")
+    
+    # Set overall success status
+    if results["errors"]:
+        results["success"] = False
+    
+    if verbose:
+        print(f"\n=== TILE PROCESSING COMPLETE ===")
+        print(f"Processed: {len(results['processed_files'])}/{results['total_files']} files")
+        if results["errors"]:
+            print(f"Errors: {len(results['errors'])}")
+    
+    return results
+
+def create_tilejson(tile_dir=None, extent=None, output_file=None):
+    """Generate TileJSON for MapLibre integration
+    
+    Args:
+        tile_dir (str|Path): Directory containing PMTiles files
+        extent (tuple): Bounding box as (xmin, ymin, xmax, ymax)
+        output_file (str|Path): Output TileJSON file path
+    
+    Returns:
+        dict: TileJSON structure
+    """
+    if tile_dir is None:
+        tile_dir = TILE_DIR
+    else:
+        tile_dir = Path(tile_dir)
+    
+    if extent is None:
+        # Use a default extent if none provided
+        extent = (-180, -85, 180, 85)
+    
+    if output_file is None:
+        output_file = tile_dir / "tilejson.json"
+    else:
+        output_file = Path(output_file)
+    
+    xmin, ymin, xmax, ymax = extent
     
     # Base TileJSON structure
     tilejson = {
         "tilejson": "3.0.0",
-        "name": "Basemap prototype",
+        "name": "Basemap Tiles",
         "minzoom": 0,
-        "maxzoom": 14,
-        "bounds": [extent_xmin, extent_ymin, extent_xmax, extent_ymax],
+        "maxzoom": 16,
+        "bounds": [xmin, ymin, xmax, ymax],
         "tiles": [],
         "vector_layers": []
     }
     
-    # Scan for available PMTiles in the tiles directory
-    available_tiles = list(TILE_DIR.glob("*.pmtiles"))
+    # Find all PMTiles files
+    pmtiles_files = list(tile_dir.glob("*.pmtiles"))
     
-    # Add core theme tiles (these have known structures)
-    core_tiles = {
-        "base.pmtiles": {
-            "layers": [
-                # {"id": "land", "description": "Land polygons", "fields": {"subtype": "String", "class": "String"}},
-                {"id": "land_use", "description": "Land use polygons", "fields": {"subtype": "String", "class": "String"}},
-                {"id": "land_residential", "description": "Residential areas", "fields": {"subtype": "String", "class": "String"}},
-                {"id": "water", "description": "Water bodies", "fields": {"subtype": "String", "class": "String"}},
-                {"id": "infrastructure", "description": "Infrastructure", "fields": {"subtype": "String", "class": "String"}},
-            ]
-        },
-        "settlement-extents.pmtiles": {
-            "layers": [
-                {"id": "settlementextents", "description": "Settlement boundary extents", "fields": {"name": "String", "type": "String", "id": "String"}},
-            ]
-        },
-        "transportation.pmtiles": {
-            "layers": [
-                {"id": "roads", "description": "Road network", "fields": {"class": "String", "subclass": "String"}},
-            ]
-        },
-        "places.pmtiles": {
-            "layers": [
-                {"id": "places", "description": "Points of interest", "fields": {"category": "String", "confidence": "Number"}},
-                {"id": "placenames", "description": "Place names", "fields": {"subtype": "String", "locality_type": "String"}},
-                {"id": "health_facilities", "description": "Health facilities", "fields": {"name": "String", "type": "String", "id": "String"}},
-                {"id": "settlement_names", "description": "Settlement names", "fields": {"name": "String", "type": "String", "id": "String"}},
-            ]
-        },
-        "admin.pmtiles": {
-            "layers": [
-                {"id": "health_areas", "description": "Health administrative areas", "fields": {"name": "String", "type": "String", "id": "String"}},
-                {"id": "health_zones", "description": "Health administrative zones", "fields": {"name": "String", "type": "String", "id": "String"}},
-            ]
-        },
-        "buildings_low_lod.pmtiles": {
-            "layers": [
-                {"id": "buildings", "description": "Buildings (Low LOD)", "fields": {"name": "String", "height": "Number", "level": "Number"}},
-            ]
-        },
-        "buildings_medium_lod.pmtiles": {
-            "layers": [
-                {"id": "buildings", "description": "Buildings (Medium LOD)", "fields": {"name": "String", "height": "Number", "level": "Number"}},
-            ]
-        },
-        "buildings_high_lod.pmtiles": {
-            "layers": [
-                {"id": "buildings", "description": "Buildings (High LOD)", "fields": {"name": "String", "height": "Number", "level": "Number"}},
-            ]
-        }
-    }
-    
-    # Add tiles and vector layers for available PMTiles
-    for tile_file in sorted(available_tiles):
-        tile_name = tile_file.name
-        tile_url = f"pmtiles://tiles/{tile_name}"
+    # Add each PMTiles file as a tile source
+    for pmtiles_file in sorted(pmtiles_files):
+        # Create relative URL
+        tile_url = f"pmtiles://{pmtiles_file.name}"
         tilejson["tiles"].append(tile_url)
         
-        # Add vector layers if this is a known core tile
-        if tile_name in core_tiles:
-            tilejson["vector_layers"].extend(core_tiles[tile_name]["layers"])
-        else:
-            # For custom tiles, use consistent "layer" name for interoperability
-            layer_name = 'layer'  # Standardized layer name for all custom PMTiles
-            custom_layer = {
-                "id": layer_name,
-                "description": f"Custom layer: {tile_file.stem}",
-                "fields": {"id": "String", "name": "String"}  # Generic fields
-            }
-            tilejson["vector_layers"].append(custom_layer)
-            print(f"TILEJSON: Added custom layer to TileJSON: {layer_name} from {tile_name}")
+        # Add vector layer info
+        layer_name = pmtiles_file.stem
+        vector_layer = {
+            "id": layer_name,
+            "description": f"Layer: {layer_name}",
+            "fields": {"id": "String", "name": "String"}  # Generic fields
+        }
+        tilejson["vector_layers"].append(vector_layer)
     
     # Write TileJSON file
-    tilejson_path = TILE_DIR / "tilejson.json"
-    with open(tilejson_path, 'w') as f:
+    output_file.parent.mkdir(parents=True, exist_ok=True)
+    with open(output_file, 'w') as f:
         json.dump(tilejson, f, indent=2)
     
-    print(f"TILEJSON: TileJSON generated: {tilejson_path}")
-    print(f"   - {len(tilejson['tiles'])} PMTiles sources")
-    print(f"   - {len(tilejson['vector_layers'])} vector layers")
+    print(f"TileJSON created: {output_file}")
+    print(f"Found {len(pmtiles_files)} PMTiles files")
     
-    return tilejson_path
+    return tilejson
 
-def create_building_tiles(input_path, tile_dir, geojson_file, skip_low_lod=False, skip_medium_lod=False, skip_high_lod=True):
-    """Create separate low-LOD, medium-LOD, and high-LOD building tiles for smooth crossfading"""
-    layer_name = 'layer'
-    base_name = Path(geojson_file).stem
-
-    # Building LOD configurations
-    lod_configs = {
-        'low': {
-            'skip': skip_low_lod,
-            'zoom_range': {'min': 0, 'max': 9},
-            'suffix': '_low_lod'
-        },
-        'medium': {
-            'skip': skip_medium_lod,
-            'zoom_range': {'min': 11, 'max': 13},
-            'suffix': '_medium_lod'
-        },
-        'high': {
-            'skip': skip_high_lod,
-            'zoom_range': {'min': 13, 'max': 15},
-            'suffix': '_high_lod'
-        }
-    }
-
-    for lod_type, config in lod_configs.items():
-        if config['skip']:
-            continue
-            
-        lod_path = tile_dir / f"{base_name}{config['suffix']}.pmtiles"
-        print(f"Generating {lod_type}-LOD building tiles for {geojson_file}...")
-
-        try:
-            cmd = get_building_tippecanoe_command(input_path, lod_path, layer_name, lod_type, config['zoom_range'])
-            subprocess.run(cmd, check=True)
-            print(f"{lod_type.title()}-LOD building tiles generated successfully.")
-        except subprocess.CalledProcessError as e:
-            print(f"Error generating {lod_type}-LOD building tiles: {e}")
-            return
-
-def get_db_url(sql_section):
-    """Extract URL and data type information from a SQL section"""
-    # Define patterns to match different Overture data sources
-    patterns = [
-        # S3 patterns
-        {
-            'pattern': r"read_parquet\('(s3://overturemaps-us-west-2/release/[\d-]+\.\d+/theme=([^/]+)/type=([^/]+)/\*)'",
-            'description_template': "Downloading {data_type} data from Overture Maps ({theme} theme)",
-        },
-        # Azure blob patterns
-        {
-            'pattern': r"read_parquet\('(az://overturemapswestus2\.blob\.core\.windows\.net/release/[\d-]+[\w.-]*/theme=([^/]+)/type=([^/]+)/\*)'",
-            'description_template': "Downloading {data_type} data from Overture Maps ({theme} theme)",
-        },
-        # Places pattern (special case with wildcards)
-        {
-            'pattern': r"read_parquet\('(s3://overturemaps-us-west-2/release/[\d-]+\.\d+/theme=([^/]+)/\*)/\*'",
-            'description_template': "Downloading {theme} data from Overture Maps",
-        }
-    ]
+def main():
+    """Main entry point for command line usage"""
+    parser = argparse.ArgumentParser(
+        description='Convert geospatial data to PMTiles using Tippecanoe',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
     
-    # Extract output file path
-    output_match = re.search(r"TO '([^']+)'", sql_section)
-    output_file = output_match.group(1).split('/')[-1] if output_match else "unknown"
-    
-    # Try to match each pattern
-    for pattern_info in patterns:
-        match = re.search(pattern_info['pattern'], sql_section)
-        if match:
-            url = match.group(1)
-            theme = match.group(2)
-            
-            # Get data type from the third group if it exists, otherwise use theme
-            if len(match.groups()) >= 3:
-                data_type = match.group(3)
-            else:
-                data_type = theme
-                
-            # Format the description
-            description = pattern_info['description_template'].format(
-                data_type=data_type.replace('_', ' ').title(),
-                theme=theme.replace('_', ' ').title()
-            )
-            
-            return {
-                'url': url,
-                'description': description,
-                'output_file': output_file,
-                'theme': theme,
-                'data_type': data_type
-            }
-    
-    return None
-
-def get_theme_tippecanoe_command(theme_name, theme_tile_path, layer_files):
-    """Get consolidated tippecanoe command for theme-based tiles"""
-    base_cmd = [
-        'tippecanoe',
-        '-fo', str(theme_tile_path),
-        '-zg',
-        '--clip-bounding-box', f"{extent_xmin},{extent_ymin},{extent_xmax},{extent_ymax}",
-        '--cluster-maxzoom=11',
-    ]
-    
-    # Add layer files to command
-    for layer_name, file_path in layer_files.items():
-        print(f"Adding layer '{layer_name}' from file: {file_path}")
-        # Use --named-layer for .geojsonseq files as recommended
-        if file_path.name.endswith('.geojsonseq'):
-            base_cmd.extend(['--named-layer', f'{layer_name}:{file_path}'])
-        else:
-            base_cmd.extend(['-L', f'{layer_name}:{file_path}'])
-    
-    # Add theme-specific optimizations
-    if theme_name == 'settlement-extents':
-        layer_settings = get_layer_tippecanoe_settings('settlement-extents', 'settlement-extents')
-        base_cmd.extend(layer_settings)
-    else:
-        # For multi-layer themes, use settings from the primary layer type
-        primary_layer_map = {
-            'base': 'base-polygons',
-            'transportation': 'roads',
-            'places': 'places'
-        }
-        
-        primary_layer = primary_layer_map.get(theme_name)
-        if primary_layer:
-            layer_settings = get_layer_tippecanoe_settings(primary_layer)
-            base_cmd.extend(layer_settings)
-    
-    return base_cmd
-
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Process geospatial data into PMTiles')
-    parser.add_argument('command', choices=['download', 'tiles', 'all', 'convert', 'custom'],
-                        help='Command to execute')
-    parser.add_argument('--input', nargs='+', help='Custom input file(s) to process')
-    parser.add_argument('--filter', help='Only process files matching this pattern')
-    parser.add_argument('--theme', help='Only process specific theme (base, transportation, places, buildings, settlement-extents)')
-    parser.add_argument('--layer', help='Layer name for custom input (for multi-layer sources)')
-    parser.add_argument('--output', help='Output file path (for convert command)')
-    parser.add_argument('--where', help='SQL WHERE clause to filter features (for convert command)')
-    parser.add_argument('--reproject', help='Reproject to CRS (e.g., EPSG:4326) (for convert command)')
+    parser.add_argument('--extent', 
+                        help='Extent as "xmin,ymin,xmax,ymax" in WGS84 coordinates')
+    parser.add_argument('--input-dir', action='append',
+                        help='Input directory to search for GeoJSON files (can be used multiple times)')
+    parser.add_argument('--output-dir',
+                        help='Output directory for PMTiles files')
+    parser.add_argument('--filter',
+                        help='Only process files matching this pattern (e.g., "roads*" or "places.geojson")')
+    parser.add_argument('--no-parallel', action='store_true',
+                        help='Disable parallel processing')
+    parser.add_argument('--create-tilejson', action='store_true',
+                        help='Create TileJSON file after processing')
+    parser.add_argument('--verbose', action='store_true', default=True,
+                        help='Show detailed progress information')
     
     args = parser.parse_args()
     
-    command = args.command.lower()
-    
-    if command == "download":
-        download_source_data()
-    elif command == "tiles":
-        process_to_tiles(custom_inputs=args.input, filter_pattern=args.filter, theme_filter=args.theme)
-        create_tilejson()
-    elif command == "all":
-        download_source_data()
-        process_to_tiles(custom_inputs=args.input, filter_pattern=args.filter, theme_filter=args.theme)
-        create_tilejson()
-    elif command == "custom":
-        if not args.input:
-            print("Error: --input is required for 'custom' command")
-            sys.exit(1)
-        process_custom_tiles(args.input, filter_pattern=args.filter)
-        create_tilejson()
-    elif command == "convert":
-        if not args.input:
-            print("Error: --input is required for 'convert' command")
-            sys.exit(1)
-        
-        # Import the converter utility
+    # Parse extent if provided
+    extent = None
+    if args.extent:
         try:
-            sys.path.append(str(PROJECT_ROOT / "processing" / "utilities"))
-            from convertForTipp import convert_file
-        except ImportError as e:
-            print(f"Error importing convertForTipp: {e}")
-            print("Make sure convertForTipp.py is in the utilities directory")
+            extent_parts = args.extent.split(',')
+            if len(extent_parts) != 4:
+                raise ValueError("Extent must have 4 values")
+            extent = tuple(float(x) for x in extent_parts)
+        except ValueError as e:
+            print(f"Error parsing extent: {e}")
+            print("Extent format: xmin,ymin,xmax,ymax")
             sys.exit(1)
-        
-        # Process each input file
-        for input_file in args.input:
-            input_path = Path(input_file)
-            
-            # Determine output path
-            if args.output:
-                output_path = Path(args.output)
-            else:
-                # Default: place in processing/data with .geojsonseq extension
-                output_path = DATA_DIR / f"{input_path.stem}.geojsonseq"
-            
-            print(f"Converting {input_path} to {output_path}")
-            
-            # Convert the file
-            try:
-                convert_kwargs = {
-                    'layer_name': args.layer,
-                    'where': args.where,
-                    'reproject': args.reproject,
-                    'verbose': True
-                }
-                
-                processed, skipped, output = convert_file(
-                    str(input_path), 
-                    str(output_path), 
-                    **convert_kwargs
-                )
-                
-                print(f"SUCCESS: Conversion completed: {processed} features processed, {skipped} skipped")
-                print(f"OUTPUT: {output}")
-                
-            except Exception as e:
-                print(f"ERROR: Error converting {input_file}: {e}")
+    
+    # Process tiles
+    results = process_to_tiles(
+        extent=extent,
+        input_dirs=args.input_dir,
+        filter_pattern=args.filter,
+        output_dir=args.output_dir,
+        parallel=not args.no_parallel,
+        verbose=args.verbose
+    )
+    
+    # Create TileJSON if requested
+    if args.create_tilejson:
+        create_tilejson(
+            tile_dir=args.output_dir or TILE_DIR,
+            extent=extent
+        )
+    
+    # Report results
+    if results["success"]:
+        print(f"\nSuccessfully processed {len(results['processed_files'])} files")
     else:
-        print(f"Unknown command: {command}")
-        
-        print("Usage:")
-        print("  python runCreateTiles.py download                                    # Download source data only")
-        print("  python runCreateTiles.py tiles                                       # Process to tiles only")
-        print("  python runCreateTiles.py tiles --theme=base                         # Process only base theme")
-        print("  python runCreateTiles.py tiles --input settlement.geojsonseq        # Process with custom files")
-        print("  python runCreateTiles.py tiles --filter='roads*'                    # Process only roads files")
-        print("  python runCreateTiles.py custom --input settlement.geojsonseq       # Process only custom files")
-        print("  python runCreateTiles.py all                                        # Run both steps")
-        print("  python runCreateTiles.py convert --input file.gpkg --layer=layer1   # Convert custom file to GeoJSONSeq")
-        print("  python runCreateTiles.py convert --input file.shp --reproject=EPSG:4326  # Convert and reproject")
+        print(f"\nProcessing completed with {len(results['errors'])} errors:")
+        for error in results["errors"]:
+            print(f"  - {error['file']}: {error['error']}")
         sys.exit(1)
+
+if __name__ == "__main__":
+    main()

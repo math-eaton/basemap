@@ -36,9 +36,9 @@ class OvertureMap {
                 [24.0, -4.0]  // Northeast coordinates [lng, lat]
             ],
             // center: [-74.986763650502, 44.66997929549087],
-            center: [23.5967, -6.1307],
-            zoom: 14,
-            minZoom: 11,
+            center: [23.0671, -4.8057],
+            zoom: 12,
+            minZoom: 8,
             maxZoom: 15,
             showTileBoundaries: false,
             clampToBounds: false,
@@ -65,14 +65,14 @@ class OvertureMap {
             'esri-admin1-forest': 22,   // Medium scale admin forest/parks  
             'esri-openspace-forest': 23, // Local scale forest/openspace
 
-            'settlement-extents-fill': 25, // Settlement extent fills
-            'settlement-extents-outlines': 89, // Settlement extent outlines
+            'settlement-extents-fill': 26, // Settlement extent fills
+            'settlement-extents-outlines': 31, // Settlement extent outlines
 
             'land-use': 30, // built env
             'land-residential': 15, // residential areas
                                     
             // Terrain and elevation 
-            'hills': 47,
+            'hills': 35,
 
             // Water features (40-49)
             'water-polygons': 40,        // Water body fills
@@ -80,7 +80,7 @@ class OvertureMap {
             'water-lines': 42,           // Rivers, streams, canals
             
             // Contour lines (50-59)
-            'contours': 50,       // Contour lines
+            'contours': 32,       // Contour lines
             'contour-text': 51,   // Contour elevation labels
 
             

@@ -1,141 +1,132 @@
 {
   "tilejson": "3.0.0",
-  "name": "Basemap prototype",
+  "name": "Basemap Tiles",
   "minzoom": 0,
-  "maxzoom": 14,
+  "maxzoom": 16,
   "bounds": [
-    19.6875,
-    -7.0136679275666305,
-    26.71875,
-    -2.8113711933311296
+    22.0,
+    -6.0,
+    24.0,
+    -4.0
   ],
   "tiles": [
-    "pmtiles://tiles/admin.pmtiles",
-    "pmtiles://tiles/base.pmtiles",
-    "pmtiles://tiles/buildings_low_lod.pmtiles",
-    "pmtiles://tiles/buildings_medium_lod.pmtiles",
-    "pmtiles://tiles/places.pmtiles",
-    "pmtiles://tiles/settlement-extents.pmtiles",
-    "pmtiles://tiles/transportation.pmtiles"
+    "pmtiles://GRID3_COD_Settlement_Extents_v3_1.pmtiles",
+    "pmtiles://GRID3_COD_health_facilities_v5_0.pmtiles",
+    "pmtiles://GRID3_COD_health_zones_v5_0.pmtiles",
+    "pmtiles://buildings.pmtiles",
+    "pmtiles://infrastructure.pmtiles",
+    "pmtiles://land.pmtiles",
+    "pmtiles://land_cover.pmtiles",
+    "pmtiles://land_residential.pmtiles",
+    "pmtiles://land_use.pmtiles",
+    "pmtiles://placenames.pmtiles",
+    "pmtiles://places.pmtiles",
+    "pmtiles://roads.pmtiles",
+    "pmtiles://water.pmtiles"
   ],
   "vector_layers": [
     {
-      "id": "health_areas",
-      "description": "Health administrative areas",
+      "id": "GRID3_COD_Settlement_Extents_v3_1",
+      "description": "Layer: GRID3_COD_Settlement_Extents_v3_1",
       "fields": {
-        "name": "String",
-        "type": "String",
-        "id": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "health_zones",
-      "description": "Health administrative zones",
+      "id": "GRID3_COD_health_facilities_v5_0",
+      "description": "Layer: GRID3_COD_health_facilities_v5_0",
       "fields": {
-        "name": "String",
-        "type": "String",
-        "id": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "land_use",
-      "description": "Land use polygons",
+      "id": "GRID3_COD_health_zones_v5_0",
+      "description": "Layer: GRID3_COD_health_zones_v5_0",
       "fields": {
-        "subtype": "String",
-        "class": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "land_residential",
-      "description": "Residential areas",
+      "id": "buildings",
+      "description": "Layer: buildings",
       "fields": {
-        "subtype": "String",
-        "class": "String"
-      }
-    },
-    {
-      "id": "water",
-      "description": "Water bodies",
-      "fields": {
-        "subtype": "String",
-        "class": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
       "id": "infrastructure",
-      "description": "Infrastructure",
+      "description": "Layer: infrastructure",
       "fields": {
-        "subtype": "String",
-        "class": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "buildings",
-      "description": "Buildings (Low LOD)",
+      "id": "land",
+      "description": "Layer: land",
       "fields": {
-        "name": "String",
-        "height": "Number",
-        "level": "Number"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "buildings",
-      "description": "Buildings (Medium LOD)",
+      "id": "land_cover",
+      "description": "Layer: land_cover",
       "fields": {
-        "name": "String",
-        "height": "Number",
-        "level": "Number"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "places",
-      "description": "Points of interest",
+      "id": "land_residential",
+      "description": "Layer: land_residential",
       "fields": {
-        "category": "String",
-        "confidence": "Number"
+        "id": "String",
+        "name": "String"
+      }
+    },
+    {
+      "id": "land_use",
+      "description": "Layer: land_use",
+      "fields": {
+        "id": "String",
+        "name": "String"
       }
     },
     {
       "id": "placenames",
-      "description": "Place names",
+      "description": "Layer: placenames",
       "fields": {
-        "subtype": "String",
-        "locality_type": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
-      "id": "health_facilities",
-      "description": "Health facilities",
+      "id": "places",
+      "description": "Layer: places",
       "fields": {
-        "name": "String",
-        "type": "String",
-        "id": "String"
-      }
-    },
-    {
-      "id": "settlement_names",
-      "description": "Settlement names",
-      "fields": {
-        "name": "String",
-        "type": "String",
-        "id": "String"
-      }
-    },
-    {
-      "id": "settlementextents",
-      "description": "Settlement boundary extents",
-      "fields": {
-        "name": "String",
-        "type": "String",
-        "id": "String"
+        "id": "String",
+        "name": "String"
       }
     },
     {
       "id": "roads",
-      "description": "Road network",
+      "description": "Layer: roads",
       "fields": {
-        "class": "String",
-        "subclass": "String"
+        "id": "String",
+        "name": "String"
+      }
+    },
+    {
+      "id": "water",
+      "description": "Layer: water",
+      "fields": {
+        "id": "String",
+        "name": "String"
       }
     }
   ]

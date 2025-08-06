@@ -2,37 +2,57 @@
   "version": 8,
   "glyphs": "https://fonts.openmaptiles.org/{fontstack}/{range}.pbf",
   "sources": {
-    "base-tiles": {
+    "buildings-tiles": {
       "type": "vector",
-      "url": "pmtiles://tiles/base.pmtiles"
+      "url": "pmtiles://tiles/buildings.pmtiles"
     },
-    "transportation-tiles": {
+    "infrastructure-tiles": {
       "type": "vector",
-      "url": "pmtiles://tiles/transportation.pmtiles"
+      "url": "pmtiles://tiles/infrastructure.pmtiles"
+    },
+    "land-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/land.pmtiles"
+    },
+    "land-cover-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/land_cover.pmtiles"
+    },
+    "land-residential-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/land_residential.pmtiles"
+    },
+    "land-use-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/land_use.pmtiles"
+    },
+    "placenames-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/placenames.pmtiles"
     },
     "places-tiles": {
       "type": "vector",
       "url": "pmtiles://tiles/places.pmtiles"
     },
-    "buildings-low-lod-tiles": {
+    "roads-tiles": {
       "type": "vector",
-      "url": "pmtiles://tiles/buildings_low_lod.pmtiles"
+      "url": "pmtiles://tiles/roads.pmtiles"
     },
-    "buildings-medium-lod-tiles": {
+    "water-tiles": {
       "type": "vector",
-      "url": "pmtiles://tiles/buildings_medium_lod.pmtiles"
-    },
-    "buildings-high-lod-tiles": {
-      "type": "vector",
-      "url": "pmtiles://tiles/buildings_high_lod.pmtiles"
+      "url": "pmtiles://tiles/water.pmtiles"
     },
     "settlement-extents-tiles": {
       "type": "vector",
-      "url": "pmtiles://tiles/settlement-extents.pmtiles"
+      "url": "pmtiles://tiles/GRID3_COD_Settlement_Extents_v3_1.pmtiles"
     },
-    "admin-tiles": {
+    "health-facilities-tiles": {
       "type": "vector",
-      "url": "pmtiles://tiles/admin.pmtiles"
+      "url": "pmtiles://tiles/GRID3_COD_health_facilities_v5_0.pmtiles"
+    },
+    "health-zones-tiles": {
+      "type": "vector",
+      "url": "pmtiles://tiles/GRID3_COD_health_zones_v5_0.pmtiles"
     },
     "esri": {
       "type": "vector",
@@ -57,75 +77,75 @@
     {
       "id": "land-use",
       "type": "fill",
-      "source": "base-tiles",
-      "source-layer": "land_use",
+      "source": "land-use-tiles",
+      "source-layer": "land-use",
       "layout": {
       "visibility": "visible"
       },
       "paint": {
       "fill-color": [
-      "match",
-      ["get", "class"],
-      "residential", "#e8f5e800",
-      "commercial", "#ffeaa7",
-      "retail", "#ffda79",
-      "industrial", "#ddd6fe",
-      "pedestrian", "#f1f5f9",
-      "farmland", "#fde047",
-      "farmyard", "#facc15",
-      "orchard", "#84cc16",
-      "vineyard", "#65a30d",
-      "plant_nursery", "#a3e635",
-      "park", "#a7f3d0",
-      "recreation_ground", "#86efac",
-      "playground", "#34d399",
-      "pitch", "#10b981",
-      "stadium", "#059669",
-      "golf_course", "#16a34a",
-      "fairway", "#22c55e",
-      "green", "#15803d",
-      "tee", "#166534",
-      "bunker", "#d6d3d1",
-      "water_hazard", "#3b82f6",
-      "track", "#f97316",
-      "camp_site", "#eab308",
-      "theme_park", "#ec4899",
-      "dog_park", "#84cc16",
-      "forest", "#22c55e",
-      "wilderness_area", "#15803d",
-      "nature_reserve", "#15803d",
-      "national_park", "#15803d",
-      "state_park", "#15803d",
-      "species_management_area", "#047857",
-      "grass", "#65a30d",
-      "meadow", "#84cc16",
-      "garden", "#a3e635",
-      "school", "#fbbf24",
-      "university", "#f59e0b",
-      "college", "#d97706",
-      "hospital", "#ef4444",
-      "religious", "#8b5cf6",
-      "cemetery", "#71717a",
-      "grave_yard", "#52525b",
-      "construction", "#fb7185",
-      "brownfield", "#c2bdb650",
-      "landfill", "#a59e9650",
-      "quarry", "#8a837b50",
-      "marina", "#0ea5e9",
-      "military", "#dc2626",
-      "village_green", "#bef264",
-      "flowerbed", "#f472b6",
-      "transparent"
+        "match",
+        ["get", "class"],
+        "residential", "#e8f5e800",
+        "commercial", "#ffeaa7",
+        "retail", "#ffda79",
+        "industrial", "#ddd6fe",
+        "pedestrian", "#f1f5f9",
+        "farmland", "#fde047",
+        "farmyard", "#facc15",
+        "orchard", "#84cc16",
+        "vineyard", "#65a30d",
+        "plant_nursery", "#a3e635",
+        "park", "#a7f3d0",
+        "recreation_ground", "#86efac",
+        "playground", "#34d399",
+        "pitch", "#10b981",
+        "stadium", "#059669",
+        "golf_course", "#16a34a",
+        "fairway", "#22c55e",
+        "green", "#15803d",
+        "tee", "#166534",
+        "bunker", "#d6d3d1",
+        "water_hazard", "#3b82f6",
+        "track", "#f97316",
+        "camp_site", "#eab308",
+        "theme_park", "#ec4899",
+        "dog_park", "#84cc16",
+        "forest", "#22c55e",
+        "wilderness_area", "#15803d",
+        "nature_reserve", "#15803d",
+        "national_park", "#15803d",
+        "state_park", "#15803d",
+        "species_management_area", "#047857",
+        "grass", "#65a30d",
+        "meadow", "#84cc16",
+        "garden", "#a3e635",
+        "school", "#fbbf24",
+        "university", "#f59e0b",
+        "college", "#d97706",
+        "hospital", "#ef4444",
+        "religious", "#8b5cf6",
+        "cemetery", "#71717a",
+        "grave_yard", "#52525b",
+        "construction", "#fb7185",
+        "brownfield", "#c2bdb650",
+        "landfill", "#a59e9650",
+        "quarry", "#8a837b50",
+        "marina", "#0ea5e9",
+        "military", "#dc2626",
+        "village_green", "#bef264",
+        "flowerbed", "#f472b6",
+        "transparent"
       ],
-      "fill-opacity": 1,
-      "fill-outline-color": "#ffffff00"
+      "fill-opacity": 0.5,
+      "fill-outline-color": "#00000000"
       }
     },
         {
       "id": "land-cover",
       "type": "fill",
-      "source": "base-tiles",
-      "source-layer": "land_cover",
+      "source": "land-cover-tiles",
+      "source-layer": "land-cover",
       "layout": {
       "visibility": "visible"
       },
@@ -196,7 +216,7 @@
     {
       "id": "land",
       "type": "fill",
-      "source": "base-tiles",
+      "source": "land-tiles",
       "source-layer": "land",
       "layout": {
       "visibility": "none"
@@ -223,7 +243,7 @@
     {
       "id": "water-polygons",
       "type": "fill",
-      "source": "base-tiles",
+      "source": "water-tiles",
       "source-layer": "water",
       "filter": ["==", ["geometry-type"], "Polygon"],
       "layout": {
@@ -238,7 +258,7 @@
     {
       "id": "water-polygon-outlines",
       "type": "line",
-      "source": "base-tiles",
+      "source": "water-tiles",
       "source-layer": "water",
       "filter": ["==", ["geometry-type"], "Polygon"],
       "layout": {
@@ -253,7 +273,7 @@
     {
       "id": "water-lines",
       "type": "line",
-      "source": "base-tiles",
+      "source": "water-tiles",
       "source-layer": "water",
       "filter": ["==", ["geometry-type"], "LineString"],
       "layout": {
@@ -296,7 +316,7 @@
     {
       "id": "roads-solid",
       "type": "line",
-      "source": "transportation-tiles",
+      "source": "roads-tiles",
       "source-layer": "roads",
       "filter": [
       "any",
@@ -477,7 +497,7 @@
     {
       "id": "roads-solid-background",
       "type": "line",
-      "source": "transportation-tiles",
+      "source": "roads-tiles",
       "source-layer": "roads",
       "filter": [
         "any",
@@ -612,7 +632,7 @@
     {
       "id": "roads-dashed",
       "type": "line",
-      "source": "transportation-tiles",
+      "source": "roads-tiles",
       "source-layer": "roads",
       "filter": [
       "any",
@@ -698,7 +718,7 @@
     {
       "id": "infrastructure-points",
       "type": "circle",
-      "source": "base-tiles",
+      "source": "infrastructure-tiles",
       "source-layer": "infrastructure",
       "filter": ["==", ["geometry-type"], "Point"],
       "layout": {
@@ -766,7 +786,7 @@
     {
       "id": "infrastructure-lines",
       "type": "line",
-      "source": "base-tiles",
+      "source": "infrastructure-tiles",
       "source-layer": "infrastructure",
       "filter": ["==", ["geometry-type"], "LineString"],
       "layout": {
@@ -819,7 +839,7 @@
     {
       "id": "infrastructure-polygons",
       "type": "fill",
-      "source": "base-tiles",
+      "source": "infrastructure-tiles",
       "source-layer": "infrastructure",
       "filter": ["==", ["geometry-type"], "Polygon"],
       "layout": {
@@ -845,8 +865,8 @@
     {
       "id": "buildings-low-lod",
       "type": "fill",
-      "source": "buildings-low-lod-tiles",
-      "source-layer": "layer",
+      "source": "buildings-tiles",
+      "source-layer": "buildings",
       "minzoom": 5,
       "maxzoom": 12,
       "layout": {
@@ -864,9 +884,8 @@
           "interpolate",
           ["exponential", 1.5],
           ["zoom"],
-          3, 1,
-          6, 0.9,
-          9, 0.75,
+          3, 0.75,
+          9, 0.5,
           12, 0
         ]
       }
@@ -874,8 +893,8 @@
     {
       "id": "buildings-medium-lod",
       "type": "fill",
-      "source": "buildings-medium-lod-tiles",
-      "source-layer": "layer",
+      "source": "buildings-tiles",
+      "source-layer": "buildings",
       "minzoom": 10,
       "maxzoom": 14,
       "layout": {
@@ -903,8 +922,8 @@
     {
       "id": "buildings-high-lod",
       "type": "fill",
-      "source": "buildings-high-lod-tiles",
-      "source-layer": "layer",
+      "source": "buildings-tiles",
+      "source-layer": "buildings",
       "minzoom": 12,
       "layout": {
         "visibility": "visible"
@@ -930,8 +949,8 @@
     {
       "id": "building-outlines",
       "type": "line",
-      "source": "buildings-high-lod-tiles",
-      "source-layer": "layer",
+      "source": "buildings-tiles",
+      "source-layer": "buildings",
       "minzoom": 11,
       "layout": {
         "visibility": "visible"
@@ -979,7 +998,7 @@
       "id": "settlement-extents-fill",
       "type": "fill",
       "source": "settlement-extents-tiles",
-      "source-layer": "settlementextents",
+      "source-layer": "GRID3-COD-Settlement-Extents-v3-1",
       "minzoom": 8,
       "layout": {
       "visibility": "visible"
@@ -1021,7 +1040,7 @@
       "id": "settlement-extents-outlines",
       "type": "line",
       "source": "settlement-extents-tiles",
-      "source-layer": "settlementextents",
+      "source-layer": "GRID3-COD-Settlement-Extents-v3-1",
       "minzoom": 8,
       "layout": {
         "visibility": "visible"
@@ -1068,7 +1087,7 @@
     {
       "id": "land-residential",
       "type": "fill",
-      "source": "base-tiles",
+      "source": "land-residential-tiles",
       "source-layer": "land_residential",
       "layout": {
       "visibility": "none"
@@ -1095,7 +1114,7 @@
     {
       "id": "infrastructure",
       "type": "line",
-      "source": "base-tiles",
+      "source": "infrastructure-tiles",
       "source-layer": "infrastructure",
       "layout": {
         "visibility": "none"
@@ -1172,8 +1191,8 @@
     {
       "id": "health-areas",
       "type": "fill",
-      "source": "admin-tiles",
-      "source-layer": "health_areas",
+      "source": "health-zones-tiles",
+      "source-layer": "GRID3_COD_health_zones_v5_0",
       "minzoom": 8,
       "maxzoom": 16,
       "layout": {
@@ -1188,8 +1207,8 @@
     {
       "id": "health-areas-outline",
       "type": "line",
-      "source": "admin-tiles",
-      "source-layer": "health_areas",
+      "source": "health-zones-tiles",
+      "source-layer": "GRID3_COD_health_zones_v5_0",
       "minzoom": 12.5,
       "layout": {
       "visibility": "visible"
@@ -1224,7 +1243,7 @@
     {
       "id": "health-areas-centerline",
       "type": "line",
-      "source": "admin-tiles",
+      "source": "health-zones-tiles",
       "source-layer": "health_areas",
       "minzoom": 12.5,
       "layout": {
@@ -1251,7 +1270,7 @@
     {
       "id": "health-zones",
       "type": "fill",
-      "source": "admin-tiles",
+      "source": "health-zones-tiles",
       "source-layer": "health_zones",
       "minzoom": 8,
       "maxzoom": 16,
@@ -1267,7 +1286,7 @@
     {
       "id": "health-zones-outline",
       "type": "line",
-      "source": "admin-tiles",
+      "source": "health-zones-tiles",
       "source-layer": "health_zones",
       "minzoom": 10,
       "layout": {
@@ -1302,7 +1321,7 @@
     {
       "id": "health-zones-labels",
       "type": "symbol",
-      "source": "admin-tiles",
+      "source": "health-zones-tiles",
       "source-layer": "health_zones",
       "minzoom": 11.25,
       "maxzoom": 14,
@@ -1342,7 +1361,7 @@
     {
       "id": "health-areas-labels",
       "type": "symbol",
-      "source": "admin-tiles",
+      "source": "health-zones-tiles",
       "source-layer": "health_areas",
       "minzoom": 13,
       "maxzoom": 15.5,
@@ -1422,7 +1441,7 @@
       "source-layer": "places",
       "minzoom": 13.5,
       "layout": {
-        "visibility": "visible",
+        "visibility": "none",
         "text-field": [
           "case",
           ["has", "essnom1"], ["get", "essnom1"],
@@ -1441,7 +1460,7 @@
         "text-anchor": "top",
         "text-transform": "uppercase",
         "text-max-width": 12,
-        "text-allow-overlap": true,
+        "text-allow-overlap": false,
         "text-ignore-placement": false
       },
       "paint": {
@@ -1476,8 +1495,8 @@
         16, 11
       ],
       "text-transform": "none",
-      "text-allow-overlap": true,
-      "text-ignore-placement": true
+      "text-allow-overlap": false,
+      "text-ignore-placement": false
       },
       "paint": {
       "text-color": "#424242",
@@ -1510,8 +1529,8 @@
         16, 11
       ],
       "text-transform": "none",
-      "text-allow-overlap": true,
-      "text-ignore-placement": true
+      "text-allow-overlap": false,
+      "text-ignore-placement": false
       },
       "paint": {
       "text-color": "#424242",
@@ -1543,8 +1562,8 @@
         14, 9.5,
         16, 11
       ],
-      "text-allow-overlap": true,
-      "text-ignore-placement": true
+      "text-allow-overlap": false,
+      "text-ignore-placement": false
 
       },
       "paint": {

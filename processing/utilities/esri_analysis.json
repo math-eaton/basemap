@@ -1,0 +1,5637 @@
+{
+  "layer_count": 154,
+  "zoom_ranges": {
+    "0-None": [
+      {
+        "id": "Land/Not ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Land/Ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Marine area/bathymetry depth 1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Marine area",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      }
+    ],
+    "5-15": [
+      {
+        "id": "Urban area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Urban area",
+        "minzoom": 5,
+        "maxzoom": 15,
+        "scale_category": "multi_scale"
+      }
+    ],
+    "None-11": [
+      {
+        "id": "Vegetation small scale/High density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Vegetation small scale/Low density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 2 (shallow water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 3",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 4",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 5",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 6",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 7 (deep water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      }
+    ],
+    "6-None": [
+      {
+        "id": "Indigenous",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Indigenous",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Admin0 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin0 forest or park",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Military",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Military",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      }
+    ],
+    "9-None": [
+      {
+        "id": "Openspace or forest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Openspace or forest",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport property",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      }
+    ],
+    "7-None": [
+      {
+        "id": "Admin1 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin1 forest or park",
+        "minzoom": 7,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      }
+    ],
+    "11-None": [
+      {
+        "id": "Zoo",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Zoo",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Golf course",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Golf course",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Education",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Medical",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport runway",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Park or farming",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Park or farming",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Waterfall",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Dam or weir",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Levee/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Canal or ditch",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river intermittent",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Lake, river or bay",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Lake or river intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Inundated area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Swamp or marsh",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Playa",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Ice mass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Dam or weir",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Ferry",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      }
+    ],
+    "12-None": [
+      {
+        "id": "Port",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Port",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Industry",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Industry",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Freight",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Freight",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "13-None": [
+      {
+        "id": "Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Transportation",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Retail",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Retail",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Water and wastewater",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water and wastewater",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Cemetery",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Cemetery",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Finance",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Finance",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Government",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Emergency",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Emergency",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Landmark",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Landmark",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Pedestrian",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Beach",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Beach",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "14-None": [
+      {
+        "id": "Special area of interest/Garden path",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Green openspace",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Grass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Baseball field or other grounds",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Groundcover",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Field or court exterior",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Football field or court",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Hardcourt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Mulch or dirt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Athletic track",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Sand",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Rock or gravel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Water",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Gutter",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Curb",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "15-None": [
+      {
+        "id": "Special area of interest/Parking",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Bike, walk or pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Dock or pier",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Sports field",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/General",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Commercial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Religious",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Recreation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Cultural",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Hotel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Airport",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Industrial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Community",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Parking lot",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Special area of interest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "1-5": [
+      {
+        "id": "Water line small scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area small scale",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      }
+    ],
+    "5-7": [
+      {
+        "id": "Water line medium scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      }
+    ],
+    "7-11": [
+      {
+        "id": "Water line large scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area large scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area large scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      }
+    ],
+    "17-None": [
+      {
+        "id": "Parcel/line",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Parcel",
+        "minzoom": 17,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "16-None": [
+      {
+        "id": "Special area of interest line/Fence (chain link)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (metal)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (wood)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/3",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/2",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "8-None": [
+      {
+        "id": "Road/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      }
+    ],
+    "10-None": [
+      {
+        "id": "Road/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      }
+    ],
+    "5-None": [
+      {
+        "id": "Road/Freeway Motorway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      }
+    ],
+    "None-9": [
+      {
+        "id": "Coastline",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Coastline",
+        "minzoom": null,
+        "maxzoom": 9,
+        "scale_category": "small_to_medium"
+      }
+    ]
+  },
+  "scale_categories": {
+    "multi_scale": [
+      {
+        "id": "Land/Not ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Land/Ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Urban area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Urban area",
+        "minzoom": 5,
+        "maxzoom": 15,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Indigenous",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Indigenous",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Admin0 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin0 forest or park",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Admin1 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin1 forest or park",
+        "minzoom": 7,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Military",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Military",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Marine area/bathymetry depth 1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Marine area",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      }
+    ],
+    "small_to_medium": [
+      {
+        "id": "Vegetation small scale/High density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Vegetation small scale/Low density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water line large scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 2 (shallow water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 3",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 4",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 5",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 6",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 7 (deep water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area large scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area large scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Coastline",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Coastline",
+        "minzoom": null,
+        "maxzoom": 9,
+        "scale_category": "small_to_medium"
+      }
+    ],
+    "medium_to_large": [
+      {
+        "id": "Openspace or forest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Openspace or forest",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Zoo",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Zoo",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Golf course",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Golf course",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Education",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Medical",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport property",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport runway",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Park or farming",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Park or farming",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Waterfall",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Dam or weir",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Levee/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Canal or ditch",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river intermittent",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Lake, river or bay",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Lake or river intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Inundated area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Swamp or marsh",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Playa",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Ice mass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Dam or weir",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Ferry",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      }
+    ],
+    "large_scale": [
+      {
+        "id": "Port",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Port",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Transportation",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Industry",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Industry",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Retail",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Retail",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Water and wastewater",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water and wastewater",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Freight",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Freight",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Cemetery",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Cemetery",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Finance",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Finance",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Government",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Emergency",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Emergency",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Landmark",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Landmark",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Pedestrian",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Beach",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Beach",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Garden path",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Green openspace",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Grass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Baseball field or other grounds",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Groundcover",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Field or court exterior",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Football field or court",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Hardcourt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Parking",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Mulch or dirt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Athletic track",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Sand",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Rock or gravel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Bike, walk or pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Water",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Parcel/line",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Parcel",
+        "minzoom": 17,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Dock or pier",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (chain link)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (metal)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (wood)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/3",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Sports field",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/2",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/General",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Commercial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Religious",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Recreation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Cultural",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Hotel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Airport",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Industrial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Community",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Parking lot",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Special area of interest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Gutter",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Curb",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "small_scale": [
+      {
+        "id": "Water line small scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water line medium scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area small scale",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      }
+    ],
+    "medium_scale": []
+  },
+  "layer_types": {
+    "fill": [
+      {
+        "id": "Land/Not ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Land/Ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Urban area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Urban area",
+        "minzoom": 5,
+        "maxzoom": 15,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Vegetation small scale/High density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Vegetation small scale/Low density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Indigenous",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Indigenous",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Openspace or forest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Openspace or forest",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Admin0 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin0 forest or park",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Admin1 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin1 forest or park",
+        "minzoom": 7,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Zoo",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Zoo",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Military",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Military",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Port",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Port",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Transportation",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Industry",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Industry",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Golf course",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Golf course",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Retail",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Retail",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Water and wastewater",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water and wastewater",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Freight",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Freight",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Cemetery",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Cemetery",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Finance",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Finance",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Government",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Emergency",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Emergency",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Landmark",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Landmark",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Pedestrian",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Education",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Medical",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport property",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport runway",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Park or farming",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Park or farming",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Beach",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Beach",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Garden path",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Green openspace",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Grass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Baseball field or other grounds",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Groundcover",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Field or court exterior",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Football field or court",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Hardcourt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Parking",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Mulch or dirt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Athletic track",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Sand",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Rock or gravel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Marine area/bathymetry depth 1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Marine area",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Bathymetry/depth 2 (shallow water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 3",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 4",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 5",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 6",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 7 (deep water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area small scale",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area large scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area large scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area/Lake, river or bay",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Lake or river intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Inundated area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Swamp or marsh",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Playa",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Ice mass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Dam or weir",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Special area of interest/Bike, walk or pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Water",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/2",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/General",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Commercial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Religious",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Recreation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Cultural",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Hotel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Airport",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Industrial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Community",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Special area of interest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Gutter",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Curb",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      }
+    ],
+    "line": [
+      {
+        "id": "Water line small scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water line medium scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water line large scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water line/Waterfall",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Dam or weir",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Levee/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Canal or ditch",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river intermittent",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Ferry",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Parcel/line",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Parcel",
+        "minzoom": 17,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Dock or pier",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (chain link)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (metal)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (wood)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/3",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Sports field",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Parking lot",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Coastline",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Coastline",
+        "minzoom": null,
+        "maxzoom": 9,
+        "scale_category": "small_to_medium"
+      }
+    ]
+  },
+  "source_usage": {
+    "esri": [
+      {
+        "id": "Land/Not ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Land/Ice",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Land",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Urban area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Urban area",
+        "minzoom": 5,
+        "maxzoom": 15,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Vegetation small scale/High density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Vegetation small scale/Low density",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Vegetation small scale",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Indigenous",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Indigenous",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Openspace or forest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Openspace or forest",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Admin0 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin0 forest or park",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Admin1 forest or park",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Admin1 forest or park",
+        "minzoom": 7,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Zoo",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Zoo",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Military",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Military",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Port",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Port",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Transportation",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Industry",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Industry",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Golf course",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Golf course",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Retail",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Retail",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Water and wastewater",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water and wastewater",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Freight",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Freight",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Cemetery",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Cemetery",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Finance",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Finance",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Government",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Emergency",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Emergency",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Landmark",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Landmark",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Pedestrian",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Education",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Medical",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport property",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Airport/Airport runway",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Airport",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Park or farming",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Park or farming",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Beach",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Beach",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Garden path",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Green openspace",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Grass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Baseball field or other grounds",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Groundcover",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Field or court exterior",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Football field or court",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Hardcourt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Parking",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Mulch or dirt",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Athletic track",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Sand",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Rock or gravel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Water line small scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water line medium scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water line large scale",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water line/Waterfall",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Dam or weir",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Levee/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Canal or ditch",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river intermittent",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water line/Stream or river",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Water line",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Marine area/bathymetry depth 1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Marine area",
+        "minzoom": 0,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Bathymetry/depth 2 (shallow water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 3",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 4",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 5",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 6",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Bathymetry/depth 7 (deep water)",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Bathymetry",
+        "minzoom": null,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area small scale",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area small scale",
+        "minzoom": 1,
+        "maxzoom": 5,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area medium scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area medium scale",
+        "minzoom": 5,
+        "maxzoom": 7,
+        "scale_category": "small_scale"
+      },
+      {
+        "id": "Water area large scale/Lake intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area large scale/Lake or river",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area large scale",
+        "minzoom": 7,
+        "maxzoom": 11,
+        "scale_category": "small_to_medium"
+      },
+      {
+        "id": "Water area/Lake, river or bay",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Lake or river intermittent",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Inundated area",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Swamp or marsh",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Playa",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Ice mass",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Water area/Dam or weir",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Water area",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Special area of interest/Bike, walk or pedestrian",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Water",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Ferry/Ferry",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Railroad/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Railroad",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Ferry/Rail ferry/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Ferry",
+        "minzoom": 11,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Parcel/line",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Parcel",
+        "minzoom": 17,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Dock or pier",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (chain link)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (metal)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Fence (wood)/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Gate/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/3",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Wall/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Sports field",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/2",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/1",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/General",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Government",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Medical",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Education",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Transportation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Commercial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Religious",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Recreation",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Cultural",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Hotel",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Airport",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Industrial",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Building/Community",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest line/Parking lot",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Special area of interest line",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Trail or path/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Trail or path",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/2",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Highway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road/Freeway Motorway/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road",
+        "minzoom": 5,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Building/Special area of interest",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Building",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 16,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Pedestrian/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 15,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/4WD/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Service/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 13,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Local/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 12,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Road tunnel/Minor, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Minor/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 10,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major, ramp or traffic circle/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 9,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Major/0",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 8,
+        "maxzoom": null,
+        "scale_category": "medium_to_large"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway, ramp or traffic circle/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Highway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Road tunnel/Freeway Motorway/1",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Road tunnel",
+        "minzoom": 6,
+        "maxzoom": null,
+        "scale_category": "multi_scale"
+      },
+      {
+        "id": "Special area of interest/Gutter",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Special area of interest/Curb",
+        "type": "fill",
+        "source": "esri",
+        "source-layer": "Special area of interest",
+        "minzoom": 14,
+        "maxzoom": null,
+        "scale_category": "large_scale"
+      },
+      {
+        "id": "Coastline",
+        "type": "line",
+        "source": "esri",
+        "source-layer": "Coastline",
+        "minzoom": null,
+        "maxzoom": 9,
+        "scale_category": "small_to_medium"
+      }
+    ]
+  },
+  "zoom_distribution": {
+    "0": 12,
+    "1": 14,
+    "2": 14,
+    "3": 14,
+    "4": 14,
+    "5": 21,
+    "6": 31,
+    "7": 35,
+    "8": 36,
+    "9": 48,
+    "10": 49,
+    "11": 73,
+    "12": 69,
+    "13": 85,
+    "14": 100,
+    "15": 125,
+    "16": 135,
+    "17": 136,
+    "18": 136,
+    "19": 136,
+    "20": 136,
+    "21": 136,
+    "22": 136
+  }
+}

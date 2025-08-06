@@ -1,0 +1,350 @@
+{
+  "geometry_detection": [
+    {
+      "file": "GRID3_COD_health_zones_v5_0.geojson",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/GRID3_COD_health_zones_v5_0.geojson",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "land_use.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/land_use.geojsonseq",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "land_residential.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/land_residential.geojsonseq",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "GRID3_COD_health_facilities_v5_0.geojson",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/GRID3_COD_health_facilities_v5_0.geojson",
+      "detected_type": "Point",
+      "status": "success"
+    },
+    {
+      "file": "GRID3_COD_health_areas_v5_0.geojson",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/GRID3_COD_health_areas_v5_0.geojson",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "land_cover.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/land_cover.geojsonseq",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "GRID3_COD_settlement_names_v5_0.geojson",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/GRID3_COD_settlement_names_v5_0.geojson",
+      "detected_type": "Point",
+      "status": "success"
+    },
+    {
+      "file": "GRID3_COD_settlement_extents_v3_1.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/GRID3_COD_settlement_extents_v3_1.geojsonseq",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "land.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/land.geojsonseq",
+      "detected_type": "Mixed",
+      "status": "success"
+    },
+    {
+      "file": "infrastructure.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/processing/data/infrastructure.geojsonseq",
+      "detected_type": "Mixed",
+      "status": "success"
+    },
+    {
+      "file": "placenames.geojson",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/placenames.geojson",
+      "detected_type": "Point",
+      "status": "success"
+    },
+    {
+      "file": "land_use.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/land_use.geojsonseq",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "water.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/water.geojsonseq",
+      "detected_type": "Mixed",
+      "status": "success"
+    },
+    {
+      "file": "places.geojson",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/places.geojson",
+      "detected_type": "Point",
+      "status": "success"
+    },
+    {
+      "file": "land.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/land.geojsonseq",
+      "detected_type": "Mixed",
+      "status": "success"
+    },
+    {
+      "file": "buildings.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/buildings.geojsonseq",
+      "detected_type": "Polygon",
+      "status": "success"
+    },
+    {
+      "file": "roads.geojsonseq",
+      "path": "/Users/matthewheaton/GitHub/basemap/overture/data/roads.geojsonseq",
+      "detected_type": "LineString",
+      "status": "success"
+    }
+  ],
+  "settings_generation": [
+    {
+      "layer_name": "water",
+      "filename": null,
+      "settings": [
+        "--simplification=2",
+        "--low-detail=11",
+        "--full-detail=13",
+        "--no-tiny-polygon-reduction",
+        "--no-feature-limit",
+        "--extend-zooms-if-still-dropping",
+        "--maximum-tile-bytes=2097152",
+        "--maximum-zoom=15",
+        "--gamma=0.9"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": "settlement-extents",
+      "filename": null,
+      "settings": [
+        "--simplification=5",
+        "--drop-rate=0.25",
+        "--low-detail=11",
+        "--full-detail=14",
+        "--coalesce-smallest-as-needed",
+        "--gamma=0.8",
+        "--maximum-zoom=13",
+        "--minimum-zoom=6",
+        "--cluster-distance=2",
+        "--minimum-detail=8"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": "roads",
+      "filename": null,
+      "settings": [
+        "--no-line-simplification",
+        "--buffer=16",
+        "--drop-rate=0.05",
+        "--drop-smallest",
+        "--simplification=5",
+        "--minimum-zoom=7",
+        "--extend-zooms-if-still-dropping",
+        "--coalesce-smallest-as-needed",
+        "--full-detail=13",
+        "--minimum-detail=10"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": "places",
+      "filename": null,
+      "settings": [
+        "--cluster-distance=35",
+        "--drop-rate=0.1"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": "land_use",
+      "filename": null,
+      "settings": [
+        "--simplification=5",
+        "--drop-rate=0.1",
+        "--low-detail=10",
+        "--full-detail=14",
+        "--coalesce-smallest-as-needed",
+        "--maximum-zoom=15",
+        "--minimum-zoom=9",
+        "--no-tiny-polygon-reduction"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": null,
+      "filename": "water_features.geojson",
+      "settings": [
+        "--simplification=2",
+        "--low-detail=11",
+        "--full-detail=13",
+        "--no-tiny-polygon-reduction",
+        "--no-feature-limit",
+        "--extend-zooms-if-still-dropping",
+        "--maximum-tile-bytes=2097152",
+        "--maximum-zoom=15",
+        "--gamma=0.9"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": null,
+      "filename": "settlement_extents.geojsonseq",
+      "settings": [
+        "--simplification=5",
+        "--drop-rate=0.25",
+        "--low-detail=11",
+        "--full-detail=14",
+        "--coalesce-smallest-as-needed",
+        "--gamma=0.8",
+        "--maximum-zoom=13",
+        "--minimum-zoom=6",
+        "--cluster-distance=2",
+        "--minimum-detail=8"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": null,
+      "filename": "roads_network.geojsonseq",
+      "settings": [
+        "--no-line-simplification",
+        "--buffer=16",
+        "--drop-rate=0.05",
+        "--drop-smallest",
+        "--simplification=5",
+        "--minimum-zoom=7",
+        "--extend-zooms-if-still-dropping",
+        "--coalesce-smallest-as-needed",
+        "--full-detail=13",
+        "--minimum-detail=10"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": null,
+      "filename": "health_facilities.geojson",
+      "settings": [
+        "--simplification=3",
+        "--drop-rate=0.08",
+        "--low-detail=9",
+        "--full-detail=12",
+        "--coalesce-smallest-as-needed",
+        "--extend-zooms-if-still-dropping",
+        "--gamma=0.4",
+        "--maximum-zoom=15",
+        "--minimum-zoom=7"
+      ],
+      "status": "success"
+    },
+    {
+      "layer_name": null,
+      "filename": "land_use_polygons.geojsonseq",
+      "settings": [
+        "--simplification=5",
+        "--drop-rate=0.1",
+        "--low-detail=10",
+        "--full-detail=14",
+        "--coalesce-smallest-as-needed",
+        "--maximum-zoom=15",
+        "--minimum-zoom=9",
+        "--no-tiny-polygon-reduction"
+      ],
+      "status": "success"
+    }
+  ],
+  "mapping_validation": [
+    {
+      "file": "GRID3_COD_health_zones_v5_0.geojson",
+      "geometry_type": "Polygon",
+      "settings_count": 10,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "land_use.geojsonseq",
+      "geometry_type": "Polygon",
+      "settings_count": 8,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "land_residential.geojsonseq",
+      "geometry_type": "Polygon",
+      "settings_count": 8,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "GRID3_COD_health_facilities_v5_0.geojson",
+      "geometry_type": "Point",
+      "settings_count": 10,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "GRID3_COD_health_areas_v5_0.geojson",
+      "geometry_type": "Polygon",
+      "settings_count": 10,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "placenames.geojson",
+      "geometry_type": "Point",
+      "settings_count": 2,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "land_use.geojsonseq",
+      "geometry_type": "Polygon",
+      "settings_count": 8,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "water.geojsonseq",
+      "geometry_type": "Mixed",
+      "settings_count": 9,
+      "is_valid": false,
+      "status": "success"
+    },
+    {
+      "file": "places.geojson",
+      "geometry_type": "Point",
+      "settings_count": 2,
+      "is_valid": true,
+      "status": "success"
+    },
+    {
+      "file": "land.geojsonseq",
+      "geometry_type": "Mixed",
+      "settings_count": 8,
+      "is_valid": true,
+      "status": "success"
+    }
+  ],
+  "summary": {
+    "geometry_detection": {
+      "success": 17,
+      "total": 17
+    },
+    "settings_generation": {
+      "success": 10,
+      "total": 10
+    },
+    "mapping_validation": {
+      "success": 9,
+      "total": 10
+    },
+    "overall_success_rate": 97.2972972972973
+  }
+}
