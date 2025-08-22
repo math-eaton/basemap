@@ -1,4 +1,4 @@
-# Overture Basemap
+<!-- # Overture Basemap
 
 A responsive, modern basemap application built with MapLibre GL JS and Overture Maps data.
 
@@ -66,4 +66,4 @@ npm run build
 
 - **Base Map Data**: [Overture Maps](https://overturemaps.org/)
 - **Background Map**: [OpenStreetMap](https://www.openstreetmap.org/)
-- **Elevation Data**: [USGS](https://www.usgs.gov/)
+- **Elevation Data**: [USGS](https://www.usgs.gov/) -->
