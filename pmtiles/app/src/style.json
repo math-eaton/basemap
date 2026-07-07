@@ -318,6 +318,7 @@
 			"source": "grid3_cod",
 			"source-layer": "GRID3-COD-settlement-extents-v3-1",
 			"minzoom": 7,
+			"maxzoom": 13,
 			"layout": {
 				"visibility": "visible"
 			},
@@ -397,7 +398,7 @@
 						0,
 						0
 					],
-					8,
+					8.5,
 					[
 						"match",
 						[
@@ -412,7 +413,7 @@
 						0,
 						0
 					],
-					9,
+					10,
 					[
 						"match",
 						[
@@ -421,40 +422,25 @@
 						],
 						"Built-up Area",
 						0.85,
+						"Hamlet",
+						0.85,
+						"Small Settlement Area",
+						0.85,
+						0.85
+					],
+					14,
+					[
+						"match",
+						[
+							"get",
+							"type"
+						],
+						"Built-up Area",
+						0,
 						"Hamlet",
 						0,
 						"Small Settlement Area",
-						0.85,
-						0
-					],
-					11,
-					[
-						"match",
-						[
-							"get",
-							"type"
-						],
-						"Built-up Area",
-						0.85,
-						"Hamlet",
-						0.85,
-						"Small Settlement Area",
-						0.85,
-						0
-					],
-					16,
-					[
-						"match",
-						[
-							"get",
-							"type"
-						],
-						"Built-up Area",
-						0.85,
-						"Hamlet",
-						0.85,
-						"Small Settlement Area",
-						0.85,
+						0,
 						0
 					]
 				]
@@ -592,6 +578,59 @@
 						0
 					]
 				]
+			}
+		},
+				{
+			"id": "cod-settlement-blocks",
+			"type": "fill",
+			"source": "grid3_cod",
+			"source-layer": "COD_blocks_20260624_with_cluster_ids",
+			"minzoom": 10,
+			"layout": {
+				"visibility": "visible"
+			},
+			"paint": {
+				"fill-color": [
+					"interpolate",
+					[
+						"linear"
+					],
+					[
+						"get",
+						"building_count_density_quantile_rank"
+					],
+					0,
+					"#F9F5FB",
+					0.143,
+					"#F3E8F7",
+					0.286,
+					"#ECDDF2",
+					0.429,
+					"#E0CEEB",
+					0.571,
+					"#D4B8E0",
+					0.714,
+					"#BE8DD0",
+					0.857,
+					"#B070C0",
+					1,
+					"#9F4FB0"
+				],
+				"fill-opacity": [
+					"interpolate",
+					[
+						"exponential",
+						1.7
+					],
+					[
+						"zoom"
+					],
+					10,
+					0,
+					14,
+					1
+				],
+				"fill-outline-color": "transparent"
 			}
 		},
 		{

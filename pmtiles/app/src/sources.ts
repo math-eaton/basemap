@@ -82,7 +82,7 @@ export const SOURCES = {
   // ---------------------------------------------------------------------------
 
   grid3_cod: {
-    archive: "tiles/grid3/cod/GRID3_COD",
+    archive: "tiles/grid3/cod/GRID3_COD_20260706",
     attribution: '<a href="https://ciesin.columbia.edu/">© CIESIN Columbia University</a>',
     maxzoom: 14,
     ext: "mvt",
