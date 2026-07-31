@@ -1,0 +1,108 @@
+iso3: nga
+
+# ── Boundaries ────────────────────────────────────────────────────────────────
+groups:
+  GRID3_NGA_boundaries:
+    output_stem: GRID3_NGA_boundaries
+    profile: boundaries
+    name: "GRID3 Nigeria Operational Boundary (Unpublished)"
+    description: "Operational administrative boundary for Nigeria. Unpublished — operational use only."
+    attribution: "Unpublished, operational use only."
+    version: "unpublished-20260429"
+    published: "2026-04-29"
+    doi: "https://doi.org/10.7916/gpv6-dq34"
+
+    polygon_layers:
+      - file: GRID3_NGA_national_boundary_unpublished_20260429.fgb
+        layer: GRID3-NGA-unpublished-adm0
+        minzoom: 0
+        maxzoom: 15
+      # Uncomment as operational admin layers are acquired:
+      # - file: GRID3_NGA_operational_states_v2_0.fgb
+      #   layer: GRID3-NGA-operational-states-v2-0
+      #   minzoom: 4
+      #   maxzoom: 15
+      # - file: GRID3_NGA_operational_LGAs_v2_0.fgb
+      #   layer: GRID3-NGA-operational-LGAs-v2-0
+      #   minzoom: 5
+      #   maxzoom: 15
+      # - file: GRID3_NGA_operational_wards_v2_0.fgb
+      #   layer: GRID3-NGA-operational-wards-v2-0
+      #   minzoom: 7
+      #   maxzoom: 15
+
+    point_layers:
+      - file: GRID3_NGA_national_boundary_unpublished_20260429_centroids.fgb
+        layer: GRID3-NGA-unpublished-adm0-centroids
+        minzoom: 0
+        maxzoom: 15
+      # - file: GRID3_NGA_operational_LGAs_v2_0_centroids.fgb
+      #   layer: GRID3-NGA-operational-LGAs-v2-0-centroids
+      #   minzoom: 5
+      #   maxzoom: 15
+      # - file: GRID3_NGA_operational_wards_v2_0_centroids.fgb
+      #   layer: GRID3-NGA-operational-wards-v2-0-centroids
+      #   minzoom: 7
+      #   maxzoom: 15
+
+# ── Settlement extents ────────────────────────────────────────────────────────
+  GRID3_NGA_settlement_extents:
+    output_stem: GRID3_NGA_settlement_extents
+    profile: settlement_extents
+    name: "GRID3 Nigeria Settlement Extents v4.0"
+    description: "Settlement extents and blocks for Nigeria."
+    attribution: "© The Trustees of Columbia University in the City of New York. CC BY-SA 4.0."
+    version: "4.0"
+    published: "2024-06-01"
+    doi: "https://doi.org/10.7916/fr96-f546"
+
+    # Adjacent blocks share exact borders within MGRS grid cells — sync shared nodes.
+    polygon_settings:
+      - "--no-simplification-of-shared-nodes"
+
+    polygon_layers:
+      # Dissolve (z7–13): zoom-stepped by settlement type to prevent density dropout
+      - file: GRID3_NGA_settlement_extents_dissolve_v4_0.fgb
+        layer: GRID3-NGA-settlement-extents-v4-0
+        minzoom: 7
+        maxzoom: 13
+        modifier: settlement_extents_extent_type
+
+      # Blocks (z13–16): fine-grained settlement footprints
+      - file: GRID3_NGA_settlement_extents_v4_0.fgb
+        layer: GRID3-NGA-settlement-blocks-v4-0
+        minzoom: 13
+        maxzoom: 16
+
+# ── Roads ─────────────────────────────────────────────────────────────────────
+  GRID3_NGA_roads:
+    output_stem: GRID3_NGA_roads
+    profile: roads
+    name: "GRID3 Nigeria Roads v1.0"
+    description: "GRID3 linear road features for Nigeria."
+    attribution: "© The Trustees of Columbia University in the City of New York. CC BY 4.0."
+    version: "1.0"
+    published: "2024-01-01"
+    doi: "https://doi.org/10.7916/b42r-6w17"
+
+    line_layers:
+      - file: GRID3_NGA_roads_v1_0_4326.fgb
+        layer: GRID3-NGA-roads-v1-0
+        minzoom: 5
+        maxzoom: 15
+        modifier: roads
+
+# ── POIs ──────────────────────────────────────────────────────────────────────
+  GRID3_NGA_POIs:
+    output_stem: GRID3_NGA_POIs
+    profile: POI
+    name: "GRID3 Nigeria Points of Interest"
+    description: "Health facilities and settlement names for Nigeria."
+    attribution: "© The Trustees of Columbia University in the City of New York. CC BY 4.0."
+    # version / published / doi: fill in once data is acquired
+
+    # point_layers: add filenames as data is acquired
+    # - file: GRID3_NGA_settlement_names_v8_0.fgb
+    #   layer: GRID3-NGA-settlement-names-v8-0
+    #   minzoom: 5
+    #   maxzoom: 16

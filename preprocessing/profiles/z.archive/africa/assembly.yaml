@@ -1,0 +1,43 @@
+# Africa-level tile-join assembly rules.
+#
+# Sources are auto-discovered from OUTPUT_GRID3_DIR/{iso3}/ for all ISO3 codes
+# that are NOT "africa" (to prevent circular dependencies).
+#
+# Discovery pattern: OUTPUT_GRID3_DIR/{iso3}/GRID3_{ISO3}_{theme}.pmtiles
+# where {theme} matches the `theme` field below (case-insensitive stem match).
+#
+# Output files land in: OUTPUT_GRID3_DIR/africa/{output}.pmtiles
+#
+# Run order: theme assemblies first, then the final GRID3_africa merge.
+# assemble_africa.py respects this order top-to-bottom.
+
+assemblies:
+  - output: GRID3_africa_settlement_extents
+    theme: settlement_extents
+    name: "GRID3 Africa Settlement Extents"
+    description: "Combined settlement extent PMTiles for all available GRID3 countries."
+
+  - output: GRID3_africa_roads
+    theme: roads
+    name: "GRID3 Africa Roads"
+    description: "Combined road network PMTiles for all available GRID3 countries."
+
+  - output: GRID3_africa_boundaries
+    theme: boundaries
+    name: "GRID3 Africa Administrative Boundaries"
+    description: "Combined administrative and operational boundary PMTiles for all available GRID3 countries."
+
+  - output: GRID3_africa_POIs
+    theme: POI
+    name: "GRID3 Africa Points of Interest"
+    description: "Combined health facility and settlement name PMTiles for all available GRID3 countries."
+
+  # Final merge: tile-join all GRID3_africa_*.pmtiles into a single archive.
+  # Sources are auto-discovered as sibling GRID3_africa_*.pmtiles in OUTPUT_GRID3_DIR/africa/.
+  - output: GRID3_africa
+    sources: auto
+    name: "GRID3 Africa"
+    description: >-
+      Unified GRID3 vector tile archive for Africa — boundaries, settlement extents,
+      roads, and points of interest for all available countries.
+    attribution: "© The Trustees of Columbia University in the City of New York. See individual layer descriptions for DOIs and licenses."

@@ -5,75 +5,71 @@ groups:
   GRID3_COD_boundaries:
     output_stem: GRID3_COD_boundaries
     profile: boundaries
-    name: "GRID3 DRC Administrative Boundaries v9.0"
+    name: "GRID3 DRC Administrative Boundaries v8.0"
     description: >-
       Province, antenne, health zone, and health area operational boundaries
-      for the Democratic Republic of the Congo.
+      for the Democratic Republic of the Congo. Ituri Province features merged
+      from supplementary dataset (June 2026).
     attribution: "© The Trustees of Columbia University in the City of New York. CC BY-SA 4.0."
-    version: "9.0"
+    version: "8.0"
     published: "2026-01-13"
-    dois:
-      - id: "10.7916/06qw-9y10"
-        url: "https://doi.org/10.7916/06qw-9y10"
-      - id: "10.7916/hv5g-p227"
-        url: "https://doi.org/10.7916/hv5g-p227"
+    doi: "https://doi.org/10.7916/kcq9-7s03"
 
     # All polygon admin levels in one tippecanoe call so
     # --no-simplification-of-shared-nodes sees shared border nodes across levels.
     polygon_layers:
-      - file: GRID3_COD_province_v9_0.fgb
-        layer: GRID3-COD-province-v9-0
+      - file: GRID3_COD_province_v8_0.fgb
+        layer: GRID3-COD-province-v8-0
         minzoom: 3
         maxzoom: 14
-      - file: GRID3_COD_antenne_v9_0.fgb
-        layer: GRID3-COD-antenne-v9-0
+      - file: GRID3_COD_antenne_v8_0.fgb
+        layer: GRID3-COD-antenne-v8-0
         minzoom: 3
         maxzoom: 14
-      - file: GRID3_COD_zonesante_v9_0.fgb
-        layer: GRID3-COD-zonesante-v9-0
+      - file: GRID3_COD_zonesante_v8_0.fgb
+        layer: GRID3-COD-zonesante-v8-0
         minzoom: 5
         maxzoom: 14
-      - file: GRID3_COD_airesante_v9_0.fgb
-        layer: GRID3-COD-airesante-v9-0
+      - file: GRID3_COD_airesante_v8_0.fgb
+        layer: GRID3-COD-airesante-v8-0
         minzoom: 7
         maxzoom: 14
 
     point_layers:
-      - file: GRID3_COD_province_v9_0_centroids.fgb
-        layer: GRID3-COD-province-v9-0-centroids
+      - file: GRID3_COD_province_v8_0_centroids.fgb
+        layer: GRID3-COD-province-v8-0-centroids
         minzoom: 3
         maxzoom: 14
-      - file: GRID3_COD_antenne_v9_0_centroids.fgb
-        layer: GRID3-COD-antenne-v9-0-centroids
+      - file: GRID3_COD_antenne_v8_0_centroids.fgb
+        layer: GRID3-COD-antenne-v8-0-centroids
         minzoom: 3
         maxzoom: 14
-      - file: GRID3_COD_zonesante_v9_0_centroids.fgb
-        layer: GRID3-COD-zonesante-v9-0-centroids
+      - file: GRID3_COD_zonesante_v8_0_centroids.fgb
+        layer: GRID3-COD-zonesante-v8-0-centroids
         minzoom: 5
         maxzoom: 14
-      - file: GRID3_COD_airesante_v9_0_centroids.fgb
-        layer: GRID3-COD-airesante-v9-0-centroids
+      - file: GRID3_COD_airesante_v8_0_centroids.fgb
+        layer: GRID3-COD-airesante-v8-0-centroids
         minzoom: 7
         maxzoom: 14
 
 # ── Settlement extents ────────────────────────────────────────────────────────
-  GRID3_COD_settlement_extents:
-    output_stem: GRID3_COD_settlement_extents
-    profile: settlement_extents
-    name: "GRID3 DRC Settlement Extents v3.1"
-    description: "Settlement extent polygons for the Democratic Republic of the Congo."
-    attribution: "© The Trustees of Columbia University in the City of New York. CC BY-SA 4.0."
-    version: "3.1"
-    published: "2024-07-16"
-    doi: "10.7916/d6gy-yh28"
-    url: "https://doi.org/10.7916/d6gy-yh28"
+  # GRID3_COD_settlement_extents:
+  #   output_stem: GRID3_COD_settlement_extents
+  #   profile: settlement_extents
+  #   name: "GRID3 DRC Settlement Extents v3.1"
+  #   description: "Settlement extent polygons for the Democratic Republic of the Congo."
+  #   attribution: "© The Trustees of Columbia University in the City of New York. CC BY-SA 4.0."
+  #   version: "3.1"
+  #   published: "2024-07-16"
+  #   doi: "https://doi.org/10.7916/d6gy-yh28"
 
-    polygon_layers:
-      - file: GRID3_COD_settlement_extents_v3_1.fgb
-        layer: GRID3-COD-settlement-extents-v3-1
-        minzoom: 7
-        maxzoom: 14
-        modifier: settlement_extents_type    # zoom-stepped by settlement type
+  #   polygon_layers:
+  #     - file: GRID3_COD_settlement_extents_v3_1.fgb
+  #       layer: GRID3-COD-settlement-extents-v3-1
+  #       minzoom: 7
+  #       maxzoom: 14
+  #       modifier: settlement_extents_type    # zoom-stepped by settlement type
 
   GRID3_COD_settlement_blocks:
     output_stem: GRID3_COD_settlement_blocks
@@ -83,10 +79,7 @@ groups:
     attribution: "© The Trustees of Columbia University in the City of New York. CC BY-SA 4.0."
     version: "4.0"
     published: "2026-04-03"
-    dois:
-      - id: "10.7916/bb5b-9b79"
-        url: "https://doi.org/10.7916/bb5b-9b79"
-
+    doi: "https://doi.org/10.7916/bb5b-9b79"
 
     polygon_layers:
       - file: COD_blocks_20260624_with_cluster_ids_4326.fgb
@@ -105,8 +98,7 @@ groups:
   #   attribution: "© The Trustees of Columbia University in the City of New York. CC BY 4.0."
   #   version: "1.0"
   #   published: "2026-01-14"
-  #   doi: "10.7916/00gb-e164"
-  #   url: "https://doi.org/10.7916/00gb-e164"
+  #   doi: "https://doi.org/10.7916/00gb-e164"
 
   #   line_layers:
   #     - file: GRID3_COD_roads_v1_0_4326.fgb
@@ -119,25 +111,22 @@ groups:
   GRID3_COD_POIs:
     output_stem: GRID3_COD_POIs
     profile: POI
-    name: "GRID3 DRC Points of Interest v9.0"
+    name: "GRID3 DRC Points of Interest v8.0"
     description: >-
-      Health facilities and settlement names (v9.0) for the Democratic Republic of the Congo.
+      Health facilities and settlement names (v8.0) for the Democratic Republic of the Congo.
+      Ituri Province features merged from supplementary dataset (June 2026).
     attribution: "© The Trustees of Columbia University in the City of New York. CC BY-SA 4.0."
-    version: "9.0"
+    version: "8.0"
     published: "2026-01-13"
-    dois:
-      - id: "10.7916/77t0-h465"
-        url: "https://doi.org/10.7916/77t0-h465"
-      - id: "10.7916/k9sy-hc13"
-        url: "https://doi.org/10.7916/k9sy-hc13"
+    doi: "https://doi.org/10.7916/f1ft-y872"
 
     point_layers:
-      - file: GRID3_COD_health_facilities_v9_0.fgb
-        layer: GRID3-COD-health-facilities-v9-0
+      - file: GRID3_COD_health_facilities_v8_0.fgb
+        layer: GRID3-COD-health-facilities-v8-0
         minzoom: 5
         maxzoom: 16
         modifier: health_facilities_esstype     # zoom-stepped by facility type (esstype)
-      - file: GRID3_COD_settlement_names_v9_0.fgb
-        layer: GRID3-COD-settlement-names-v9-0
+      - file: GRID3_COD_settlement_names_v8_0.fgb
+        layer: GRID3-COD-settlement-names-v8-0
         minzoom: 5
         maxzoom: 16

@@ -215,8 +215,16 @@ def _build_description(group: dict) -> str:
 
     The JSON block is appended so `pmtiles show` output is machine-parseable
     for STAC Item generation, while remaining readable as a plain string.
+
+    DOI serialisation: `dois` (list of {id, url} dicts) takes priority over
+    the legacy scalar `doi` key so both single and multi-source tiles are
+    handled uniformly.
     """
-    meta = {k: group[k] for k in ("version", "published", "doi") if group.get(k)}
+    meta = {k: group[k] for k in ("version", "published") if group.get(k)}
+    if group.get("dois"):
+        meta["dois"] = group["dois"]
+    elif group.get("doi"):
+        meta["doi"] = group["doi"]
     meta["tile_generated"] = _dt.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ")
     base = (group.get("description") or "").strip()
     return f"{base} {_json.dumps(meta, separators=(',', ':'))}".strip()

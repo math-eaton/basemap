@@ -128,7 +128,9 @@ def build_stac_item(pmtiles_path: Path) -> dict | None:
         props["description"] = human_desc
     if version_meta.get("version"):
         props["version"] = version_meta["version"]
-    if version_meta.get("doi"):
+    if version_meta.get("dois"):
+        props["dois"] = version_meta["dois"]
+    elif version_meta.get("doi"):
         props["doi"] = version_meta["doi"]
     if tile_generated:
         props["tile_generated"] = tile_generated
@@ -137,14 +139,26 @@ def build_stac_item(pmtiles_path: Path) -> dict | None:
 
     # ── Links ─────────────────────────────────────────────────────────────────
     links = []
-    doi = version_meta.get("doi") or meta.get("attribution", "")
-    if doi and doi.startswith("http"):
-        links.append({
-            "rel":   "via",
-            "href":  doi,
-            "type":  "text/html",
-            "title": "Source DOI",
-        })
+    dois_list = version_meta.get("dois") or []
+    if dois_list:
+        for entry in dois_list:
+            href = entry.get("url") or f"https://doi.org/{entry.get('id', '')}"
+            if href:
+                links.append({
+                    "rel":   "via",
+                    "href":  href,
+                    "type":  "text/html",
+                    "title": f"Source DOI: {entry.get('id', href)}",
+                })
+    else:
+        doi = version_meta.get("doi") or meta.get("attribution", "")
+        if doi and doi.startswith("http"):
+            links.append({
+                "rel":   "via",
+                "href":  doi,
+                "type":  "text/html",
+                "title": "Source DOI",
+            })
 
     # ── Assets ────────────────────────────────────────────────────────────────
     size_bytes = pmtiles_path.stat().st_size if pmtiles_path.exists() else None
