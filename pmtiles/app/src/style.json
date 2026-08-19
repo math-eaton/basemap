@@ -46,11 +46,6 @@
 			"attribution": "",
 			"tiles": []
 		},
-		"grid3_nga_settlement_extents": {
-			"type": "vector",
-			"attribution": "",
-			"tiles": []
-		},
 		"dem": {
 			"type": "raster-dem",
 			"attribution": "",
@@ -532,7 +527,7 @@
 						0,
 						0
 					],
-					8.5,
+					9.5,
 					[
 						"match",
 						[
@@ -547,7 +542,7 @@
 						0,
 						0
 					],
-					10,
+					11,
 					[
 						"match",
 						[
@@ -678,7 +673,7 @@
 					[
 						"zoom"
 					],
-					10,
+					10.5,
 					0,
 					12,
 					0.25,
