@@ -219,11 +219,13 @@ style.sources.contours = {
 const LEGEND_LAYERS: Record<string, string> = {
   // "cod-health-facilities":     "Établissement de santé"
   "nga-settlement-extents":     "Settlement extent",
+  // "nga-settlement-blocks":      "Settlement block",
   "cod-provinces-boundary":    "Limite de la province",
   "cod-antenne-boundary":      "Limite de l'antenne",
   "cod-health-zones-boundary": "Limite de la zone de santé",
   "cod-health-areas-boundary": "Limite de l'aire de santé",
   "cod-settlement-extents":     "Zone de bâtiments",
+  // "cod-settlement-blocks":      "Pâté de maisons"
 };
 
 function MapLibreView() {

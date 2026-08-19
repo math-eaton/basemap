@@ -580,20 +580,18 @@
 			"type": "fill",
 			"source": "grid3_cod",
 			"source-layer": "COD_blocks_20260624_with_cluster_ids",
-			"minzoom": 10,
+			"minzoom": 11,
 			"layout": {
 				"visibility": "visible"
 			},
 			"paint": {
 				"fill-color": [
-					"interpolate",
-					[
-						"linear"
-					],
+					"step",
 					[
 						"get",
 						"building_count_density_quantile_rank"
 					],
+					"#F9F5FB",
 					0,
 					"#F9F5FB",
 					0.143,
@@ -620,9 +618,13 @@
 					[
 						"zoom"
 					],
-					10,
+					10.5,
 					0,
+					12,
+					0.25,
 					14,
+					0.5,
+					18,
 					1
 				],
 				"fill-outline-color": "transparent"
@@ -633,20 +635,18 @@
 			"type": "fill",
 			"source": "grid3_nga",
 			"source-layer": "GRID3-NGA-settlement-blocks-v4-0",
-			"minzoom": 10,
+			"minzoom": 11,
 			"layout": {
 				"visibility": "visible"
 			},
 			"paint": {
 				"fill-color": [
-					"interpolate",
-					[
-						"linear"
-					],
+					"step",
 					[
 						"get",
 						"building_count_density_quantile_rank"
 					],
+					"#F9F5FB",
 					0,
 					"#F9F5FB",
 					0.143,
