@@ -147,3 +147,5 @@ wrangler.toml
 
 examples/
 render-tests/
+
+reports/

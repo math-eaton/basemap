@@ -58,10 +58,10 @@ PROFILES = {
         "auto_zoom": True,
         "settings": [
             "--hilbert",
-            "--simplification=3",
+            "--simplification=5",
             "--drop-densest-as-needed",
             "--coalesce-smallest-as-needed",
-            "--maximum-tile-bytes=2097152",
+            "--maximum-tile-bytes=1048576",
             "--include=extent_type",
             "--include=type",
             "--include=building_count",
@@ -78,7 +78,7 @@ PROFILES = {
             "--hilbert",
             "--simplification=8",
             # "--simplify-only-low-zooms",
-            # "--maximum-tile-bytes=2097152",
+            "--maximum-tile-bytes=1048576",
             "--drop-densest-as-needed"
             # "--no-feature-limit",
         ],
