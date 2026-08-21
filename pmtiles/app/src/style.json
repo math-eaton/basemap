@@ -3124,7 +3124,7 @@
 				"circle-opacity": 1
 			}
 		},
-				{
+		{
 			"id": "building-outlines",
 			"type": "line",
 			"source": "overture_buildings",
@@ -14650,9 +14650,9 @@
 			"type": "symbol",
 			"source": "grid3_cod",
 			"source-layer": "GRID3-COD-airesante-v9-0-centroids",
-			"minzoom": 8.5,
+			"minzoom": 9,
 			"layout": {
-				"visibility": "none",
+				"visibility": "visible",
 				"text-font": [
 					"Noto Sans Regular"
 				],
@@ -14730,68 +14730,13 @@
 						"linear"
 					],
 					[
-						"zoom"
+						"get",
+						"area_km2"
 					],
-					10,
-					[
-						"*",
-						9,
-						[
-							"+",
-							0.7,
-							[
-								"*",
-								2,
-								[
-									"sqrt",
-									[
-										"get",
-										"area_km2"
-									]
-								]
-							]
-						]
-					],
-					13,
-					[
-						"*",
-						64,
-						[
-							"+",
-							0.15,
-							[
-								"*",
-								2,
-								[
-									"sqrt",
-									[
-										"get",
-										"area_km2"
-									]
-								]
-							]
-						]
-					],
-					18,
-					[
-						"*",
-						42,
-						[
-							"+",
-							0.5,
-							[
-								"*",
-								2,
-								[
-									"sqrt",
-									[
-										"get",
-										"area_km2"
-									]
-								]
-							]
-						]
-					]
+					0.5,
+					7.5,
+					750,
+					18
 				],
 				"text-padding": [
 					"interpolate",
@@ -14847,9 +14792,9 @@
 			"type": "symbol",
 			"source": "grid3_cod",
 			"source-layer": "GRID3-COD-zonesante-v9-0-centroids",
-			"minzoom": 7,
+			"minzoom": 8,
 			"layout": {
-				"visibility": "none",
+				"visibility": "visible",
 				"text-variable-anchor": [
 					"step",
 					[
@@ -14878,7 +14823,7 @@
 				],
 				"text-radial-offset": 2.5,
 				"text-justify": "auto",
-				"text-allow-overlap": true,
+				"text-allow-overlap": false,
 				"text-ignore-placement": false,
 				"symbol-sort-key": [
 					"*",
@@ -14927,68 +14872,13 @@
 						"linear"
 					],
 					[
-						"zoom"
+						"get",
+						"area_km2"
 					],
-					7,
-					[
-						"*",
-						6,
-						[
-							"+",
-							1,
-							[
-								"*",
-								0.5,
-								[
-									"sqrt",
-									[
-										"get",
-										"area_km2"
-									]
-								]
-							]
-						]
-					],
-					12,
-					[
-						"*",
-						24,
-						[
-							"+",
-							0.5,
-							[
-								"*",
-								0.5,
-								[
-									"sqrt",
-									[
-										"get",
-										"area_km2"
-									]
-								]
-							]
-						]
-					],
-					14,
-					[
-						"*",
-						64,
-						[
-							"+",
-							0.35,
-							[
-								"*",
-								0.5,
-								[
-									"sqrt",
-									[
-										"get",
-										"area_km2"
-									]
-								]
-							]
-						]
-					]
+					50,
+					8,
+					10000,
+					18
 				],
 				"text-padding": [
 					"interpolate",
@@ -15044,7 +14934,7 @@
 			"minzoom": 5.5,
 			"maxzoom": 8.5,
 			"layout": {
-				"visibility": "none",
+				"visibility": "visible",
 				"text-variable-anchor": [
 					"step",
 					[
