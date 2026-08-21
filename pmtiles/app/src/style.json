@@ -339,7 +339,7 @@
 						"#DFC8E7",
 						"#DFC8E7"
 					],
-						12,
+					12,
 					[
 						"match",
 						[
@@ -473,7 +473,7 @@
 						"#DFC8E7",
 						"#DFC8E7"
 					],
-						12,
+					12,
 					[
 						"match",
 						[
@@ -575,7 +575,7 @@
 				]
 			}
 		},
-				{
+		{
 			"id": "cod-settlement-blocks",
 			"type": "fill",
 			"source": "grid3_cod",
@@ -2098,9 +2098,9 @@
 				"visibility": "visible"
 			},
 			"filter": [
-					"in",
-					"class",
-					"track"
+				"in",
+				"class",
+				"track"
 			],
 			"paint": {
 				"line-color": "#898D8D",
@@ -2141,9 +2141,9 @@
 			"minzoom": 11,
 			"source-layer": "GRID3-COD-roads-v1-0",
 			"filter": [
-					"in",
-					"class",
-					"track"
+				"in",
+				"class",
+				"track"
 			],
 			"paint": {
 				"line-color": [
@@ -2619,17 +2619,17 @@
 				]
 			}
 		},
-						{
+		{
 			"id": "grid3-nga-roads-minor",
 			"type": "line",
 			"source": "grid3_nga_roads",
 			"source-layer": "roads",
 			"minzoom": 9,
 			"filter": [
-					"in",
-					"class",
-					"unclassified",
-					"residential"
+				"in",
+				"class",
+				"unclassified",
+				"residential"
 			],
 			"paint": {
 				"line-color": [
@@ -2666,17 +2666,17 @@
 				]
 			}
 		},
-				{
+		{
 			"id": "grid3-cod-roads-minor",
 			"type": "line",
 			"source": "grid3_cod_roads",
 			"source-layer": "GRID3-COD-roads-v1-0",
 			"minzoom": 11,
 			"filter": [
-					"in",
-					"class",
-					"unclassified",
-					"residential"
+				"in",
+				"class",
+				"unclassified",
+				"residential"
 			],
 			"paint": {
 				"line-color": [
@@ -2772,49 +2772,49 @@
 				]
 			}
 		},
-        {
-            "id": "roads_major",
-            "type": "line",
-            "source": "protomaps_base",
-            "source-layer": "roads",
-            "filter": [
-                "all",
-                [
-                    "!has",
-                    "is_tunnel"
-                ],
-                [
-                    "!has",
-                    "is_bridge"
-                ],
-                [
-                    "==",
-                    "kind",
-                    "major_road"
-                ]
-            ],
-            "paint": {
-                "line-color": "#ffffff",
-                "line-width": [
-                    "interpolate",
-                    [
-                        "exponential",
-                        1.6
-                    ],
-                    [
-                        "zoom"
-                    ],
-                    6,
-                    0,
-                    12,
-                    1.6,
-                    15,
-                    3,
-                    18,
-                    13
-                ]
-            }
-        },
+		{
+			"id": "roads_major",
+			"type": "line",
+			"source": "protomaps_base",
+			"source-layer": "roads",
+			"filter": [
+				"all",
+				[
+					"!has",
+					"is_tunnel"
+				],
+				[
+					"!has",
+					"is_bridge"
+				],
+				[
+					"==",
+					"kind",
+					"major_road"
+				]
+			],
+			"paint": {
+				"line-color": "#ffffff",
+				"line-width": [
+					"interpolate",
+					[
+						"exponential",
+						1.6
+					],
+					[
+						"zoom"
+					],
+					6,
+					0,
+					12,
+					1.6,
+					15,
+					3,
+					18,
+					13
+				]
+			}
+		},
 		{
 			"id": "roads_highway_casing_early",
 			"type": "line",
@@ -3097,27 +3097,62 @@
 			"minzoom": 11,
 			"maxzoom": 15,
 			"layout": {
-				"visibility": "visible"
+				"visibility": "none"
 			},
 			"paint": {
-				"circle-color": "#A49C93",
-				"circle-radius": [
+				"circle-color": [
 					"interpolate",
 					[
-						"exponential",
-						1.2
+						"linear"
 					],
 					[
 						"zoom"
 					],
+					11,
+					"#A49C93",
+					14,
+					"#D9D9D6"
+				],
+				"circle-radius": [
+					"step",
+					[
+						"zoom"
+					],
+					0,
 					12,
-					0.75,
-					14.5,
+					1,
+					14,
 					1.25,
 					15,
 					0
 				],
 				"circle-opacity": 1
+			}
+		},
+				{
+			"id": "building-outlines",
+			"type": "line",
+			"source": "overture_buildings",
+			"source-layer": "building",
+			"minzoom": 14,
+			"layout": {
+				"visibility": "visible"
+			},
+			"paint": {
+				"line-color": "#a8a49c",
+				"line-width": [
+					"step",
+					[
+						"zoom"
+					],
+					0,
+					14,
+					0.5,
+					15,
+					1,
+					16,
+					1.5
+				]
 			}
 		},
 		{
@@ -3127,36 +3162,29 @@
 			"source-layer": "building",
 			"minzoom": 14,
 			"layout": {
-				"visibility": "none"
+				"visibility": "visible"
 			},
 			"paint": {
-				"fill-color":
-					"#C7C9C7"
-				,
+				"fill-color": "#dbdbdb",
 				"fill-opacity": [
-					"interpolate",
-					[
-						"exponential",
-						1.6
-					],
+					"step",
 					[
 						"zoom"
 					],
-					14,
 					0,
-					15,
+					14,
 					1
 				]
 			}
 		},
-				{
+		{
 			"id": "buildings-extrusion",
 			"type": "fill-extrusion",
 			"source": "overture_buildings",
 			"source-layer": "building",
-			"minzoom": 14,
+			"minzoom": 17,
 			"layout": {
-				"visibility": "visible"
+				"visibility": "none"
 			},
 			"paint": {
 				"fill-extrusion-color": "#C4BFB6",
@@ -3170,75 +3198,13 @@
 				],
 				"fill-extrusion-base": 1,
 				"fill-extrusion-opacity": [
-					"interpolate",
-					[
-						"exponential",
-						1.6
-					],
+					"step",
 					[
 						"zoom"
 					],
-					14,
 					0,
-					14.75,
+					17,
 					1
-				]
-			}
-		},
-		{
-			"id": "building-outlines",
-			"type": "line",
-			"source": "overture_buildings",
-			"source-layer": "building",
-			"minzoom": 11,
-			"layout": {
-				"visibility": "none"
-			},
-			"paint": {
-				"line-color": [
-					"interpolate",
-					[
-						"exponential",
-						1.6
-					],
-					[
-						"zoom"
-					],
-					11,
-					"#5B6770",
-					16,
-					"#C1C6C8"
-				],
-				"line-width": [
-					"interpolate",
-					[
-						"exponential",
-						1.6
-					],
-					[
-						"zoom"
-					],
-					11,
-					0,
-					13,
-					0.5,
-					16,
-					1
-				],
-				"line-opacity": [
-					"interpolate",
-					[
-						"linear"
-					],
-					[
-						"zoom"
-					],
-					11,
-					0,
-					12,
-					0.2,
-					14,
-					0.5
 				]
 			}
 		},
@@ -10828,7 +10794,7 @@
 			"source-layer": "GRID3-COD-antenne-v8-0",
 			"minzoom": 8.0,
 			"paint": {
-				"line-color":"#009639",
+				"line-color": "#009639",
 				"line-width": [
 					"interpolate",
 					[
@@ -10862,7 +10828,7 @@
 				"line-opacity": 1
 			}
 		},
-				{
+		{
 			"id": "cod-provinces-boundary",
 			"type": "line",
 			"source": "grid3_cod",
@@ -14537,7 +14503,6 @@
 					[
 						"Clinique",
 						"Dispensaire"
-
 					],
 					"maki:defibrillator",
 					[
@@ -14594,12 +14559,12 @@
 						],
 						"#407EC9",
 						[
-						"Centre de Santé",
-						"Hôpital Général de Référence",
-						"Centre de Santé de Référence",
-						"Centre Hopitalier",
-						"Hôpital",
-						"Centre Médical"
+							"Centre de Santé",
+							"Hôpital Général de Référence",
+							"Centre de Santé de Référence",
+							"Centre Hopitalier",
+							"Hôpital",
+							"Centre Médical"
 						],
 						"#B44769",
 						"#646464"
