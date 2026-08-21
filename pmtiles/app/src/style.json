@@ -3147,11 +3147,11 @@
 					],
 					0,
 					14,
-					0.5,
+					0.75,
 					15,
-					1,
+					1.5,
 					16,
-					1.5
+					2.5
 				]
 			}
 		},
@@ -3165,7 +3165,17 @@
 				"visibility": "visible"
 			},
 			"paint": {
-				"fill-color": "#dbdbdb",
+				"fill-color": [
+					"step",
+					[
+						"zoom"
+					],
+					"#D0D3D4",
+					14,
+					"#D0D3D4",
+					15,
+					"#DBDBDB"
+				],
 				"fill-opacity": [
 					"step",
 					[
