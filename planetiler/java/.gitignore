@@ -1,0 +1,9 @@
+# Downloaded planetiler.jar (93MB) — fetch via:
+#   gh release download <version> --repo onthegomap/planetiler --pattern "planetiler.jar*"
+lib/*.jar
+lib/*.jar.md5
+lib/*.jar.sha256
+
+# Build/run output
+*.pmtiles
+*.pmtiles.layerstats.tsv.gz

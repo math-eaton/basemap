@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Usage: python dissolveBlocks_COD_duckdb.py input.fgb output.gpkg
+Usage: python dissolveBlocks_COD_duckdb.py input.{fgb|gpkg|parquet} output.{gpkg|parquet}
 
 Requires: pip install duckdb
 """
@@ -10,6 +10,9 @@ import time
 import duckdb
 
 src, dst = sys.argv[1], sys.argv[2]
+
+src_is_parquet = src.lower().endswith(".parquet")
+dst_is_parquet = dst.lower().endswith(".parquet")
 
 def fmt(t0):
     s = time.time() - t0
@@ -21,10 +24,19 @@ con = duckdb.connect()
 con.install_extension("spatial")
 con.load_extension("spatial")
 
-# Stage 1: load into an in-memory table so we can report row count and reuse
+# Stage 1: load into an in-memory table so we can report row count and reuse.
+# GeoParquet inputs go through duckdb's native reader (no GDAL involved) and
+# get their geometry column normalized to "geom" to match the GDAL-read
+# naming used below in Stage 2.
 print("Reading source...", flush=True)
 t = time.time()
-con.execute(f"CREATE TABLE blocks AS SELECT * FROM ST_Read('{src}')")
+if src_is_parquet:
+    con.execute(
+        f"CREATE TABLE blocks AS "
+        f"SELECT * EXCLUDE (geometry), geometry AS geom FROM read_parquet('{src}')"
+    )
+else:
+    con.execute(f"CREATE TABLE blocks AS SELECT * FROM ST_Read('{src}')")
 n_in = (con.execute("SELECT COUNT(*) FROM blocks").fetchone() or (0,))[0]
 print(f"  {n_in:,} blocks loaded ({fmt(t)})", flush=True)
 
@@ -70,13 +82,16 @@ con.execute("""
 n_out = (con.execute("SELECT COUNT(*) FROM dissolved").fetchone() or (0,))[0]
 print(f"  {n_out:,} MGRS polygons ({fmt(t)})", flush=True)
 
-# Stage 3: write to GeoPackage
+# Stage 3: write output
 print(f"Writing {dst}...", flush=True)
 t = time.time()
-con.execute(f"""
-    COPY dissolved TO '{dst}'
-    WITH (FORMAT GDAL, DRIVER 'GPKG')
-""")
+if dst_is_parquet:
+    con.execute(f"COPY dissolved TO '{dst}' (FORMAT PARQUET)")
+else:
+    con.execute(f"""
+        COPY dissolved TO '{dst}'
+        WITH (FORMAT GDAL, DRIVER 'GPKG')
+    """)
 print(f"  Written ({fmt(t)})", flush=True)
 
 print(f"\nDone: {n_in:,} blocks -> {n_out:,} MGRS polygons  total {fmt(t_total)}", flush=True)

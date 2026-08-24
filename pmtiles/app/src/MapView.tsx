@@ -173,7 +173,7 @@ function getMaplibreStyle(demSource: any): StyleSpecification {
     encoding: "terrarium",
     tiles: [demSource.sharedDemProtocolUrl],
     maxzoom: terrainMaxzoom,
-    tileSize: 256,
+    tileSize: 256, 
   };
 
   // contour steps in meters (each pair is [minor, major] contour intervals for that zoom level)
