@@ -72,7 +72,7 @@ export const SOURCES = {
     grid3: {
     archive: "tiles/grid3/latest",
     attribution: '<a href="https://ciesin.columbia.edu/">© CIESIN Columbia University</a>',
-    maxzoom: 15,
+    maxzoom: 14,
     ext: "mvt",
   },
 

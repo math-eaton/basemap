@@ -14,7 +14,7 @@
       "tiles": [],
       "encoding": "terrarium",
       "maxzoom": 12,
-      "tileSize": 256
+      "tileSize": 512
     },
     "contours": {
       "type": "vector",
@@ -195,7 +195,7 @@
           7,
           [
             "match",
-            ["get", "type"],
+            ["get", "extent_type"],
             "Built-up Area",
             0,
             "Hamlet",
@@ -207,7 +207,7 @@
           8.5,
           [
             "match",
-            ["get", "type"],
+            ["get", "extent_type"],
             "Built-up Area",
             0.85,
             "Hamlet",
@@ -219,7 +219,7 @@
           10,
           [
             "match",
-            ["get", "type"],
+            ["get", "extent_type"],
             "Built-up Area",
             0.85,
             "Hamlet",
@@ -392,7 +392,7 @@
         "fill-color": [
           "step",
           ["get", "building_count_density_quantile_rank"],
-          "#F9F5FB",
+          "#F9F5FB00",
           0,
           "#F9F5FB",
           0.143,
@@ -414,7 +414,7 @@
           "interpolate",
           ["exponential", 1.7],
           ["zoom"],
-          10.5,
+          10,
           0,
           12,
           0.25,
@@ -459,7 +459,7 @@
           "interpolate",
           ["exponential", 1.7],
           ["zoom"],
-          10.5,
+          10,
           0,
           12,
           0.25,
@@ -1292,7 +1292,7 @@
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 16,
       "filter": ["in", "class", "track"],
-      "layout": {"visibility": "visible"},
+      "layout": {"visibility": "none"},
       "paint": {
         "line-color": "#898D8D",
         "line-gap-width": [
@@ -1322,6 +1322,7 @@
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 11,
       "filter": ["in", "class", "track"],
+      "layout": {"visibility": "none"},
       "paint": {
         "line-color": [
           "interpolate",
@@ -1660,6 +1661,7 @@
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 11,
       "filter": ["in", "class", "unclassified", "residential"],
+      "layout": {"visibility": "none"},
       "paint": {
         "line-color": [
           "interpolate",
