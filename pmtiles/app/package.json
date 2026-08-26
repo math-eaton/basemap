@@ -15,9 +15,10 @@
 	"dependencies": {
 		"@mapbox/maki": "^8.2.0",
 		"@maplibre/maplibre-gl-inspect": "^1.8.1",
+		"@maplibre/maplibre-gl-style-spec": "^26.3.0",
 		"@watergis/maplibre-gl-legend": "^2.0.7",
 		"maplibre-contour": "^0.1.0",
-		"maplibre-gl": "5.13.0",
+		"maplibre-gl": "^6.5.0",
 		"sirv": "^3.0.0",
 		"solid-js": "^1.9.5"
 	},
@@ -32,5 +33,9 @@
 		"vite": "^7.2.6",
 		"vite-plugin-solid": "^2.11.10",
 		"vitest": "^3.0.5"
+	},
+	"allowScripts": {
+		"maplibre-gl@5.24.0": true,
+		"maplibre-gl@6.5.0": true
 	}
 }

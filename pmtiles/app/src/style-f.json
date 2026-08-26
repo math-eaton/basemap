@@ -3,6 +3,7 @@
   "sources": {
     "protomaps_base": {"type": "vector", "attribution": "", "tiles": []},
     "protomaps_bg": {"type": "vector", "attribution": "", "tiles": []},
+    "overture_base": {"type": "vector", "attribution": "", "tiles": []},
     "overture_buildings": {"type": "vector", "attribution": "", "tiles": []},
     "grid3": {"type": "vector", "attribution": "", "tiles": []},
     "grid3_cod": {"type": "vector", "attribution": "", "tiles": []},
@@ -170,78 +171,21 @@
       }
     },
     {
-      "id": "africa-settlement-extents",
+      "id": "cod-settlement-extents",
       "type": "fill",
-      "source": "grid3",
-      "source-layer": "GRID3-AFRICA-settlement-extents-v3-0",
+      "source": "grid3_cod",
+      "source-layer": "GRID3-COD-settlement-extents-v4-0",
       "minzoom": 7,
+      "maxzoom": 13,
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
-            "match",
-            ["get", "extent_type"],
-            "Built-up Area",
-            "#CAA2DD",
-            "Small Settlement Area",
-            "#D7B9E4",
-            "Hamlet",
-            "#DFC8E7",
-            "#DFC8E7"
-          ],
-        "fill-opacity": [
-          "interpolate",
-          ["linear"],
+          "step",
           ["zoom"],
+          "#D7B9E4",
           7,
           [
             "match",
-            ["get", "type"],
-            "Built-up Area",
-            0,
-            "Hamlet",
-            0,
-            "Small Settlement Area",
-            0,
-            0
-          ],
-          8.5,
-          [
-            "match",
-            ["get", "type"],
-            "Built-up Area",
-            0.85,
-            "Hamlet",
-            0,
-            "Small Settlement Area",
-            0,
-            0
-          ],
-          10,
-          [
-            "match",
-            ["get", "type"],
-            "Built-up Area",
-            0.85,
-            "Hamlet",
-            0.85,
-            "Small Settlement Area",
-            0.85,
-            0.85
-          ]
-        ]
-      }
-    },
-    {
-      "id": "cod-settlement-extents",
-      "type": "fill",
-      "source": "grid3",
-      "source-layer": "GRID3-COD-settlement-extents-v4-0",
-      "minzoom": 7,
-      "maxzoom": 12,
-      "layout": {"visibility": "visible"},
-      "paint": {
-        "fill-color": [
-            "match",
             ["get", "extent_type"],
             "Built-up Area",
             "#CAA2DD",
@@ -251,6 +195,31 @@
             "#DFC8E7",
             "#DFC8E7"
           ],
+          12,
+          [
+            "match",
+            ["get", "type"],
+            "Built-up Area",
+            "#D7B9E4",
+            "Small Settlement Area",
+            "#DEC6E8",
+            "Hamlet",
+            "#E6D0EB",
+            "#E6D0EB"
+          ],
+          14,
+          [
+            "match",
+            ["get", "type"],
+            "Built-up Area",
+            "#F3E5F5",
+            "Small Settlement Area",
+            "#E6D4ED",
+            "Hamlet",
+            "#EDD9F0",
+            "#EDD9F0"
+          ]
+        ],
         "fill-opacity": [
           "interpolate",
           ["linear"],
@@ -312,10 +281,15 @@
       "source": "grid3_nga",
       "source-layer": "GRID3-NGA-settlement-extents-v4-0",
       "minzoom": 7,
-      "maxzoom": 12,
+      "maxzoom": 14,
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
+          "step",
+          ["zoom"],
+          "#D7B9E4",
+          7,
+          [
             "match",
             ["get", "extent_type"],
             "Built-up Area",
@@ -326,6 +300,31 @@
             "#DFC8E7",
             "#DFC8E7"
           ],
+          12,
+          [
+            "match",
+            ["get", "extent_type"],
+            "Built-up Area",
+            "#D7B9E4",
+            "Small Settlement Area",
+            "#DEC6E8",
+            "Hamlet",
+            "#E6D0EB",
+            "#E6D0EB"
+          ],
+          14,
+          [
+            "match",
+            ["get", "extent_type"],
+            "Built-up Area",
+            "#F3E5F5",
+            "Small Settlement Area",
+            "#E6D4ED",
+            "Hamlet",
+            "#EDD9F0",
+            "#EDD9F0"
+          ]
+        ],
         "fill-opacity": [
           "interpolate",
           ["linear"],
@@ -384,7 +383,7 @@
     {
       "id": "cod-settlement-blocks",
       "type": "fill",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-settlement-blocks-v4-0",
       "minzoom": 11,
       "layout": {"visibility": "visible"},
@@ -1288,7 +1287,7 @@
     {
       "id": "grid3-cod-tracks-casing",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 16,
       "filter": ["in", "class", "track"],
@@ -1318,7 +1317,7 @@
     {
       "id": "grid3-cod-tracks",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 11,
       "filter": ["in", "class", "track"],
@@ -1656,7 +1655,7 @@
     {
       "id": "grid3-cod-roads-minor",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 11,
       "filter": ["in", "class", "unclassified", "residential"],
@@ -1919,6 +1918,18 @@
       }
     },
     {
+      "id": "building-outlines",
+      "type": "line",
+      "source": "overture_buildings",
+      "source-layer": "building",
+      "minzoom": 14,
+      "layout": {"visibility": "visible"},
+      "paint": {
+        "line-color": "#a8a49c",
+        "line-width": ["step", ["zoom"], 0, 14, 0.75, 15, 1.5, 16, 2.5]
+      }
+    },
+    {
       "id": "buildings-flat",
       "type": "fill",
       "source": "overture_buildings",
@@ -1935,8 +1946,7 @@
           15,
           "#DBDBDB"
         ],
-        "fill-opacity": ["step", ["zoom"], 0, 14, 1],
-        "fill-outline-color": "#a8a49c"
+        "fill-opacity": ["step", ["zoom"], 0, 14, 1]
       }
     },
     {
@@ -2256,10 +2266,10 @@
     {
       "id": "cod-settlement-extents-outline",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-settlement-extents-v4-0",
       "minzoom": 7,
-      "layout": {"visibility": "none"},
+      "layout": {"visibility": "visible"},
       "paint": {
         "line-color": [
           "match",
@@ -2347,7 +2357,7 @@
       "source-layer": "GRID3-NGA-settlement-extents-v4-0",
       "minzoom": 7,
       "maxzoom": 11,
-      "layout": {"visibility": "none"},
+      "layout": {"visibility": "visible"},
       "paint": {
         "line-color": [
           "match",
@@ -4780,7 +4790,7 @@
     {
       "id": "cod-health-areas-boundary-casing",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-airesante-v9-0",
       "minzoom": 11,
       "paint": {
@@ -4802,7 +4812,7 @@
     {
       "id": "cod-health-areas-boundary",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-airesante-v9-0",
       "minzoom": 9,
       "paint": {
@@ -4845,7 +4855,7 @@
     {
       "id": "cod-health-zones-boundary",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-zonesante-v9-0",
       "minzoom": 7,
       "paint": {
@@ -4890,7 +4900,7 @@
     {
       "id": "cod-antenne-boundary",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-antenne-v9-0",
       "minzoom": 8,
       "paint": {
@@ -4921,7 +4931,7 @@
     {
       "id": "cod-provinces-boundary",
       "type": "line",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-province-v9-0",
       "minzoom": 5,
       "maxzoom": 8,
@@ -5598,7 +5608,7 @@
     {
       "id": "cod-health-areas-boundary-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-airesante-v9-0",
       "minzoom": 11,
       "layout": {
@@ -5653,7 +5663,7 @@
     {
       "id": "cod-health-zones-boundary-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-zonesante-v9-0",
       "minzoom": 8,
       "layout": {
@@ -5708,7 +5718,7 @@
     {
       "id": "cod-antenne-boundary-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-antenne-v9-0",
       "minzoom": 8.5,
       "layout": {
@@ -5765,7 +5775,7 @@
     {
       "id": "cod-province-boundary-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-province-v9-0",
       "minzoom": 8.5,
       "layout": {
@@ -5824,7 +5834,7 @@
     {
       "id": "cod-settlement-names-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-settlement-names-v9-0",
       "minzoom": 10,
       "layout": {
@@ -6276,7 +6286,7 @@
     {
       "id": "cod-health-facilities",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-health-facilities-v9-0",
       "minzoom": 8,
       "layout": {
@@ -6439,7 +6449,7 @@
     {
       "id": "cod-health-areas-centroids-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-airesante-v9-0-centroids",
       "minzoom": 9,
       "layout": {
@@ -6487,9 +6497,7 @@
           0.5,
           8,
           500,
-          10,
-		  1000,
-		  14
+          14
         ],
         "text-padding": [
           "interpolate",
@@ -6532,7 +6540,7 @@
     {
       "id": "cod-health-zones-centroids-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-zonesante-v9-0-centroids",
       "minzoom": 8,
       "layout": {
@@ -6614,7 +6622,7 @@
     {
       "id": "provinces-centroids-label",
       "type": "symbol",
-      "source": "grid3",
+      "source": "grid3_cod",
       "source-layer": "GRID3-COD-province-v9-0-centroids",
       "minzoom": 5.5,
       "maxzoom": 8.5,

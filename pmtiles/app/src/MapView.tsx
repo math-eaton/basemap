@@ -10,6 +10,7 @@ import {
   AttributionControl,
   // GlobeControl,
   Map as MaplibreMap,
+  setWorkerUrl,
   NavigationControl,
   FullscreenControl,
   Popup,
@@ -25,6 +26,7 @@ import type {
   StyleSpecification,
 } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
+import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 // import type { LayerSpecification } from "@maplibre/maplibre-gl-style-spec";
 import {
   // For,
@@ -34,6 +36,9 @@ import {
 import { getTileSourceConfig, APP_CONFIG } from "./config";
 import { SOURCES, type SourceKey } from "./sources";
 import baseStyle from "./style.json";
+
+setWorkerUrl(workerUrl);
+
 
 // Light configuration for 3D features
 // const LIGHT_CONFIG = {
@@ -173,7 +178,7 @@ function getMaplibreStyle(demSource: any): StyleSpecification {
     encoding: "terrarium",
     tiles: [demSource.sharedDemProtocolUrl],
     maxzoom: terrainMaxzoom,
-    tileSize: 256, 
+    tileSize: 512,
   };
 
   // contour steps in meters (each pair is [minor, major] contour intervals for that zoom level)
@@ -282,6 +287,7 @@ function MapLibreView() {
     // Get style with contours
     const style = getMaplibreStyle(demSource);
 
+
     const map = new MaplibreMap({
       hash: "map",
       container: mapContainer,
@@ -296,7 +302,8 @@ function MapLibreView() {
       maxTileCacheSize: 500,
       // cancelPendingTileRequestsWhileZooming: true,
       renderWorldCopies: false,
-      fadeDuration: 200
+      fadeDuration: 200,
+      validateStyle: false // Disables validation
     });
 
     map.addControl(new NavigationControl());

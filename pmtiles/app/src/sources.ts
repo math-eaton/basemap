@@ -19,7 +19,7 @@ export interface SourceDef {
   archive: string;
   attribution: string;
   maxzoom: number;
-  ext: "mvt" | "webp";
+  ext: "mvt" | "webp" | "mlt";
 }
 
 export const SOURCES = {
@@ -70,9 +70,9 @@ export const SOURCES = {
   // ---------------------------------------------------------------------------
 
     grid3: {
-    archive: "tiles/grid3/africa/GRID3_africa",
+    archive: "tiles/grid3/latest",
     attribution: '<a href="https://ciesin.columbia.edu/">© CIESIN Columbia University</a>',
-    maxzoom: 14,
+    maxzoom: 15,
     ext: "mvt",
   },
 
@@ -82,7 +82,7 @@ export const SOURCES = {
   // ---------------------------------------------------------------------------
 
   grid3_cod: {
-    archive: "tiles/grid3/cod/GRID3_COD",
+    archive: "tiles/grid3/latest",
     attribution: '<a href="https://ciesin.columbia.edu/">© CIESIN Columbia University</a>',
     maxzoom: 14,
     ext: "mvt",

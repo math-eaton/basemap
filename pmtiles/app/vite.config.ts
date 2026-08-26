@@ -34,6 +34,10 @@ const serveSpritesInSpritesDir = () => ({
 
 // https://vitejs.dev/config/
 export default defineConfig({
+	optimizeDeps: {
+    include: ['maplibre-gl'],
+    exclude: ['maplibre-gl/dist/maplibre-gl-worker.mjs'] 
+	},
 	plugins: [solid(), servePmtilesInTilesDir(), serveSpritesInSpritesDir(), tailwindcss()],
 	build: {
 		rollupOptions: {
