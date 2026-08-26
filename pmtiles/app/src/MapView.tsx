@@ -13,7 +13,7 @@ import {
   setWorkerUrl,
   NavigationControl,
   FullscreenControl,
-  Popup,
+  // Popup,
   ScaleControl,
   getRTLTextPluginStatus,
   setRTLTextPlugin,
