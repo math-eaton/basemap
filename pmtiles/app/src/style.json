@@ -4794,9 +4794,7 @@
           11.5,
           4,
           14,
-          4,
-          22,
-          8
+          4
         ],
         "line-opacity": ["step", ["zoom"], 0, 10, 1]
       }
@@ -4825,15 +4823,13 @@
           ["zoom"],
           9,
           0.4,
-          12,
-          1.25,
-          15,
-          2
+          14,
+          1.5
         ],
         "line-dasharray": [
           "step",
           ["zoom"],
-          ["literal", [1, 0]],
+          ["literal", [2, 3]],
           11,
           ["literal", [2, 4]],
           13,
@@ -4910,10 +4906,10 @@
           "interpolate",
           ["linear", 1.2],
           ["zoom"],
-          8,
-          2,
+          10,
+          0,
           11,
-          4,
+          3,
           16,
           13
         ],
@@ -4935,10 +4931,8 @@
           ["zoom"],
           5,
           0.1,
-          5.5,
-          0.75,
-          6.5,
-          1.5
+          7.5,
+          1
         ],
         "line-dasharray": [
           "step",
@@ -4947,7 +4941,7 @@
           5,
           ["literal", [2, 3]]
         ],
-        "line-opacity": 0.75
+        "line-opacity": 1
       }
     },
     {
@@ -6466,7 +6460,16 @@
           13,
           ["literal", ["center"]]
         ],
-        "text-radial-offset": 1,
+        "text-radial-offset": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          12,
+          0.125,
+          16,
+          5
+        ],
+
         "text-justify": "auto",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
@@ -6479,19 +6482,17 @@
           "step",
           ["zoom"],
           ["concat", "", ["get", "airesante"]],
-          14,
+          13,
           ["concat", "AS ", ["get", "airesante"]]
         ],
         "text-size": [
           "interpolate",
           ["linear"],
           ["get", "bbox_km2"],
-          0.5,
-          8,
-          500,
           10,
-		  1000,
-		  14
+          8,
+          1000,
+          14
         ],
         "text-padding": [
           "interpolate",
@@ -6521,8 +6522,6 @@
           "step",
           ["zoom"],
           "#505759",
-          11,
-          "#D14124",
           14,
           "#CF4520"
         ],
