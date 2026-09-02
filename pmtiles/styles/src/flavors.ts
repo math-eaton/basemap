@@ -126,7 +126,7 @@ export const LIGHT: Flavor = {
   beach: "#e8e4d0",
   aerodrome: "#dadbdf",
   runway: "#e9e9ed",
-  water: "#80deea",
+  water: "#A4DBE8",
   zoo: "#c6dcdc",
   military: "#dcdcdc",
 
