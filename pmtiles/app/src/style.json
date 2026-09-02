@@ -237,7 +237,7 @@
       "source": "grid3",
       "source-layer": "GRID3-COD-settlement-extents-v4-0",
       "minzoom": 7,
-      "maxzoom": 12,
+      "maxzoom": 13,
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
@@ -312,7 +312,7 @@
       "source": "grid3_nga",
       "source-layer": "GRID3-NGA-settlement-extents-v4-0",
       "minzoom": 7,
-      "maxzoom": 12,
+      "maxzoom": 13,
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
@@ -437,7 +437,7 @@
         "fill-color": [
           "step",
           ["get", "building_count_density_quantile_rank"],
-          "#F9F5FB",
+          "#F9F5FB00",
           0,
           "#F9F5FB",
           0.143,
