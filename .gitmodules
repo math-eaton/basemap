@@ -1,0 +1,3 @@
+[submodule "protomaps"]
+	path = protomaps
+	url = https://github.com/protomaps/basemaps
