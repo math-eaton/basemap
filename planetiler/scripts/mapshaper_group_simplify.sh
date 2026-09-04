@@ -36,16 +36,16 @@ case "$recipe" in
   # (same source vertices at shared edges) — verify visually after the first
   # run: a province edge and the antenne edge it borders should still align.
   admin)
-    mapshaper \
-      -i "$data_dir/GRID3_COD_province_v9_0.gpkg" \
-         "$data_dir/GRID3_COD_antenne_v9_0.gpkg" \
-         "$data_dir/GRID3_COD_zonesante_v9_0.gpkg" \
-         "$data_dir/GRID3_COD_airesante_v9_0.gpkg" \
+    mapshaper-xl 48g \
+      -i "$data_dir/GRID3_COD_province_v9_0.parquet" \
+         "$data_dir/GRID3_COD_antenne_v9_0.parquet" \
+         "$data_dir/GRID3_COD_zonesante_v9_0.parquet" \
+         "$data_dir/GRID3_COD_airesante_v9_0.parquet" \
          combine-files \
       -snap \
       -clean \
       -simplify 25% weighted keep-shapes \
-      -o "$out_dir/" 'target=*' format=geopackage
+      -o "$out_dir/" 'target=*' format=parquet
     ;;
 
   # ── COD settlement extents + block subdivisions ────────────────────────────
@@ -53,16 +53,28 @@ case "$recipe" in
   # the extents file from the blocks — this recipe simplifies the two
   # together afterward so a block's outer edge stays coincident with the
   # extents polygon (its mgrs_code cell) it's dissolved into.
-  settlement)
-    mapshaper \
-      -i "$data_dir/GRID3_COD_settlement_blocks_v4_0.gpkg" \
-         "$data_dir/GRID3_COD_settlement_extents_v4_0.gpkg" \
+  cod-settlement)
+    mapshaper-xl 48g \
+      -i "$data_dir/GRID3_COD_settlement_blocks_v4_0.parquet" \
+         "$data_dir/GRID3_COD_settlement_extents_v4_0.parquet" \
          combine-files \
       -snap \
       -clean \
       -simplify 30% weighted keep-shapes \
-      -o "$out_dir/" 'target=*' format=geopackage
+      -o "$out_dir/" 'target=*' format=parquet
     ;;
+
+  nga-settlement)
+    mapshaper-xl 48g \
+      -i "$data_dir/GRID3_NGA_settlement_blocks_v4_1.parquet" \
+         "$data_dir/GRID3_NGA_settlement_extents_v4_1.parquet" \
+         combine-files \
+      -snap \
+      -clean \
+      -simplify 30% weighted keep-shapes \
+      -o "$out_dir/" 'target=*' format=parquet
+    ;;
+
 
   # ── Africa-wide settlement extents (no blocks layer for this one) ──────────
   # Single layer, so no combine-files/shared-topology step is needed — this
@@ -71,11 +83,11 @@ case "$recipe" in
   # overview only (min_zoom in GRID3_latest.yaml), and planetiler's own
   # min_size/tolerance already drop sub-pixel slivers downstream, so there's
   # little value in preserving fine detail here across 9.28M input polygons.
-  africa)
-    mapshaper \
-      -i "$data_dir/GRID3_AFRICA_settlement_extents_v3_0.gpkg" \
+  af-settlement)
+    mapshaper-xl 64g \
+      -i "$data_dir/GRID3_AF_settlement_extents_v3_0.parquet" \
       -simplify 10% weighted keep-shapes \
-      -o "$out_dir/GRID3_AFRICA_settlement_extents_v3_0.gpkg" format=geopackage
+      -o "$out_dir/GRID3_AF_settlement_extents_v3_0.parquet" format=parquet
     ;;
 
   *)

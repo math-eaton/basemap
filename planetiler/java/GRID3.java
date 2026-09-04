@@ -115,9 +115,11 @@ public class GRID3 extends ForwardingProfile {
                 new SourceSpec("cod_zonesante", "GRID3_COD_zonesante_v9_0.parquet", this::processZonesante),
                 new SourceSpec("cod_airesante", "GRID3_COD_airesante_v9_0.parquet", this::processAiresante),
                 new SourceSpec("cod_settlement_blocks", "GRID3_COD_settlement_blocks_v4_0.parquet",
-                        this::processSettlementBlocks),
+                        (source, features) -> processSettlementBlocks(COD_SETTLEMENT_BLOCKS, source, features,
+                                0.05, -1)),
                 new SourceSpec("cod_settlement_extents", "GRID3_COD_settlement_extents_v4_0.parquet",
-                        this::processSettlementExtents),
+                        (source, features) -> processSettlementExtents(COD_SETTLEMENT_EXTENTS, source, features,
+                                11, 12, 0.125)),
                 new SourceSpec("cod_health_facilities", "GRID3_COD_health_facilities_v9_0.parquet",
                         this::processHealthFacilities),
                 new SourceSpec("cod_settlement_names", "GRID3_COD_settlement_names_v9_0.parquet",
@@ -145,9 +147,11 @@ public class GRID3 extends ForwardingProfile {
                 new SourceSpec("nga_health_facilities", "GRID3_NGA_health_facilities_v3_0.parquet",
                         this::processNGAHealthFacilities),
                 new SourceSpec("nga_settlement_blocks", "GRID3_NGA_settlement_blocks_v4_1.parquet",
-                        this::processNGASettlementBlocks),
+                        (source, features) -> processSettlementBlocks(NGA_SETTLEMENT_BLOCKS, source, features,
+                                0.1, 2)),
                 new SourceSpec("nga_settlement_extents", "GRID3_NGA_settlement_extents_v4_1.parquet",
-                        (source, features) -> processSettlementExtents(NGA_SETTLEMENT_EXTENTS, source, features)));
+                        (source, features) -> processSettlementExtents(NGA_SETTLEMENT_EXTENTS, source, features,
+                                11, 12, 0.125)));
 
         for (var spec : sources) {
             registerSourceHandler(spec.name(), spec.handler());
@@ -164,7 +168,8 @@ public class GRID3 extends ForwardingProfile {
     // ── Administrative boundaries ──────────────────────────────────────────────
     // DOIs: 10.7916/06qw-9y10, 10.7916/hv5g-p227 (published 2026-01-13)
     private void processProvince(SourceFeature source, FeatureCollector features) {
-        copyAttrs(features.polygon(PROVINCE).setMinZoom(3), source,
+        var poly = features.polygon(PROVINCE).setMinZoom(3).setPixelTolerance(0.2);
+        copyAttrs(poly, source,
                 "province", "pays", "iso3", "prov_uid", "date", "edit_par", "grid3id");
 
         var centroid = features.centroidIfConvex(PROVINCE_CENTROIDS).setMinZoom(3);
@@ -173,7 +178,8 @@ public class GRID3 extends ForwardingProfile {
     }
 
     private void processAntenne(SourceFeature source, FeatureCollector features) {
-        copyAttrs(features.polygon(ANTENNE).setMinZoom(6), source,
+        var poly = features.polygon(ANTENNE).setMinZoom(6).setPixelTolerance(0.2);
+        copyAttrs(poly, source,
                 "antenne", "pays", "iso3", "province", "prov_uid", "date", "edit_par", "grid3id");
 
         var centroid = features.centroidIfConvex(ANTENNE_CENTROIDS).setMinZoom(6);
@@ -205,10 +211,20 @@ public class GRID3 extends ForwardingProfile {
     }
 
     // ── Settlement extents / blocks ────────────────────────────────────────────
-    // DOI: 10.7916/bb5b-9b79 (v4.0, published 2026-04-03) for both layers below.
-    // See GRID3_latest.yaml for the full two-tier rationale (blocks = raw
-    // per-block data z11+, extents = dissolved-by-mgrs_code overview z7+,
-    // produced by preprocessing/utilities/dissolveBlocks_COD_duckdb.py).
+    // DOI: 10.7916/bb5b-9b79 (COD v4.0, published 2026-04-03); NGA v4.1 is a
+    // near-identical schema from the same pipeline. See GRID3_latest.yaml for
+    // the full two-tier rationale (blocks = raw per-block data z11+, extents =
+    // dissolved-by-mgrs_code overview z7+, produced by preprocessing/utilities/
+    // dissolveBlocks_COD_duckdb.py). processSettlementBlocks and
+    // processSettlementExtents below are each shared across COD/NGA (and, for
+    // extents, the Africa-wide dataset too) — genuine per-dataset zoom/
+    // tolerance tuning is passed in as a parameter at the call site, and
+    // attributes that only exist in some schemas are copied via
+    // copyAttrsIfPresent instead of forking the method per country. block_id/
+    // mgrs_code (the join keys back to the source parquet) are required via
+    // hasTag before a feature is emitted at all, so a mismatched/renamed
+    // schema drops features instead of emitting untraceable polygons.
+
     // Split core (always present, used for styling/identification) vs. detail
     // (gated to z13+) attrs — at 1.15M COD + 2.5M NGA block features all
     // starting from the same z11, the long tail of granular stats doesn't
@@ -217,71 +233,105 @@ public class GRID3 extends ForwardingProfile {
         "block_id", "country", "iso3", "extent_type", "mgrs_code", "composite_class",
         "building_count", "building_count_density_quantile_rank"
     };
+    // NGA's v4.1 schema adds bd_class/ma_class classification columns not
+    // present in COD's v4.0 — copied only when present.
+    private static final String[] SETTLEMENT_BLOCK_OPTIONAL_ATTRS = {
+        "bd_class", "ma_class"
+    };
     private static final String[] SETTLEMENT_BLOCK_DETAIL_ATTRS = {
     };
     private static final int SETTLEMENT_BLOCK_DETAIL_MINZOOM = 13;
 
-    private void processSettlementBlocks(SourceFeature source, FeatureCollector features) {
+    /**
+     * @param dropIfBuildingCountAtMost building_count filter threshold, or -1
+     *        to disable it. COD is left unfiltered on purpose (dropping a
+     *        whole block would punch a visible hole in what's supposed to
+     *        read as a contiguous block mosaic); NGA filters out near-empty
+     *        blocks (building_count <= 2).
+     */
+    private void processSettlementBlocks(String layer, SourceFeature source, FeatureCollector features,
+            double pixelToleranceAtMaxZoom, long dropIfBuildingCountAtMost) {
+        if (!source.hasTag("block_id")) {
+            return;
+        }
+        if (dropIfBuildingCountAtMost >= 0) {
+            long buildingCount = source.hasTag("building_count") ? source.getLong("building_count") : 0;
+            if (buildingCount <= dropIfBuildingCountAtMost) {
+                return;
+            }
+        }
+
         // Conservative on purpose: no min-pixel-size here — dropping a whole block
         // feature would punch a visible hole in what's supposed to read as a
         // contiguous block mosaic.
-        var poly = features.polygon(COD_SETTLEMENT_BLOCKS).setMinZoom(12)
-                .setPixelTolerance(0.5).setPixelToleranceAtMaxZoom(0.1);
+        var poly = features.polygon(layer).setMinZoom(12)
+                .setPixelTolerance(0.4).setPixelToleranceAtMaxZoom(pixelToleranceAtMaxZoom);
         copyAttrs(poly, source, SETTLEMENT_BLOCK_CORE_ATTRS);
+        copyAttrsIfPresent(poly, source, SETTLEMENT_BLOCK_OPTIONAL_ATTRS);
         copyAttrsWithMinzoom(poly, source, SETTLEMENT_BLOCK_DETAIL_MINZOOM, SETTLEMENT_BLOCK_DETAIL_ATTRS);
     }
 
-    private void processSettlementExtents(SourceFeature source, FeatureCollector features) {
-        processSettlementExtents(COD_SETTLEMENT_EXTENTS, source, features);
-    }
+    // Attributes common to every settlement-extents schema (COD v4.0, NGA
+    // v4.1, and the Africa-wide v3.0 dataset).
+    private static final String[] SETTLEMENT_EXTENT_ATTRS = {
+        "mgrs_code", "country", "iso3", "building_count"
+    };
+    // Present in some settlement-extents schemas but not others — e.g. the
+    // Africa-wide dataset predates block_area_sqm/block_perimeter/
+    // dissolved_block_count and calls building area "building_area", not
+    // "building_area_sum" — so these are copied only when actually present
+    // rather than forking the method per dataset.
+    private static final String[] SETTLEMENT_EXTENT_OPTIONAL_ATTRS = {
+        "composite_class", "block_area_sqm", "block_perimeter", "building_area_sum",
+        "building_area", "dissolved_block_count", "probability", "date", "source"
+    };
 
-    // Also used for NGA_SETTLEMENT_EXTENTS (v4.1) — its schema is a true 1:1
-    // match to COD's v4.0 extents, so it's processed identically, just tagged
-    // to a different output layer.
-    private void processSettlementExtents(String layer, SourceFeature source, FeatureCollector features) {
-        // Generalized overview: more aggressive tolerance than the blocks it's
-        // dissolved from, plus a min pixel size to drop slivers that are noise at
-        // z7-10 scale — full detail restored at max zoom for overzooming.
+    /**
+     * @param hamletMinZoom min_zoom for extent_type "Hamlet" — differs because
+     *        the Africa-wide dataset mirrors the old COD v3.1 extents layer's
+     *        zoom values (z12), while COD v4.0/NGA v4.1 use z11.
+     * @param maxZoom cap for overzooming full detail back in below it, or 0
+     *        for no cap (the Africa-wide dataset isn't capped).
+     */
+    private void processSettlementExtents(String layer, SourceFeature source, FeatureCollector features,
+            int hamletMinZoom, int maxZoom, double pixelToleranceAtMaxZoom) {
+        if (!source.hasTag("mgrs_code")) {
+            // mgrs_code is the join key back to the source parquet — without it
+            // this is either a schema mismatch or a row that can't be joined
+            // back, so skip rather than emit an untraceable polygon.
+            return;
+        }
 
-        String type = source.getString("extent_type", "");
+        // extent_type (COD/NGA) and type (Africa-wide) name the same field.
+        String type = source.hasTag("extent_type") ? source.getString("extent_type", "") : source.getString("type", "");
         int minZoom = switch (type) {
             case "Small Settlement Area" ->
                 9;
             case "Hamlet" ->
-                11;
+                hamletMinZoom;
             default ->
                 7;
         };
 
-        var poly = features.polygon(layer).setMinZoom(minZoom).setMaxZoom(12)
-                .setPixelTolerance(0.5).setPixelToleranceAtMaxZoom(0.125)
-                .setMinPixelSizeAtAllZooms(3).setMinPixelSizeAtMaxZoom(0);
-        copyAttrs(poly, source, "mgrs_code", "country", "iso3", "extent_type", "composite_class",
-                "block_area_sqm", "block_perimeter", "building_count",
-                "building_area_sum", "dissolved_block_count");
-    }
+        long buildingCount = source.hasTag("building_count") ? source.getLong("building_count") : 0;
+        if (buildingCount <= 2) {
+            return;
+        }
 
-    // ── NGA settlement blocks (v4.1) ───────────────────────────────────────────
-    // Not a drop-in reuse of processSettlementBlocks: this schema renames
-    // building_area_density -> building_area_percentage and adds bd_class/
-    // ma_class classification columns not present in COD's v4.0. `fid`,
-    // `Shape__Area`, `Shape__Length` are dropped as index/geometry-derived
-    // artifacts (same rationale as ORIG_FID in the roads layer). Same core/
-    // detail zoom-gating split as COD's settlement blocks — bd_class/ma_class
-    // are kept in "core" alongside composite_class since all three are
-    // categorical fields plausibly used for choropleth styling.
-    private static final String[] NGA_SETTLEMENT_BLOCK_CORE_ATTRS = {
-        "block_id", "country", "iso3", "extent_type", "mgrs_code", "composite_class",
-        "building_count", "building_count_density_quantile_rank", "bd_class", "ma_class"
-    };
-    private static final String[] NGA_SETTLEMENT_BLOCK_DETAIL_ATTRS = {
-    };
-
-    private void processNGASettlementBlocks(SourceFeature source, FeatureCollector features) {
-        var poly = features.polygon(NGA_SETTLEMENT_BLOCKS).setMinZoom(12)
-                .setPixelTolerance(0.5).setPixelToleranceAtMaxZoom(0.1);
-        copyAttrs(poly, source, NGA_SETTLEMENT_BLOCK_CORE_ATTRS);
-        copyAttrsWithMinzoom(poly, source, SETTLEMENT_BLOCK_DETAIL_MINZOOM, NGA_SETTLEMENT_BLOCK_DETAIL_ATTRS);
+        // Generalized overview: more aggressive tolerance than the blocks it's
+        // dissolved from, plus a min pixel size to drop slivers that are noise at
+        // z7-10 scale — full detail restored at max zoom for overzooming.
+        var poly = features.polygon(layer).setMinZoom(minZoom)
+                .setPixelTolerance(0.4).setPixelToleranceAtMaxZoom(pixelToleranceAtMaxZoom)
+                .setMinPixelSizeAtAllZooms(5).setMinPixelSizeAtMaxZoom(0);
+        if (maxZoom > 0) {
+            poly.setMaxZoom(maxZoom);
+        }
+        copyAttrs(poly, source, SETTLEMENT_EXTENT_ATTRS);
+        if (!type.isEmpty()) {
+            poly.setAttr("extent_type", type);
+        }
+        copyAttrsIfPresent(poly, source, SETTLEMENT_EXTENT_OPTIONAL_ATTRS);
     }
 
     // ── NGA operational admin hierarchy ────────────────────────────────────────
@@ -352,31 +402,16 @@ public class GRID3 extends ForwardingProfile {
     // DOI: unknown/TBD (see GRID3_latest.yaml). COD and NGA are excluded — they
     // have their own newer datasets above. Filters on `country` (values
     // 'COD'/'NGA') per instruction; the source also has a separate `iso3` field
-    // if that turns out to be the one that actually holds those codes.
-    // min_zoom stepped by `type`: Small Settlement Area -> z9, Hamlet -> z12,
-    // everything else (incl. Built-up Area) -> z7 — same values as the old COD
-    // v3.1 extents layer this dataset's field names mirror.
+    // if that turns out to be the one that actually holds those codes. Shares
+    // processSettlementExtents with COD/NGA above — hamletMinZoom=12 here
+    // matches the old COD v3.1 extents layer this dataset's field names
+    // mirror, and it isn't max-zoom-capped like COD/NGA v4.x are.
     private void processAfricaSettlementExtents(SourceFeature source, FeatureCollector features) {
-        String country = source.getString("country", "");
-        if (country.equals("COD") || country.equals("NGA")) {
+        String iso3 = source.getString("iso3", "");
+        if (iso3.equals("COD") || iso3.equals("NGA")) {
             return;
         }
-
-        String type = source.getString("type", "");
-        int minZoom = switch (type) {
-            case "Small Settlement Area" ->
-                9;
-            case "Hamlet" ->
-                12;
-            default ->
-                7;
-        };
-
-        var poly = features.polygon(AF_SETTLEMENT_EXTENTS).setMinZoom(minZoom)
-                .setPixelTolerance(0.5).setPixelToleranceAtMaxZoom(0.1)
-                .setMinPixelSizeAtAllZooms(2).setMinPixelSizeAtMaxZoom(0);
-        copyAttrs(poly, source, "country", "iso3", "type", "mgrs_code",
-                "building_count", "building_area", "probability", "date", "source");
+        processSettlementExtents(AF_SETTLEMENT_EXTENTS, source, features, 12, 0, 0.1);
     }
 
     // ── Points of interest ─────────────────────────────────────────────────────
@@ -483,8 +518,8 @@ public class GRID3 extends ForwardingProfile {
 
         @Override
         public List<VectorTile.Feature> postProcess(int zoom, List<VectorTile.Feature> items) throws GeometryException {
-            double minLength = zoom >= MAXZOOM ? 0 : 2;
-            double tolerance = zoom >= MAXZOOM ? 0.1 : 0.5;
+            double minLength = zoom >= MAXZOOM ? 0 : 1;
+            double tolerance = zoom >= MAXZOOM ? 0.1 : 0.4;
             return FeatureMerge.mergeLineStrings(items, minLength, tolerance, 4, true);
         }
     }
@@ -494,6 +529,21 @@ public class GRID3 extends ForwardingProfile {
     private static void copyAttrs(FeatureCollector.Feature feature, SourceFeature source, String... keys) {
         for (String key : keys) {
             feature.setAttr(key, source.getTag(key));
+        }
+    }
+
+    /**
+     * Like {@link #copyAttrs}, but only copies keys that actually exist on
+     * this feature — for attributes shared by a processing method that's
+     * consolidated across per-country/per-vintage schemas where a field is
+     * only present in some of them. Missing keys are silently skipped rather
+     * than written as null attrs, so a schema mismatch degrades gracefully.
+     */
+    private static void copyAttrsIfPresent(FeatureCollector.Feature feature, SourceFeature source, String... keys) {
+        for (String key : keys) {
+            if (source.hasTag(key)) {
+                feature.setAttr(key, source.getTag(key));
+            }
         }
     }
 
@@ -546,7 +596,7 @@ public class GRID3 extends ForwardingProfile {
     // hive partitioning, unlike Overture's theme=/type= layout). Wires
     // addParquetSource(name, List.of(path)) once per row of the SourceSpec
     // table above, instead of a hand-duplicated call per source.
-    private static final int MAXZOOM = 15;
+    private static final int MAXZOOM = 14;
 
     public static void main(String[] args) throws Exception {
         var arguments = Arguments.fromArgsOrConfigFile(args).orElse(Arguments.of("maxzoom", MAXZOOM));
