@@ -1,8 +1,8 @@
 /* @refresh reload */
 import { render } from "solid-js/web";
 import "./index.css";
-import MaplibreInspect from "@maplibre/maplibre-gl-inspect";
-import "@maplibre/maplibre-gl-inspect/dist/maplibre-gl-inspect.css";
+// import MaplibreInspect from "@maplibre/maplibre-gl-inspect";
+// import "@maplibre/maplibre-gl-inspect/dist/maplibre-gl-inspect.css";
 import { MaplibreLegendControl } from "@watergis/maplibre-gl-legend";
 import "@watergis/maplibre-gl-legend/dist/maplibre-gl-legend.css";
 import * as maplibregl from "maplibre-gl";
@@ -13,7 +13,7 @@ import {
   setWorkerUrl,
   NavigationControl,
   FullscreenControl,
-  Popup,
+  // Popup,
   ScaleControl,
   getRTLTextPluginStatus,
   setRTLTextPlugin,
@@ -339,19 +339,19 @@ function MapLibreView() {
     
     // showInspectMapPopupOnHover: false — click/tap only, safe on mobile
     // useInspectStyle: false — keep original style.json; hue-rotate signals inspect mode visually
-    map.addControl(
-      new MaplibreInspect({
-        popup: new Popup({
-          closeButton: false,
-          closeOnClick: false,
-        }),
-        showInspectMapPopupOnHover: false,
-        useInspectStyle: false,
-        toggleCallback: (active) => {
-          map.getCanvas().style.filter = active ? 'hue-rotate(180deg) invert(1) brightness(1.75) contrast(1.25)' : '';
-        },
-      }),
-    );
+    // map.addControl(
+    //   new MaplibreInspect({
+    //     popup: new Popup({
+    //       closeButton: false,
+    //       closeOnClick: false,
+    //     }),
+    //     showInspectMapPopupOnHover: false,
+    //     useInspectStyle: false,
+    //     toggleCallback: (active) => {
+    //       map.getCanvas().style.filter = active ? 'hue-rotate(180deg) invert(1) brightness(1.75) contrast(1.25)' : '';
+    //     },
+    //   }),
+    // );
 
     map.addControl(new FullscreenControl());
 

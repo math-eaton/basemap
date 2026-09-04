@@ -14,7 +14,7 @@
       "tiles": [],
       "encoding": "terrarium",
       "maxzoom": 12,
-      "tileSize": 256
+      "tileSize": 512
     },
     "contours": {
       "type": "vector",
@@ -195,7 +195,7 @@
           7,
           [
             "match",
-            ["get", "type"],
+            ["get", "extent_type"],
             "Built-up Area",
             0,
             "Hamlet",
@@ -207,7 +207,7 @@
           8.5,
           [
             "match",
-            ["get", "type"],
+            ["get", "extent_type"],
             "Built-up Area",
             0.85,
             "Hamlet",
@@ -219,7 +219,7 @@
           10,
           [
             "match",
-            ["get", "type"],
+            ["get", "extent_type"],
             "Built-up Area",
             0.85,
             "Hamlet",
@@ -237,7 +237,7 @@
       "source": "grid3",
       "source-layer": "GRID3-COD-settlement-extents-v4-0",
       "minzoom": 7,
-      "maxzoom": 12,
+      "maxzoom": 13,
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
@@ -312,7 +312,7 @@
       "source": "grid3_nga",
       "source-layer": "GRID3-NGA-settlement-extents-v4-0",
       "minzoom": 7,
-      "maxzoom": 12,
+      "maxzoom": 13,
       "layout": {"visibility": "visible"},
       "paint": {
         "fill-color": [
@@ -392,7 +392,7 @@
         "fill-color": [
           "step",
           ["get", "building_count_density_quantile_rank"],
-          "#F9F5FB",
+          "#F9F5FB00",
           0,
           "#F9F5FB",
           0.143,
@@ -414,7 +414,7 @@
           "interpolate",
           ["exponential", 1.7],
           ["zoom"],
-          10.5,
+          10,
           0,
           12,
           0.25,
@@ -437,7 +437,7 @@
         "fill-color": [
           "step",
           ["get", "building_count_density_quantile_rank"],
-          "#F9F5FB",
+          "#F9F5FB00",
           0,
           "#F9F5FB",
           0.143,
@@ -459,7 +459,7 @@
           "interpolate",
           ["exponential", 1.7],
           ["zoom"],
-          10.5,
+          10,
           0,
           12,
           0.25,
@@ -1292,7 +1292,7 @@
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 16,
       "filter": ["in", "class", "track"],
-      "layout": {"visibility": "visible"},
+      "layout": {"visibility": "none"},
       "paint": {
         "line-color": "#898D8D",
         "line-gap-width": [
@@ -1322,6 +1322,7 @@
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 11,
       "filter": ["in", "class", "track"],
+      "layout": {"visibility": "none"},
       "paint": {
         "line-color": [
           "interpolate",
@@ -1660,6 +1661,7 @@
       "source-layer": "GRID3-COD-roads-v1-0",
       "minzoom": 11,
       "filter": ["in", "class", "unclassified", "residential"],
+      "layout": {"visibility": "none"},
       "paint": {
         "line-color": [
           "interpolate",
@@ -4792,9 +4794,7 @@
           11.5,
           4,
           14,
-          4,
-          22,
-          8
+          4
         ],
         "line-opacity": ["step", ["zoom"], 0, 10, 1]
       }
@@ -4823,15 +4823,13 @@
           ["zoom"],
           9,
           0.4,
-          12,
-          1.25,
-          15,
-          2
+          14,
+          1.5
         ],
         "line-dasharray": [
           "step",
           ["zoom"],
-          ["literal", [1, 0]],
+          ["literal", [2, 3]],
           11,
           ["literal", [2, 4]],
           13,
@@ -4908,10 +4906,10 @@
           "interpolate",
           ["linear", 1.2],
           ["zoom"],
-          8,
-          2,
+          10,
+          0,
           11,
-          4,
+          3,
           16,
           13
         ],
@@ -4933,10 +4931,8 @@
           ["zoom"],
           5,
           0.1,
-          5.5,
-          0.75,
-          6.5,
-          1.5
+          7.5,
+          1
         ],
         "line-dasharray": [
           "step",
@@ -4945,7 +4941,7 @@
           5,
           ["literal", [2, 3]]
         ],
-        "line-opacity": 0.75
+        "line-opacity": 1
       }
     },
     {
@@ -6464,7 +6460,16 @@
           13,
           ["literal", ["center"]]
         ],
-        "text-radial-offset": 1,
+        "text-radial-offset": [
+          "interpolate",
+          ["linear"],
+          ["zoom"],
+          12,
+          0.125,
+          16,
+          5
+        ],
+
         "text-justify": "auto",
         "text-allow-overlap": false,
         "text-ignore-placement": false,
@@ -6477,19 +6482,17 @@
           "step",
           ["zoom"],
           ["concat", "", ["get", "airesante"]],
-          14,
+          13,
           ["concat", "AS ", ["get", "airesante"]]
         ],
         "text-size": [
           "interpolate",
           ["linear"],
           ["get", "bbox_km2"],
-          0.5,
-          8,
-          500,
           10,
-		  1000,
-		  14
+          8,
+          1000,
+          14
         ],
         "text-padding": [
           "interpolate",
@@ -6519,8 +6522,6 @@
           "step",
           ["zoom"],
           "#505759",
-          11,
-          "#D14124",
           14,
           "#CF4520"
         ],
